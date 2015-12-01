@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#F44336</color>
     <color name="windowBackground">#ECEFF1</color>
+    <color name="list_divider">#CFD8DC</color>
+    <color name="list_background">#EDEDED</color>
 </resources>

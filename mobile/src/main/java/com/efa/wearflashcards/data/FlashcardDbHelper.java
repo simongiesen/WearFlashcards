@@ -1,9 +1,11 @@
 package com.efa.wearflashcards.data;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 
 import com.efa.wearflashcards.data.FlashcardContract.CardStack;
 import com.efa.wearflashcards.data.FlashcardContract.StackList;
@@ -12,11 +14,11 @@ import com.efa.wearflashcards.data.FlashcardContract.StackList;
  * Manages the flashcard databases.
  * http://developer.android.com/training/basics/data-storage/databases.html
  */
-public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
+public class FlashcardDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "flashcards.db";
+    public static final String DATABASE_NAME = "FLASHCARD_DB";
 
     public FlashcardDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,6 +50,17 @@ public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
                         CardStack.COLUMN_NAME_DEFINITION + " TEXT NOT NULL);";
         stack.execSQL(CARDSTACK_TABLE_CREATE);
 
+        // Content URI for new table
+        final Uri CONTENT_URI = Uri.withAppendedPath(FlashcardContract.BASE_URI, "stacks");
+
+        // Mime type of a directory of cards
+        final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                FlashcardContract.AUTHORITY + "/" + newTable;
+
+        // Mime type of a single card
+        final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
+                FlashcardContract.AUTHORITY + "/" + newTable;
+
         // Link new stack to main database
         ContentValues values = new ContentValues();
         values.put(StackList.COLUMN_NAME_STACK, newTable);
@@ -60,7 +73,7 @@ public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
      */
     public void insertCard(Card newCard, String tableName) {
         // Get the data repository in write mode
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
@@ -76,7 +89,7 @@ public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
      */
     public void deleteCard(Card card, String tableName) {
         // Get the data repository in write mode
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
 
         // Define 'where' part of query
         final String selection = CardStack.COLUMN_NAME_TERM + " = ? AND " +
@@ -92,7 +105,7 @@ public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
      */
     public void deleteStack(String tableName) {
         // Get the data repository in write mode
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
 
         // Build DELETE statement and execute it
         final String CARDSTACK_TABLE_DELETE =
@@ -105,7 +118,7 @@ public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
      */
     public void updateCard(Card card, String tableName) {
         // Get the data repository in read mode
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
 
         // Updated information
         ContentValues values = new ContentValues();
@@ -121,6 +134,13 @@ public abstract class FlashcardDbHelper extends SQLiteOpenHelper{
                 values,
                 selection,
                 selectionArgs);
+    }
+
+    /**
+     * Do nothing on upgrade yet.
+     */
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
     }
 
     // Card template
