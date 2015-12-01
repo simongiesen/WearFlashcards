@@ -18,8 +18,10 @@ public class FlashcardProvider extends ContentProvider {
     // Prepare the UriMatcher
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.StackList.TABLE_NAME, 1);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.StackList.COLUMN_NAME_STACK, 2);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.StackList.TABLE_DIR, 1);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.StackList.TABLE_DIR + "/#", 2);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.CardStack.TABLE_DIR + "/*", 3);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.CardStack.TABLE_DIR + "/*/#", 4);
     }
 
     // Handle to the database helper object
@@ -29,21 +31,8 @@ public class FlashcardProvider extends ContentProvider {
     // Create a FlashcardDBHelper
     @Override
     public boolean onCreate() {
-        boolean ret = true;
         mOpenHelper = new FlashcardDbHelper(getContext());
-        db = mOpenHelper.getWritableDatabase();
-
-        if (db == null) {
-            ret = false;
-        }
-
-        if (db.isReadOnly()) {
-            db.close();
-            db = null;
-            ret = false;
-        }
-
-        return ret;
+        return true;
     }
 
     @Override
@@ -53,7 +42,18 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        return null;
+        switch (URI_MATCHER.match(uri)) {
+            case STACK_LIST:
+                return FlashcardContract.StackList.CONTENT_TYPE;
+            case STACK_ITEM:
+                return FlashcardContract.StackList.CONTENT_ITEM_TYPE;
+            case CARD_LIST:
+                return FlashcardContract.CardStack.CONTENT_TYPE;
+            case CARD_ITEM:
+                return FlashcardContract.CardStack.CONTENT_ITEM_TYPE;
+            default:
+                return null;
+        }
     }
 
     @Override

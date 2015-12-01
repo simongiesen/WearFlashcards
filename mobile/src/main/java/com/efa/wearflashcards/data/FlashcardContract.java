@@ -18,24 +18,41 @@ public final class FlashcardContract {
 
     // Table with all flashcard stacks
     public static abstract class StackList implements BaseColumns {
-        // Columns in table
-        public static final String TABLE_NAME = "stacks";
-        public static final String COLUMN_NAME_STACK = "stack_name";
+        // Table directory
+        public static final String TABLE_DIR = "stack_list";
 
         // Content URI for table
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, "stacks");
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
 
         // Mime type of a directory of stacks
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
-                AUTHORITY + "/" + TABLE_NAME;
+                AUTHORITY + "/" + TABLE_DIR;
 
         // Mime type of a single stack
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
-                AUTHORITY + "/" + TABLE_NAME;
+                AUTHORITY + "/" + TABLE_DIR;
+
+        // Columns in table
+        public static final String TABLE_NAME = "stacks";
+        public static final String COLUMN_NAME_STACK = "stack_name";
     }
 
     // Table with a single stack of flashcards
     public static abstract class CardStack implements BaseColumns {
+        // Table directory
+        public static final String TABLE_DIR = "card_stacks";
+
+        // Content URI for table
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
+
+        // Mime type of a stack of cards
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_DIR;
+
+        // Mime type of a single card
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_DIR;
+        // Columns in table
         public static final String COLUMN_NAME_TERM = "term";
         public static final String COLUMN_NAME_DEFINITION = "definition";
     }
