@@ -30,7 +30,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         final String STACKLIST_TABLE_CREATE =
                 "CREATE TABLE " + StackList.TABLE_NAME + " (" +
                         StackList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        StackList.COLUMN_NAME_STACK + " TEXT UNIQUE NOT NULL);";
+                        StackList.STACK_TABLE_NAME + " TEXT UNIQUE NOT NULL," +
+                        StackList.STACK_TITLE + " TEXT NOT NULL);";
 
         // Create main table
         db.execSQL(STACKLIST_TABLE_CREATE);
@@ -46,8 +47,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         // Build the CREATE command
         final String CARDSTACK_TABLE_CREATE =
                 "CREATE TABLE " + newTable + " (" +
-                        CardStack.COLUMN_NAME_TERM + " TEXT PRIMARY KEY UNIQUE NOT NULL," +
-                        CardStack.COLUMN_NAME_DEFINITION + " TEXT NOT NULL);";
+                        CardStack.TERM + " TEXT PRIMARY KEY UNIQUE NOT NULL," +
+                        CardStack.DEFINITION + " TEXT NOT NULL);";
         stack.execSQL(CARDSTACK_TABLE_CREATE);
 
         // Content URI for new table
@@ -63,7 +64,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
 
         // Link new stack to main database
         ContentValues values = new ContentValues();
-        values.put(StackList.COLUMN_NAME_STACK, newTable);
+        values.put(StackList.STACK_TABLE_NAME, newTable);
         stack.insert(StackList.TABLE_NAME, null, values);
         return stack;
     }
@@ -77,8 +78,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(CardStack.COLUMN_NAME_TERM, newCard.term);
-        values.put(CardStack.COLUMN_NAME_DEFINITION, newCard.definition);
+        values.put(CardStack.TERM, newCard.term);
+        values.put(CardStack.DEFINITION, newCard.definition);
 
         // Insert the new row
         db.insert(tableName, null, values);
@@ -92,8 +93,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Define 'where' part of query
-        final String selection = CardStack.COLUMN_NAME_TERM + " = ? AND " +
-                CardStack.COLUMN_NAME_DEFINITION + " = ?";
+        final String selection = CardStack.TERM + " = ? AND " +
+                CardStack.DEFINITION + " = ?";
 
         // Specify arguments in placeholder order and issue SQL statement
         final String[] selectionArgs = {card.term, card.definition};
@@ -122,12 +123,12 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
 
         // Updated information
         ContentValues values = new ContentValues();
-        values.put(CardStack.COLUMN_NAME_TERM, card.term);
-        values.put(CardStack.COLUMN_NAME_DEFINITION, card.definition);
+        values.put(CardStack.TERM, card.term);
+        values.put(CardStack.DEFINITION, card.definition);
 
         // Update row
-        final String selection = CardStack.COLUMN_NAME_TERM + " = ? AND " +
-                CardStack.COLUMN_NAME_DEFINITION + " = ?";
+        final String selection = CardStack.TERM + " = ? AND " +
+                CardStack.DEFINITION + " = ?";
         final String[] selectionArgs = {card.term, card.definition};
         db.update(
                 tableName,

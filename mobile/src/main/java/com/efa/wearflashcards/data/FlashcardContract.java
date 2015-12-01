@@ -34,7 +34,8 @@ public final class FlashcardContract {
 
         // Columns in table
         public static final String TABLE_NAME = "stacks";
-        public static final String COLUMN_NAME_STACK = "stack_name";
+        public static final String STACK_TABLE_NAME = "stack_table_name";
+        public static final String STACK_TITLE = "stack_title";
     }
 
     // Table with a single stack of flashcards
@@ -53,7 +54,7 @@ public final class FlashcardContract {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
                 AUTHORITY + "/" + TABLE_DIR;
         // Columns in table
-        public static final String COLUMN_NAME_TERM = "term";
-        public static final String COLUMN_NAME_DEFINITION = "definition";
+        public static final String TERM = "term";
+        public static final String DEFINITION = "definition";
     }
 }
