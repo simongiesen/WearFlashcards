@@ -20,7 +20,11 @@
         </activity>
         <provider
             android:name=".data.FlashcardProvider"
-            android:authorities="com.efa.wearflashcards.app" />
+            android:authorities="com.efa.wearflashcards.app"
+            android:grantUriPermissions="true"
+            android:label="FlashcardProvider"
+            android:readPermission="com.efa.wearflashcards.app.READ"
+            android:writePermission="com.efa.wearflashcards.app.WRITE" />
     </application>
 
 </manifest>

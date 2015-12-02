@@ -1,11 +1,9 @@
 package com.efa.wearflashcards.data;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 import com.efa.wearflashcards.data.FlashcardContract.CardStack;
 import com.efa.wearflashcards.data.FlashcardContract.StackList;
@@ -38,115 +36,30 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Creates a new stack of flashcards.
+     * Creates an empty stack of flashcards.
      */
-    public SQLiteDatabase newStack(String newTable) {
+    public boolean newStack(String title) {
         // Get the data repository in write mode
-        SQLiteDatabase stack = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
 
         // Build the CREATE command
         final String CARDSTACK_TABLE_CREATE =
-                "CREATE TABLE " + newTable + " (" +
+                "CREATE TABLE " + title + " (" +
                         CardStack.TERM + " TEXT PRIMARY KEY NOT NULL," +
                         CardStack.DEFINITION + " TEXT NOT NULL);";
-        stack.execSQL(CARDSTACK_TABLE_CREATE);
-
-        // Content URI for new table
-        final Uri CONTENT_URI = Uri.withAppendedPath(FlashcardContract.BASE_URI, "stacks");
-
-        // Mime type of a directory of cards
-        final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
-                FlashcardContract.AUTHORITY + "/" + newTable;
-
-        // Mime type of a single card
-        final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
-                FlashcardContract.AUTHORITY + "/" + newTable;
+        db.execSQL(CARDSTACK_TABLE_CREATE);
 
         // Link new stack to main database
         ContentValues values = new ContentValues();
-        values.put(StackList.STACK_TABLE_NAME, newTable);
-        stack.insert(StackList.TABLE_NAME, null, values);
-        return stack;
+        values.put(StackList.STACK_TITLE, title);
+        values.put(StackList.STACK_TABLE_NAME, "table" + (StackList._COUNT + 1));
+        db.insert(StackList.TABLE_NAME, null, values);
+        return true;
     }
-
-    /**
-     * Inserts a flashcard into a stack.
-     */
-    public void insertCard(Card newCard, String tableName) {
-        // Get the data repository in write mode
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(CardStack.TERM, newCard.term);
-        values.put(CardStack.DEFINITION, newCard.definition);
-
-        // Insert the new row
-        db.insert(tableName, null, values);
-    }
-
-    /**
-     * Deletes a flashcard into a stack.
-     */
-    public void deleteCard(Card card, String tableName) {
-        // Get the data repository in write mode
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Define 'where' part of query
-        final String selection = CardStack.TERM + " = ? AND " +
-                CardStack.DEFINITION + " = ?";
-
-        // Specify arguments in placeholder order and issue SQL statement
-        final String[] selectionArgs = {card.term, card.definition};
-        db.delete(tableName, selection, selectionArgs);
-    }
-
-    /**
-     * Deletes a stack of flashcards.
-     */
-    public void deleteStack(String tableName) {
-        // Get the data repository in write mode
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Build DELETE statement and execute it
-        final String CARDSTACK_TABLE_DELETE =
-                "DROP TABLE IF EXISTS " + tableName;
-        db.execSQL(CARDSTACK_TABLE_DELETE);
-    }
-
-    /**
-     * Updates a flashcard.
-     */
-    public void updateCard(Card card, String tableName) {
-        // Get the data repository in read mode
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Updated information
-        ContentValues values = new ContentValues();
-        values.put(CardStack.TERM, card.term);
-        values.put(CardStack.DEFINITION, card.definition);
-
-        // Update row
-        final String selection = CardStack.TERM + " = ? AND " +
-                CardStack.DEFINITION + " = ?";
-        final String[] selectionArgs = {card.term, card.definition};
-        db.update(
-                tableName,
-                values,
-                selection,
-                selectionArgs);
-    }
-
     /**
      * Do nothing on upgrade yet.
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-    }
-
-    // Card template
-    public class Card {
-        String term;
-        String definition;
     }
 }

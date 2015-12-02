@@ -50,6 +50,8 @@ public class FlashcardProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+        // Handle table name and order differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
             case STACK_LIST:
                 builder.setTables(FlashcardContract.StackList.TABLE_NAME);
@@ -68,14 +70,18 @@ public class FlashcardProvider extends ContentProvider {
                 }
                 break;
             case CARD_ITEM:
+                // Get table name from uri
                 List<String> segments = uri.getPathSegments();
                 final String table = segments.get(segments.size() - 1);
+
                 builder.setTables(table);
                 builder.appendWhere(FlashcardContract.CardStack._ID + "=" + uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
+
+        // Issue query statement
         return builder.query(db,
                 projection,
                 selection,
@@ -96,6 +102,8 @@ public class FlashcardProvider extends ContentProvider {
                 return FlashcardContract.CardStack.CONTENT_TYPE;
             case CARD_ITEM:
                 return FlashcardContract.CardStack.CONTENT_ITEM_TYPE;
+
+            // Unsupported type
             default:
                 return null;
         }
@@ -130,12 +138,159 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int deleteCount;
+
+        // Handle update differently depending on the uri
+        switch (URI_MATCHER.match(uri)) {
+            case STACK_LIST: {
+                deleteCount = db.delete(
+                        FlashcardContract.StackList.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+
+            // Used for updating the stack name
+            case STACK_ITEM: {
+                // Build where statement
+                final String id = uri.getLastPathSegment();
+                String where = FlashcardContract.StackList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+
+                // Issue update statement
+                deleteCount = db.delete(
+                        FlashcardContract.StackList.TABLE_NAME,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+
+            case CARD_LIST: {
+                // Get table name from uri
+                final String table = uri.getLastPathSegment();
+
+                // Issue update statement
+                deleteCount = db.delete(
+                        table,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+
+            // Used for updating individual cards
+            case CARD_ITEM: {
+                // Build where statement
+                final String id = uri.getLastPathSegment();
+                String where = FlashcardContract.StackList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+
+                // Get table name from uri
+                List<String> segments = uri.getPathSegments();
+                final String table = segments.get(segments.size() - 1);
+
+                // Issue update statement
+                deleteCount = db.delete(
+                        table,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+
+            default: {
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+            }
+        }
+
+        return deleteCount;
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int updateCount;
+
+        // Handle update differently depending on the uri
+        switch (URI_MATCHER.match(uri)) {
+            case STACK_LIST: {
+                updateCount = db.update(
+                        FlashcardContract.StackList.TABLE_NAME,
+                        contentValues,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+
+            // Used for updating the stack name
+            case STACK_ITEM: {
+                // Build where statement
+                final String id = uri.getLastPathSegment();
+                String where = FlashcardContract.StackList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+
+                // Issue update statement
+                updateCount = db.update(
+                        FlashcardContract.StackList.TABLE_NAME,
+                        contentValues,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+
+            case CARD_LIST: {
+                // Get table name from uri
+                final String table = uri.getLastPathSegment();
+
+                // Issue update statement
+                updateCount = db.update(
+                        table,
+                        contentValues,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+
+            // Used for updating individual cards
+            case CARD_ITEM: {
+                // Build where statement
+                final String id = uri.getLastPathSegment();
+                String where = FlashcardContract.StackList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+
+                // Get table name from uri
+                List<String> segments = uri.getPathSegments();
+                final String table = segments.get(segments.size() - 1);
+
+                // Issue update statement
+                updateCount = db.update(
+                        table,
+                        contentValues,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+
+            default: {
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+            }
+        }
+        return updateCount;
     }
 }
