@@ -6,8 +6,12 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import java.util.List;
 
 /**
  * Manages access to the flashcard database.
@@ -43,8 +47,42 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] strings, String s, String[] strings2, String s2) {
-        return null;
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        switch (URI_MATCHER.match(uri)) {
+            case STACK_LIST:
+                builder.setTables(FlashcardContract.StackList.TABLE_NAME);
+                if (TextUtils.isEmpty(sortOrder)) {
+                    sortOrder = FlashcardContract.StackList.SORT_ORDER_DEFAULT;
+                }
+                break;
+            case STACK_ITEM:
+                builder.setTables(FlashcardContract.StackList.TABLE_NAME);
+                builder.appendWhere(FlashcardContract.StackList._ID + "=" + uri.getLastPathSegment());
+                break;
+            case CARD_LIST:
+                builder.setTables(uri.getLastPathSegment());
+                if (TextUtils.isEmpty(sortOrder)) {
+                    sortOrder = FlashcardContract.CardStack.SORT_ORDER_DEFAULT;
+                }
+                break;
+            case CARD_ITEM:
+                List<String> segments = uri.getPathSegments();
+                final String table = segments.get(segments.size() - 1);
+                builder.setTables(table);
+                builder.appendWhere(FlashcardContract.CardStack._ID + "=" + uri.getLastPathSegment());
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
+        return builder.query(db,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
     }
 
     @Override
@@ -80,7 +118,9 @@ public class FlashcardProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Insert a new card into the stack
-        long id = db.insert(contentValues.getAsString(FlashcardContract.StackList.STACK_TABLE_NAME), null, contentValues);
+        final String tableName = contentValues.getAsString(FlashcardContract.StackList.STACK_TABLE_NAME);
+        contentValues.remove(FlashcardContract.StackList.STACK_TABLE_NAME);
+        long id = db.insert(tableName, null, contentValues);
         if (id > 0) {
             return ContentUris.withAppendedId(uri, id);
         }

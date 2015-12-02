@@ -47,7 +47,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         // Build the CREATE command
         final String CARDSTACK_TABLE_CREATE =
                 "CREATE TABLE " + newTable + " (" +
-                        CardStack.TERM + " TEXT PRIMARY KEY UNIQUE NOT NULL," +
+                        CardStack.TERM + " TEXT PRIMARY KEY NOT NULL," +
                         CardStack.DEFINITION + " TEXT NOT NULL);";
         stack.execSQL(CARDSTACK_TABLE_CREATE);
 

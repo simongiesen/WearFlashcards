@@ -36,6 +36,9 @@ public final class FlashcardContract {
         public static final String TABLE_NAME = "stacks";
         public static final String STACK_TABLE_NAME = "stack_table_name";
         public static final String STACK_TITLE = "stack_title";
+
+        // Default sort order
+        public static final String SORT_ORDER_DEFAULT = "_ID DESC";
     }
 
     // Table with a single stack of flashcards
@@ -53,8 +56,12 @@ public final class FlashcardContract {
         // Mime type of a single card
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
                 AUTHORITY + "/" + TABLE_DIR;
+
         // Columns in table
         public static final String TERM = "term";
         public static final String DEFINITION = "definition";
+
+        // Default sort order
+        public static final String SORT_ORDER_DEFAULT = "_ID DESC";
     }
 }
