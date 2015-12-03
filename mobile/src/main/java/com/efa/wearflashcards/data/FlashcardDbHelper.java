@@ -5,11 +5,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.efa.wearflashcards.data.FlashcardContract.CardStack;
-import com.efa.wearflashcards.data.FlashcardContract.StackList;
+import com.efa.wearflashcards.data.FlashcardContract.CardSet;
+import com.efa.wearflashcards.data.FlashcardContract.SetList;
 
 /**
- * Manages the flashcard databases.
+ * Manages the flashcard database.
  * http://developer.android.com/training/basics/data-storage/databases.html
  */
 public class FlashcardDbHelper extends SQLiteOpenHelper {
@@ -25,14 +25,14 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Build the CREATE command
-        final String STACKLIST_TABLE_CREATE =
-                "CREATE TABLE " + StackList.TABLE_NAME + " (" +
-                        StackList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        StackList.STACK_TABLE_NAME + " TEXT UNIQUE NOT NULL," +
-                        StackList.STACK_TITLE + " TEXT NOT NULL);";
+        final String SETLIST_TABLE_CREATE =
+                "CREATE TABLE " + SetList.TABLE_NAME + " (" +
+                        SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        SetList.SET_TABLE_NAME + " TEXT UNIQUE NOT NULL," +
+                        SetList.SET_TITLE + " TEXT NOT NULL);";
 
         // Create main table
-        db.execSQL(STACKLIST_TABLE_CREATE);
+        db.execSQL(SETLIST_TABLE_CREATE);
     }
 
     /**
@@ -46,27 +46,27 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Creates an empty stack of flashcards.
+     * Creates an empty set of flashcards.
      */
-    public boolean newStack(String title) {
+    public boolean newSet(String title) {
         // Get the data repository in write mode
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // Get table name from stack title
+        // Get table name from set title
         String tableName = getTableName(title);
 
         // Build the CREATE command
-        final String CARDSTACK_TABLE_CREATE =
+        final String CARDSET_TABLE_CREATE =
                 "CREATE TABLE " + tableName + " (" +
-                        CardStack.TERM + " TEXT PRIMARY KEY NOT NULL," +
-                        CardStack.DEFINITION + " TEXT NOT NULL);";
-        db.execSQL(CARDSTACK_TABLE_CREATE);
+                        CardSet.TERM + " TEXT PRIMARY KEY NOT NULL," +
+                        CardSet.DEFINITION + " TEXT NOT NULL);";
+        db.execSQL(CARDSET_TABLE_CREATE);
 
-        // Link new stack to main database
+        // Link new set to main database
         ContentValues values = new ContentValues();
-        values.put(StackList.STACK_TITLE, title);
-        values.put(StackList.STACK_TABLE_NAME, tableName);
-        db.insert(StackList.TABLE_NAME, null, values);
+        values.put(SetList.SET_TITLE, title);
+        values.put(SetList.SET_TABLE_NAME, tableName);
+        db.insert(SetList.TABLE_NAME, null, values);
         return true;
     }
 

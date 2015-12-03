@@ -14,22 +14,22 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 
-import com.efa.wearflashcards.data.FlashcardContract;
+import com.efa.wearflashcards.data.FlashcardContract.SetList;
 
 
 /**
- * Fragment that generates a list of stacks to be displayed on screen.
+ * Fragment that generates a list of sets to be displayed on screen.
  */
 public class ListViewLoader extends ListActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
-    // These are the stack names that we will retrieve
-    static final String[] STACKS = new String[]{FlashcardContract.StackList._ID,
-            FlashcardContract.StackList.TABLE_NAME};
+    // These are the set names that we will retrieve
+    static final String[] SETS = new String[]{SetList._ID,
+            SetList.TABLE_NAME};
 
-    // This is the select criteria for stacks
-    static final String STACK_SELECTION = "((" +
-            FlashcardContract.StackList.TABLE_NAME + " NOTNULL) AND (" +
-            FlashcardContract.StackList.TABLE_NAME + " != '' ))";
+    // This is the select criteria for sets
+    static final String SET_SELECTION = "((" +
+            SetList.TABLE_NAME + " NOTNULL) AND (" +
+            SetList.TABLE_NAME + " != '' ))";
 
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
@@ -50,7 +50,7 @@ public class ListViewLoader extends ListActivity
         root.addView(progressBar);
 
         // For the cursor adapter, specify which columns go into which view
-        String[] fromColumns = {FlashcardContract.StackList.TABLE_NAME};
+        String[] fromColumns = {SetList.TABLE_NAME};
         int[] toViews = {android.R.id.text1}; // The TextView in simple_list_item_1
 
         // Create an empty adapter that we will use to display the loaded data.
@@ -68,7 +68,7 @@ public class ListViewLoader extends ListActivity
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed
         // TODO create a content provider
-        return new CursorLoader(this, null, STACKS, STACK_SELECTION, null, null) {
+        return new CursorLoader(this, null, SETS, SET_SELECTION, null, null) {
         };
     }
 

@@ -12,6 +12,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.efa.wearflashcards.data.FlashcardContract.CardSet;
+import com.efa.wearflashcards.data.FlashcardContract.SetList;
+
 import java.util.List;
 
 /**
@@ -22,8 +25,8 @@ import java.util.List;
  */
 public class FlashcardProvider extends ContentProvider {
     // Helper constants for URI matcher
-    private static final int STACK_LIST = 1;
-    private static final int STACK_ITEM = 2;
+    private static final int SET_LIST = 1;
+    private static final int SET_ITEM = 2;
     private static final int CARD_LIST = 3;
     private static final int CARD_ITEM = 4;
     private static final UriMatcher URI_MATCHER;
@@ -31,16 +34,21 @@ public class FlashcardProvider extends ContentProvider {
     // Prepare the UriMatcher
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.StackList.TABLE_DIR, 1);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.StackList.TABLE_DIR + "/#", 2);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.CardStack.TABLE_DIR + "/*", 3);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FlashcardContract.CardStack.TABLE_DIR + "/*/#", 4);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, SetList.TABLE_DIR, 1);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, SetList.TABLE_DIR + "/#", 2);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*", 3);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*/#", 4);
     }
 
     // Handle to the database helper object
     private FlashcardDbHelper mOpenHelper;
     private Context context = null;
 
+    // Empty constructor
+    public FlashcardProvider() {
+    }
+
+    // Regular constructor
     public FlashcardProvider(Context context) {
         this.context = context;
         mOpenHelper = new FlashcardDbHelper(context);
@@ -49,7 +57,7 @@ public class FlashcardProvider extends ContentProvider {
     // Create a FlashcardDBHelper
     @Override
     public boolean onCreate() {
-        mOpenHelper = new FlashcardDbHelper(this.context);
+        mOpenHelper = new FlashcardDbHelper(getContext());
         return true;
     }
 
@@ -60,20 +68,20 @@ public class FlashcardProvider extends ContentProvider {
 
         // Handle table name and order differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
-            case STACK_LIST:
-                builder.setTables(FlashcardContract.StackList.TABLE_NAME);
+            case SET_LIST:
+                builder.setTables(SetList.TABLE_NAME);
                 if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = FlashcardContract.StackList.SORT_ORDER_DEFAULT;
+                    sortOrder = SetList.SORT_ORDER_DEFAULT;
                 }
                 break;
-            case STACK_ITEM:
-                builder.setTables(FlashcardContract.StackList.TABLE_NAME);
-                builder.appendWhere(FlashcardContract.StackList._ID + "=" + uri.getLastPathSegment());
+            case SET_ITEM:
+                builder.setTables(SetList.TABLE_NAME);
+                builder.appendWhere(SetList._ID + "=" + uri.getLastPathSegment());
                 break;
             case CARD_LIST:
                 builder.setTables(uri.getLastPathSegment());
                 if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = FlashcardContract.CardStack.SORT_ORDER_DEFAULT;
+                    sortOrder = CardSet.SORT_ORDER_DEFAULT;
                 }
                 break;
             case CARD_ITEM:
@@ -82,7 +90,7 @@ public class FlashcardProvider extends ContentProvider {
                 final String table = segments.get(segments.size() - 1);
 
                 builder.setTables(table);
-                builder.appendWhere(FlashcardContract.CardStack._ID + "=" + uri.getLastPathSegment());
+                builder.appendWhere(CardSet._ID + "=" + uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -105,14 +113,14 @@ public class FlashcardProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
         switch (URI_MATCHER.match(uri)) {
-            case STACK_LIST:
-                return FlashcardContract.StackList.CONTENT_TYPE;
-            case STACK_ITEM:
-                return FlashcardContract.StackList.CONTENT_ITEM_TYPE;
+            case SET_LIST:
+                return SetList.CONTENT_TYPE;
+            case SET_ITEM:
+                return SetList.CONTENT_ITEM_TYPE;
             case CARD_LIST:
-                return FlashcardContract.CardStack.CONTENT_TYPE;
+                return CardSet.CONTENT_TYPE;
             case CARD_ITEM:
-                return FlashcardContract.CardStack.CONTENT_ITEM_TYPE;
+                return CardSet.CONTENT_ITEM_TYPE;
 
             // Unsupported type
             default:
@@ -123,12 +131,12 @@ public class FlashcardProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         // Validate URI
-        if (URI_MATCHER.match(uri) == STACK_LIST ||
-                URI_MATCHER.match(uri) == STACK_ITEM) {
-            throw new IllegalArgumentException("Cannot insert new stacks directly into main table.");
+        if (URI_MATCHER.match(uri) == SET_LIST ||
+                URI_MATCHER.match(uri) == SET_ITEM) {
+            throw new IllegalArgumentException("Cannot insert new sets directly into main table.");
         }
         if (URI_MATCHER.match(uri) == CARD_LIST) {
-            throw new IllegalArgumentException("Use create() to create a new flashcard stack.");
+            throw new IllegalArgumentException("Use create() to create a new flashcard set.");
         }
         if (URI_MATCHER.match(uri) != CARD_ITEM) {
             throw new IllegalArgumentException("Uri not supported for insertion: " + uri);
@@ -136,9 +144,9 @@ public class FlashcardProvider extends ContentProvider {
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-        // Insert a new card into the stack
-        final String tableName = contentValues.getAsString(FlashcardContract.StackList.STACK_TABLE_NAME);
-        contentValues.remove(FlashcardContract.StackList.STACK_TABLE_NAME);
+        // Insert a new card into the set
+        final String tableName = contentValues.getAsString(SetList.SET_TABLE_NAME);
+        contentValues.remove(SetList.SET_TABLE_NAME);
         long id = db.insert(tableName, null, contentValues);
 
         // Notify all listeners of changes and return
@@ -159,27 +167,27 @@ public class FlashcardProvider extends ContentProvider {
 
         // Handle update differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
-            case STACK_LIST: {
+            case SET_LIST: {
                 deleteCount = db.delete(
-                        FlashcardContract.StackList.TABLE_NAME,
+                        SetList.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
                 break;
             }
 
-            // Used for updating the stack name
-            case STACK_ITEM: {
+            // Used for updating the set name
+            case SET_ITEM: {
                 // Build where statement
                 final String id = uri.getLastPathSegment();
-                String where = FlashcardContract.StackList._ID + "=" + id;
+                String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
 
                 // Issue update statement
                 deleteCount = db.delete(
-                        FlashcardContract.StackList.TABLE_NAME,
+                        SetList.TABLE_NAME,
                         where,
                         selectionArgs
                 );
@@ -203,7 +211,7 @@ public class FlashcardProvider extends ContentProvider {
             case CARD_ITEM: {
                 // Build where statement
                 final String id = uri.getLastPathSegment();
-                String where = FlashcardContract.StackList._ID + "=" + id;
+                String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
@@ -241,9 +249,9 @@ public class FlashcardProvider extends ContentProvider {
 
         // Handle update differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
-            case STACK_LIST: {
+            case SET_LIST: {
                 updateCount = db.update(
-                        FlashcardContract.StackList.TABLE_NAME,
+                        SetList.TABLE_NAME,
                         contentValues,
                         selection,
                         selectionArgs
@@ -251,18 +259,18 @@ public class FlashcardProvider extends ContentProvider {
                 break;
             }
 
-            // Used for updating the stack name
-            case STACK_ITEM: {
+            // Used for updating the set name
+            case SET_ITEM: {
                 // Build where statement
                 final String id = uri.getLastPathSegment();
-                String where = FlashcardContract.StackList._ID + "=" + id;
+                String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
 
                 // Issue update statement
                 updateCount = db.update(
-                        FlashcardContract.StackList.TABLE_NAME,
+                        SetList.TABLE_NAME,
                         contentValues,
                         where,
                         selectionArgs
@@ -288,7 +296,7 @@ public class FlashcardProvider extends ContentProvider {
             case CARD_ITEM: {
                 // Build where statement
                 final String id = uri.getLastPathSegment();
-                String where = FlashcardContract.StackList._ID + "=" + id;
+                String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }

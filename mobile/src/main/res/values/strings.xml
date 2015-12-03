@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Wear Flashcards</string>
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="empty_database">Tap the + button to create a flashcard set</string>
 </resources>

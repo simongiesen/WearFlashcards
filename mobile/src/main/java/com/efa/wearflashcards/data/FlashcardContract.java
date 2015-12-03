@@ -16,34 +16,34 @@ public final class FlashcardContract {
     // Empty constructor to prevent someone from accidentally instantiating the contract class
     public FlashcardContract() {}
 
-    // Table with all flashcard stacks
-    public static abstract class StackList implements BaseColumns {
+    // Table with all flashcard sets
+    public static abstract class SetList implements BaseColumns {
         // Table directory
-        public static final String TABLE_DIR = "stack_list";
+        public static final String TABLE_DIR = "set_list";
 
-        // Mime type of a directory of stacks
+        // Mime type of a directory of sets
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
                 AUTHORITY + "/" + TABLE_DIR;
 
-        // Mime type of a single stack
+        // Mime type of a single set
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
                 AUTHORITY + "/" + TABLE_DIR;
 
         // Columns in table
-        public static final String TABLE_NAME = "stacks";
-        public static final String STACK_TABLE_NAME = "stack_table_name";
-        public static final String STACK_TITLE = "stack_title";
+        public static final String TABLE_NAME = "sets";
+        public static final String SET_TABLE_NAME = "set_table_name";
+        public static final String SET_TITLE = "set_title";
 
         // Default sort order
         public static final String SORT_ORDER_DEFAULT = "_ID DESC";
     }
 
-    // Table with a single stack of flashcards
-    public static abstract class CardStack implements BaseColumns {
+    // Table with a single set of flashcards
+    public static abstract class CardSet implements BaseColumns {
         // Table directory
-        public static final String TABLE_DIR = "card_stacks";
+        public static final String TABLE_DIR = "card_sets";
 
-        // Mime type of a stack of cards
+        // Mime type of a set of cards
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
                 AUTHORITY + "/" + TABLE_DIR;
 
