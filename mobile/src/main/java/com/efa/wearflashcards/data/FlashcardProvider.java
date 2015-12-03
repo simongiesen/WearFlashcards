@@ -3,6 +3,7 @@ package com.efa.wearflashcards.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,11 +39,17 @@ public class FlashcardProvider extends ContentProvider {
 
     // Handle to the database helper object
     private FlashcardDbHelper mOpenHelper;
+    private Context context = null;
+
+    public FlashcardProvider(Context context) {
+        this.context = context;
+        mOpenHelper = new FlashcardDbHelper(context);
+    }
 
     // Create a FlashcardDBHelper
     @Override
     public boolean onCreate() {
-        mOpenHelper = new FlashcardDbHelper(getContext());
+        mOpenHelper = new FlashcardDbHelper(this.context);
         return true;
     }
 
@@ -82,13 +89,17 @@ public class FlashcardProvider extends ContentProvider {
         }
 
         // Issue query statement
-        return builder.query(db,
+        Cursor cursor = builder.query(db,
                 projection,
                 selection,
                 selectionArgs,
                 null,
                 null,
                 sortOrder);
+
+        // Notify all listeners of changes
+        cursor.setNotificationUri(this.context.getContentResolver(), uri);
+        return cursor;
     }
 
     @Override
@@ -129,8 +140,12 @@ public class FlashcardProvider extends ContentProvider {
         final String tableName = contentValues.getAsString(FlashcardContract.StackList.STACK_TABLE_NAME);
         contentValues.remove(FlashcardContract.StackList.STACK_TABLE_NAME);
         long id = db.insert(tableName, null, contentValues);
+
+        // Notify all listeners of changes and return
         if (id > 0) {
-            return ContentUris.withAppendedId(uri, id);
+            Uri returnUri = ContentUris.withAppendedId(uri, id);
+            this.context.getContentResolver().notifyChange(returnUri, null);
+            return returnUri;
         }
 
         // Failed to insert new card
@@ -209,6 +224,11 @@ public class FlashcardProvider extends ContentProvider {
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
             }
+        }
+
+        // Notify all listeners of changes
+        if (deleteCount > 0) {
+            this.context.getContentResolver().notifyChange(uri, null);
         }
 
         return deleteCount;
@@ -291,6 +311,12 @@ public class FlashcardProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
             }
         }
+
+        // Notify all listeners of changes
+        if (updateCount > 0) {
+            this.context.getContentResolver().notifyChange(uri, null);
+        }
+
         return updateCount;
     }
 }

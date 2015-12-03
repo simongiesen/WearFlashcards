@@ -36,15 +36,28 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Returns a table name based on the given title.
+     */
+    public String getTableName(String title) {
+        // Remove all non-alphabetic characters and convert the letters to lower-case
+        String tableName = title.replaceAll("[^\\p{IsAlphabetic}]", "");
+        tableName = tableName.toLowerCase();
+        return tableName;
+    }
+
+    /**
      * Creates an empty stack of flashcards.
      */
     public boolean newStack(String title) {
         // Get the data repository in write mode
         SQLiteDatabase db = this.getWritableDatabase();
 
+        // Get table name from stack title
+        String tableName = getTableName(title);
+
         // Build the CREATE command
         final String CARDSTACK_TABLE_CREATE =
-                "CREATE TABLE " + title + " (" +
+                "CREATE TABLE " + tableName + " (" +
                         CardStack.TERM + " TEXT PRIMARY KEY NOT NULL," +
                         CardStack.DEFINITION + " TEXT NOT NULL);";
         db.execSQL(CARDSTACK_TABLE_CREATE);
@@ -52,10 +65,11 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         // Link new stack to main database
         ContentValues values = new ContentValues();
         values.put(StackList.STACK_TITLE, title);
-        values.put(StackList.STACK_TABLE_NAME, "table" + (StackList._COUNT + 1));
+        values.put(StackList.STACK_TABLE_NAME, tableName);
         db.insert(StackList.TABLE_NAME, null, values);
         return true;
     }
+
     /**
      * Do nothing on upgrade yet.
      */
