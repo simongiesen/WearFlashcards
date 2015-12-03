@@ -22,14 +22,15 @@ import com.efa.wearflashcards.data.FlashcardContract;
  */
 public class ListViewLoader extends ListActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
-
     // These are the stack names that we will retrieve
     static final String[] STACKS = new String[]{FlashcardContract.StackList._ID,
             FlashcardContract.StackList.TABLE_NAME};
+
     // This is the select criteria for stacks
     static final String STACK_SELECTION = "((" +
             FlashcardContract.StackList.TABLE_NAME + " NOTNULL) AND (" +
             FlashcardContract.StackList.TABLE_NAME + " != '' ))";
+
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
 
