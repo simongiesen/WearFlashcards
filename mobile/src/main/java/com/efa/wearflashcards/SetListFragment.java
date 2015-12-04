@@ -31,10 +31,10 @@ public class SetListFragment extends ListFragment
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.list_item,
+                android.R.layout.simple_list_item_1,
                 null,
                 new String[]{SetList.SET_TITLE},
-                new int[]{R.id.default_text},
+                new int[]{android.R.id.text1},
                 0);
         setListAdapter(mAdapter);
 
