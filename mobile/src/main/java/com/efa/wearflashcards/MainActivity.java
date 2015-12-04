@@ -1,5 +1,6 @@
 package com.efa.wearflashcards;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,9 +12,21 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static MainActivity instance;
+    private static Context mContext;
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
+    public static Context getContext() {
+        return instance.getApplicationContext();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

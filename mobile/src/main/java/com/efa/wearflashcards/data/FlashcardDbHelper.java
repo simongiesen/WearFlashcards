@@ -1,11 +1,9 @@
 package com.efa.wearflashcards.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.efa.wearflashcards.data.FlashcardContract.CardSet;
 import com.efa.wearflashcards.data.FlashcardContract.SetList;
 
 /**
@@ -33,41 +31,6 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
 
         // Create main table
         db.execSQL(SETLIST_TABLE_CREATE);
-    }
-
-    /**
-     * Returns a table name based on the given title.
-     */
-    public String getTableName(String title) {
-        // Remove all non-alphabetic characters and convert the letters to lower-case
-        String tableName = title.replaceAll("[^\\p{IsAlphabetic}]", "");
-        tableName = tableName.toLowerCase();
-        return tableName;
-    }
-
-    /**
-     * Creates an empty set of flashcards.
-     */
-    public boolean newSetTable(String title) {
-        // Get the data repository in write mode
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Get table name from set title
-        String tableName = getTableName(title);
-
-        // Build the CREATE command
-        final String CARDSET_TABLE_CREATE =
-                "CREATE TABLE " + tableName + " (" +
-                        CardSet.TERM + " TEXT PRIMARY KEY NOT NULL," +
-                        CardSet.DEFINITION + " TEXT NOT NULL);";
-        db.execSQL(CARDSET_TABLE_CREATE);
-
-        // Link new set to main database
-        ContentValues values = new ContentValues();
-        values.put(SetList.SET_TITLE, title);
-        values.put(SetList.SET_TABLE_NAME, tableName);
-        db.insert(SetList.TABLE_NAME, null, values);
-        return true;
     }
 
     /**

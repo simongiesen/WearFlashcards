@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.efa.wearflashcards.MainActivity;
 import com.efa.wearflashcards.data.FlashcardContract.CardSet;
 import com.efa.wearflashcards.data.FlashcardContract.SetList;
 
@@ -322,5 +323,40 @@ public class FlashcardProvider extends ContentProvider {
         }
 
         return updateCount;
+    }
+
+    /**
+     * Returns a table name based on the given title.
+     */
+    public String getTableName(String title) {
+        // Remove all non-alphabetic characters and convert the letters to lower-case
+        String tableName = title.replaceAll("[\\W\\s]", "");
+        tableName = tableName.toLowerCase();
+        return tableName;
+    }
+
+    /**
+     * Creates an empty set of flashcards.
+     */
+    public void newSetTable(String title) {
+        // Get the data repository in write mode
+        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        // Get table name from set title
+        String tableName = getTableName(title);
+
+        // Build the CREATE command
+        final String CARDSET_TABLE_CREATE =
+                "CREATE TABLE " + tableName + " (" +
+                        CardSet.TERM + " TEXT PRIMARY KEY NOT NULL," +
+                        CardSet.DEFINITION + " TEXT NOT NULL);";
+        db.execSQL(CARDSET_TABLE_CREATE);
+
+        // Link new set to main database
+        ContentValues values = new ContentValues();
+        values.put(SetList.SET_TITLE, title);
+        values.put(SetList.SET_TABLE_NAME, tableName);
+        db.insert(SetList.TABLE_NAME, null, values);
     }
 }
