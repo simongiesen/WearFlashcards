@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         // Load flashcard sets
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.default_text, new SetListFragment())
+                    .replace(R.id.main_layout, new SetListFragment())
                     .commit();
         }
     }

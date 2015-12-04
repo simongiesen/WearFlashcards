@@ -64,6 +64,7 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
