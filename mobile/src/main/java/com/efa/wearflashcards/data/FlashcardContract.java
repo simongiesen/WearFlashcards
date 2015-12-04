@@ -21,6 +21,9 @@ public final class FlashcardContract {
         // Table directory
         public static final String TABLE_DIR = "set_list";
 
+        // Content URI for table
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
+
         // Mime type of a directory of sets
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
                 AUTHORITY + "/" + TABLE_DIR;
@@ -42,6 +45,9 @@ public final class FlashcardContract {
     public static abstract class CardSet implements BaseColumns {
         // Table directory
         public static final String TABLE_DIR = "card_sets";
+
+        // Content URI for table
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
 
         // Mime type of a set of cards
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
