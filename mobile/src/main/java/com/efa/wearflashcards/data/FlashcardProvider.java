@@ -3,7 +3,6 @@ package com.efa.wearflashcards.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.efa.wearflashcards.MainActivity;
 import com.efa.wearflashcards.data.FlashcardContract.CardSet;
@@ -43,7 +43,6 @@ public class FlashcardProvider extends ContentProvider {
 
     // Handle to the database helper object
     private FlashcardDbHelper mOpenHelper;
-    private Context context = null;
 
     // Empty constructor
     public FlashcardProvider() {
@@ -144,7 +143,7 @@ public class FlashcardProvider extends ContentProvider {
         // Notify all listeners of changes and return
         if (id > 0) {
             Uri returnUri = ContentUris.withAppendedId(uri, id);
-            this.context.getContentResolver().notifyChange(returnUri, null);
+            MainActivity.getContext().getContentResolver().notifyChange(returnUri, null);
             return returnUri;
         }
 
@@ -228,7 +227,7 @@ public class FlashcardProvider extends ContentProvider {
 
         // Notify all listeners of changes
         if (deleteCount > 0) {
-            this.context.getContentResolver().notifyChange(uri, null);
+            MainActivity.getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return deleteCount;
@@ -314,7 +313,7 @@ public class FlashcardProvider extends ContentProvider {
 
         // Notify all listeners of changes
         if (updateCount > 0) {
-            this.context.getContentResolver().notifyChange(uri, null);
+            MainActivity.getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return updateCount;
@@ -363,5 +362,20 @@ public class FlashcardProvider extends ContentProvider {
 
         cursor.close();
         return false;
+    }
+
+    public void deleteSetTable(String title) {
+        // Get the data repository in write mode
+        Log.d("SetListFragment", "Title clicked: " + title);
+        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        // Get table name from set title
+        String tableName = getTableName(title);
+        Log.d("SetListFragment", "table name clicked: " + tableName);
+
+        // Remove set from main database
+        db.execSQL("DROP TABLE IF EXISTS " + tableName);
+        this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
     }
 }

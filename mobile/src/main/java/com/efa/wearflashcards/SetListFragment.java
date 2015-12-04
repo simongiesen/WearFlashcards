@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.SetList;
+import com.efa.wearflashcards.data.FlashcardProvider;
 
 
 /**
@@ -62,13 +65,31 @@ public class SetListFragment extends ListFragment
         inflater.inflate(R.menu.context_menu, menu);
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.delete:
+                // Get title from textView item
+                TextView textView = (TextView) info.targetView.findViewById(R.id.main_set_title);
+                String title = textView.getText().toString();
+
+                // Delete set from database
+                FlashcardProvider handle = new FlashcardProvider();
+                handle.deleteSetTable(title);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
     // Print title to log when it is clicked
     // http://stackoverflow.com/a/13405692
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         TextView textView = (TextView) view.findViewById(R.id.main_set_title);
         String title = textView.getText().toString();
-        Log.i("SetListFragment", "Title clicked: " + title);
+        Log.d("SetListFragment", "Title clicked: " + title);
     }
 
     // Called when a new Loader needs to be created
