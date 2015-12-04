@@ -6,13 +6,11 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -77,19 +75,13 @@ public class SetListFragment extends ListFragment
                 // Delete set from database
                 FlashcardProvider handle = new FlashcardProvider();
                 handle.deleteSetTable(title);
+
+                // Refresh the loader with new data
+                getLoaderManager().initLoader(0, null, this);
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
-    }
-
-    // Print title to log when it is clicked
-    // http://stackoverflow.com/a/13405692
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-        TextView textView = (TextView) view.findViewById(R.id.main_set_title);
-        String title = textView.getText().toString();
-        Log.d("SetListFragment", "Title clicked: " + title);
     }
 
     // Called when a new Loader needs to be created
