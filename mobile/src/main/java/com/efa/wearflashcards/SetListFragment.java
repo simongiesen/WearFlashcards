@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.SetList;
 
@@ -31,10 +32,10 @@ public class SetListFragment extends ListFragment
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1,
+                R.layout.main_list_item,
                 null,
                 new String[]{SetList.SET_TITLE},
-                new int[]{android.R.id.text1},
+                new int[]{R.id.main_set_title},
                 0);
         setListAdapter(mAdapter);
 
@@ -45,8 +46,10 @@ public class SetListFragment extends ListFragment
     // Open the flashcard set when it is clicked
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // Insert desired behavior here.
-        Log.i("SetListFragment", "Item clicked: " + id);
+        // Print title to log
+        TextView tv = (TextView) v.findViewById(R.id.main_set_title);
+        String title = tv.getText().toString();
+        Log.i("SetListFragment", "Title clicked: " + title);
     }
 
     // Called when a new Loader needs to be created
