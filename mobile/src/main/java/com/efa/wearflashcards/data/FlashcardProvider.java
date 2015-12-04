@@ -97,17 +97,13 @@ public class FlashcardProvider extends ContentProvider {
         }
 
         // Issue query statement
-        Cursor cursor = builder.query(db,
+        return builder.query(db,
                 projection,
                 selection,
                 selectionArgs,
                 null,
                 null,
                 sortOrder);
-
-        // Notify all listeners of changes
-        cursor.setNotificationUri(this.context.getContentResolver(), uri);
-        return cursor;
     }
 
     @Override

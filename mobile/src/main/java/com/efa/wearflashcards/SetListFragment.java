@@ -20,35 +20,26 @@ import com.efa.wearflashcards.data.FlashcardContract.SetList;
 public class SetListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     // These are the set names that we will retrieve
-    static final String[] SET_SUMMARY_PROJECTION = new String[]{SetList._ID,
-            SetList.TABLE_NAME,
-            SetList.SET_TABLE_NAME,
-            SetList.SET_TITLE};
+    static final String[] SET_SUMMARY_PROJECTION = new String[]{SetList._ID, SetList.SET_TITLE};
+
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        // Text to display if the database is empty
-        setEmptyText(getString(R.string.empty_database));
-
-        // Display menu
-        setHasOptionsMenu(true);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_2, null,
+                R.layout.list_item,
+                null,
                 new String[]{SetList.SET_TITLE},
-                new int[]{android.R.id.text1}, 0);
+                new int[]{R.id.default_text},
+                0);
         setListAdapter(mAdapter);
 
         // Prepare the loader. Either re-connect with an existing one, or start a new one.
         getLoaderManager().initLoader(0, null, this);
-
-        ListView listView = (ListView) getActivity().findViewById(R.id.set_name);
-        listView.setAdapter(mAdapter);
     }
 
     // Open the flashcard set when it is clicked
