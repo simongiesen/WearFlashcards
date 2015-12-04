@@ -13,11 +13,6 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
-    private static Context mContext;
-
-    public static MainActivity getInstance() {
-        return instance;
-    }
 
     public static Context getContext() {
         return instance.getApplicationContext();

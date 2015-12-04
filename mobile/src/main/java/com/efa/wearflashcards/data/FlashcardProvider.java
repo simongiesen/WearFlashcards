@@ -49,12 +49,6 @@ public class FlashcardProvider extends ContentProvider {
     public FlashcardProvider() {
     }
 
-    // Regular constructor
-    public FlashcardProvider(Context context) {
-        this.context = context;
-        mOpenHelper = new FlashcardDbHelper(context);
-    }
-
     // Create a FlashcardDBHelper
     @Override
     public boolean onCreate() {
@@ -337,22 +331,6 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
-     * Checks if a table exists.
-     * http://stackoverflow.com/a/7863401
-     */
-    public boolean tableExists(String tableName, SQLiteDatabase db) {
-        Cursor cursor = db.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                cursor.close();
-                return true;
-            }
-            cursor.close();
-        }
-        return false;
-    }
-
-    /**
      * Creates an empty set of flashcards.
      */
     public Boolean newSetTable(String title) {
@@ -363,10 +341,7 @@ public class FlashcardProvider extends ContentProvider {
         // Get table name from set title
         String tableName = getTableName(title);
 
-//        // Check if table already exists
-//        if (tableExists(tableName, db)) {
-//            return false;
-//        }
+        // Check if the table already exists
         Cursor cursor;
         try {
             cursor = db.rawQuery("select * from '" + tableName + "'", null);
