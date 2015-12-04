@@ -18,11 +18,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name=".data.FlashcardProvider"
             android:authorities="com.efa.wearflashcards.app"
+            android:exported="false"
             android:grantUriPermissions="true"
             android:label="FlashcardProvider" />
+
+        <activity
+            android:name=".NewSet"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name=".NewSet" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -48,7 +48,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     /**
      * Creates an empty set of flashcards.
      */
-    public boolean newSet(String title) {
+    public boolean newSetTable(String title) {
         // Get the data repository in write mode
         SQLiteDatabase db = this.getWritableDatabase();
 

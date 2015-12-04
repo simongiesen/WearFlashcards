@@ -2,4 +2,6 @@
     <string name="app_name">Wear Flashcards</string>
     <string name="action_settings">Settings</string>
     <string name="empty_database">Tap the + button to create a flashcard set</string>
+    <string name="set_title_hint">Set title</string>
+    <string name="create_set">Create</string>
 </resources>
