@@ -38,7 +38,7 @@ public final class FlashcardContract {
         public static final String SET_TITLE = "set_title";
 
         // Default sort order
-        public static final String SORT_ORDER_DEFAULT = "_ID DESC";
+        public static final String SORT_ORDER_DEFAULT = "_ID ASC";
     }
 
     // Table with a single set of flashcards
@@ -62,6 +62,6 @@ public final class FlashcardContract {
         public static final String DEFINITION = "definition";
 
         // Default sort order
-        public static final String SORT_ORDER_DEFAULT = "_ID DESC";
+        public static final String SORT_ORDER_DEFAULT = "_ID ASC";
     }
 }

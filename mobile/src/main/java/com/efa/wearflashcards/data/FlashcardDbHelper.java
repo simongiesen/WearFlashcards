@@ -24,7 +24,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Build the CREATE command
         final String SETLIST_TABLE_CREATE =
-                "CREATE TABLE " + SetList.TABLE_NAME + " (" +
+                "CREATE TABLE IF NOT EXISTS " + SetList.TABLE_NAME + " (" +
                         SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         SetList.SET_TABLE_NAME + " TEXT UNIQUE NOT NULL," +
                         SetList.SET_TITLE + " TEXT NOT NULL);";

@@ -355,7 +355,8 @@ public class FlashcardProvider extends ContentProvider {
             // Build the CREATE command
             final String CARDSET_TABLE_CREATE =
                     "CREATE TABLE " + tableName + " (" +
-                            CardSet.TERM + " TEXT PRIMARY KEY NOT NULL," +
+                            CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            CardSet.TERM + " TEXT NOT NULL," +
                             CardSet.DEFINITION + " TEXT NOT NULL);";
             db.execSQL(CARDSET_TABLE_CREATE);
 

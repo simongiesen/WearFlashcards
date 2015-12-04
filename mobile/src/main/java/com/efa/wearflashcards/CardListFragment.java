@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -12,27 +13,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.efa.wearflashcards.data.FlashcardContract.SetList;
+import com.efa.wearflashcards.data.FlashcardContract.CardSet;
 import com.efa.wearflashcards.data.FlashcardProvider;
 
 
 /**
- * Fragment that generates a list of sets to be displayed on screen.
+ * Fragment that generates a list of cards to be displayed on screen.
  */
-public class SetListFragment extends ListFragment
+public class CardListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     // These are the set names that we will retrieve
-    static final String[] SET_SUMMARY_PROJECTION = new String[]{SetList._ID, SetList.SET_TITLE};
-
+    static final String[] SET_SUMMARY_PROJECTION = new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
+    // Save table name from SetListFragment
+    public String table_name;
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
 
+    // Empty constructor
+    public CardListFragment() {
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Get table name
+        Bundle bundle = getArguments();
+        table_name = bundle.getString("table_name");
+        Log.w("card frag", table_name);
         super.onCreate(savedInstanceState);
     }
 
@@ -41,16 +50,16 @@ public class SetListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
 
         // Show text if database is empty
-        setEmptyText(getString(R.string.empty_database));
+        setEmptyText(getString(R.string.empty_stack));
 
         registerForContextMenu(getListView());
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.main_list_item,
+                R.layout.card_list,
                 null,
-                new String[]{SetList.SET_TITLE},
-                new int[]{R.id.main_set_title},
+                new String[]{CardSet.TERM, CardSet.DEFINITION},
+                new int[]{R.id.card_term, R.id.card_definition},
                 0);
         setListAdapter(mAdapter);
 
@@ -86,34 +95,16 @@ public class SetListFragment extends ListFragment
         }
     }
 
-    // Open the flashcard set when it is clicked
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-        // Get stack title
-        TextView textView = (TextView) view.findViewById(R.id.main_set_title);
-        String title = textView.getText().toString();
-        Log.w("SetListFragment", "Title clicked: " + title);
-
-        // Pass stack title to CardListFragment
-        Bundle bundle = new Bundle();
-        bundle.putString("table_name", title);
-        CardListFragment frag = new CardListFragment();
-        frag.setArguments(bundle);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_layout, frag)
-                .commit();
-    }
-
     // Called when a new Loader needs to be created
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Select criteria for flashcard sets
         final String SET_SELECTION = "((" +
-                SetList.SET_TITLE + " NOTNULL) AND (" +
-                SetList.SET_TITLE + " != '' ))";
+                CardSet.TERM + " NOTNULL) AND (" +
+                CardSet.TERM + " != '' ))";
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed
-        return new CursorLoader(getActivity(), SetList.CONTENT_URI, SET_SUMMARY_PROJECTION, SET_SELECTION, null, null);
+        return new CursorLoader(getActivity(), Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), SET_SUMMARY_PROJECTION, SET_SELECTION, null, null);
     }
 
     // Called when a previously created loader has finished loading
