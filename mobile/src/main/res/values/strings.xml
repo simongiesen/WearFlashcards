@@ -5,4 +5,5 @@
     <string name="set_title_hint">Set title</string>
     <string name="create_set">Create</string>
     <string name="title_taken">Title is already taken</string>
+    <string name="empty_title">Please enter a title</string>
 </resources>

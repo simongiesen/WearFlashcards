@@ -3,6 +3,7 @@ package com.efa.wearflashcards;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -20,9 +21,15 @@ public class NewSet extends AppCompatActivity {
     public void newSet(View view) {
         EditText text = (EditText) findViewById(R.id.new_set_title);
         String title = text.getText().toString();
-        FlashcardProvider handle = new FlashcardProvider();
+
+        // Check if title is empty
+        if (TextUtils.isEmpty(title)) {
+            text.setError(getString(R.string.empty_title));
+            return;
+        }
 
         // Check if title is available
+        FlashcardProvider handle = new FlashcardProvider();
         if (!handle.newSetTable(title)) {
             text.setError(getString(R.string.title_taken));
             return;
