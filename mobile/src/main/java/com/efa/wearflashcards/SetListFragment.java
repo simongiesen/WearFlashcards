@@ -7,6 +7,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -29,6 +31,13 @@ public class SetListFragment extends ListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        registerForContextMenu(getListView());
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
@@ -43,12 +52,19 @@ public class SetListFragment extends ListFragment
         getLoaderManager().initLoader(0, null, this);
     }
 
-    // Open the flashcard set when it is clicked
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // Print title to log
-        TextView tv = (TextView) v.findViewById(R.id.main_set_title);
-        String title = tv.getText().toString();
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, view, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    // Print title to log when it is clicked
+    // http://stackoverflow.com/a/13405692
+    @Override
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        TextView textView = (TextView) view.findViewById(R.id.main_set_title);
+        String title = textView.getText().toString();
         Log.i("SetListFragment", "Title clicked: " + title);
     }
 
