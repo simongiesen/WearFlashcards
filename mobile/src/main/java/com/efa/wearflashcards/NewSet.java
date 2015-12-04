@@ -21,7 +21,12 @@ public class NewSet extends AppCompatActivity {
         EditText text = (EditText) findViewById(R.id.new_set_title);
         String title = text.getText().toString();
         FlashcardProvider handle = new FlashcardProvider();
-        handle.newSetTable(title);
+
+        // Check if title is available
+        if (!handle.newSetTable(title)) {
+            text.setError(getString(R.string.title_taken));
+            return;
+        }
 
         // Return to main screen
         Intent main = new Intent(NewSet.this, MainActivity.class);

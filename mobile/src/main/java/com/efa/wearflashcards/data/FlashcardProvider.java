@@ -337,9 +337,25 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
+     * Checks if a table exists.
+     * http://stackoverflow.com/a/7863401
+     */
+    public boolean tableExists(String tableName, SQLiteDatabase db) {
+        Cursor cursor = db.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                cursor.close();
+                return true;
+            }
+            cursor.close();
+        }
+        return false;
+    }
+
+    /**
      * Creates an empty set of flashcards.
      */
-    public void newSetTable(String title) {
+    public Boolean newSetTable(String title) {
         // Get the data repository in write mode
         mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -347,17 +363,30 @@ public class FlashcardProvider extends ContentProvider {
         // Get table name from set title
         String tableName = getTableName(title);
 
-        // Build the CREATE command
-        final String CARDSET_TABLE_CREATE =
-                "CREATE TABLE " + tableName + " (" +
-                        CardSet.TERM + " TEXT PRIMARY KEY NOT NULL," +
-                        CardSet.DEFINITION + " TEXT NOT NULL);";
-        db.execSQL(CARDSET_TABLE_CREATE);
+//        // Check if table already exists
+//        if (tableExists(tableName, db)) {
+//            return false;
+//        }
+        Cursor cursor;
+        try {
+            cursor = db.rawQuery("select * from '" + tableName + "'", null);
+        } catch (Exception e) {
+            // Build the CREATE command
+            final String CARDSET_TABLE_CREATE =
+                    "CREATE TABLE " + tableName + " (" +
+                            CardSet.TERM + " TEXT PRIMARY KEY NOT NULL," +
+                            CardSet.DEFINITION + " TEXT NOT NULL);";
+            db.execSQL(CARDSET_TABLE_CREATE);
 
-        // Link new set to main database
-        ContentValues values = new ContentValues();
-        values.put(SetList.SET_TITLE, title);
-        values.put(SetList.SET_TABLE_NAME, tableName);
-        db.insert(SetList.TABLE_NAME, null, values);
+            // Link new set to main database
+            ContentValues values = new ContentValues();
+            values.put(SetList.SET_TITLE, title);
+            values.put(SetList.SET_TABLE_NAME, tableName);
+            db.insert(SetList.TABLE_NAME, null, values);
+            return true;
+        }
+
+        cursor.close();
+        return false;
     }
 }
