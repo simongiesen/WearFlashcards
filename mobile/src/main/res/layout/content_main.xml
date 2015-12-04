@@ -18,5 +18,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/empty_database" />
+        android:text="@string/empty_database"
+        android:visibility="gone" />
 </RelativeLayout>

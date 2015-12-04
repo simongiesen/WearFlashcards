@@ -8,13 +8,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.SetList;
-import com.efa.wearflashcards.data.FlashcardProvider;
 
 
 /**
@@ -31,15 +28,6 @@ public class SetListFragment extends ListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        FlashcardProvider handle = new FlashcardProvider();
-        Cursor cursor = handle.query(SetList.CONTENT_URI, null, null, null, null);
-
-        if (cursor.getCount() != 0) {
-            TextView empty = (TextView) getActivity().findViewById(R.id.empty_database);
-            ViewGroup parent = (ViewGroup) empty.getParent();
-            parent.removeView(empty);
-        }
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
