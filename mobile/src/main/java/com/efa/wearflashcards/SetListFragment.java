@@ -37,6 +37,9 @@ public class SetListFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // Show text if database is empty
+        setEmptyText(getString(R.string.empty_database));
+
         registerForContextMenu(getListView());
 
         // Create an empty adapter we will use to display the loaded data.

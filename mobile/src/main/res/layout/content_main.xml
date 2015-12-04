@@ -12,12 +12,4 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.efa.wearflashcards.MainActivity"
     tools:showIn="@layout/activity_main">
-
-    <TextView
-        android:id="@+id/empty_database"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/empty_database"
-        android:visibility="gone" />
 </RelativeLayout>
