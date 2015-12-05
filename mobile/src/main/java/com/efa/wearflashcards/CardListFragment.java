@@ -24,7 +24,7 @@ public class CardListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     // These are the set names that we will retrieve
     static final String[] SET_SUMMARY_PROJECTION = new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
-    // Save table name from SetListFragment
+    // Save table name from SetOverview
     public String table_name;
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
@@ -39,7 +39,6 @@ public class CardListFragment extends ListFragment
         Bundle bundle = getArguments();
         table_name = bundle.getString("table_name");
         Log.d("cardList_onCreate: ", table_name);
-        getActivity().setContentView(R.layout.set_overview);
         super.onCreate(savedInstanceState);
     }
 

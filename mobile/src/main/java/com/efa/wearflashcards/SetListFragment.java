@@ -98,13 +98,6 @@ public class SetListFragment extends ListFragment
         // Pass table name to SetOverview
         FlashcardProvider handle = new FlashcardProvider();
         String table_name = handle.getTableName(title);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("table_name", table_name);
-//        CardListFragment frag = new CardListFragment();
-//        frag.setArguments(bundle);
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.main_layout, frag)
-//                .commit();
         Intent intent = new Intent(getActivity(), SetOverview.class);
         intent.putExtra("table_name", table_name);
         startActivity(intent);
