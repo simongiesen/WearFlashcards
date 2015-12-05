@@ -61,4 +61,11 @@ public class SetOverview extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        // Return to MainActivity if back key is pressed instead of going to previous activity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }

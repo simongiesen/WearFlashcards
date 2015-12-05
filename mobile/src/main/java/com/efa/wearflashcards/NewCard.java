@@ -55,5 +55,6 @@ public class NewCard extends AppCompatActivity {
         Intent intent = new Intent(NewCard.this, SetOverview.class);
         intent.putExtra("table_name", table_name);
         startActivity(intent);
+        finish();
     }
 }

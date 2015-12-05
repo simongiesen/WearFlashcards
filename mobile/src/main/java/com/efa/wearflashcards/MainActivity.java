@@ -38,9 +38,14 @@ public class MainActivity extends AppCompatActivity {
         // Load flashcard sets
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.main_layout, new SetListFragment())
+                    .add(R.id.main_layout, new SetListFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     @Override
