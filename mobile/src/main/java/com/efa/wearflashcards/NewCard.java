@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -56,5 +57,25 @@ public class NewCard extends AppCompatActivity {
         intent.putExtra("table_name", table_name);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Pass table name back to SetOverview if the toolbar back button is clicked
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Pass table name back to SetOverview
+        Intent intent = new Intent(this, SetOverview.class);
+        intent.putExtra("table_name", table_name);
+        startActivity(intent);
     }
 }
