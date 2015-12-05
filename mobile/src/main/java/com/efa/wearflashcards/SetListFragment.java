@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -93,7 +92,6 @@ public class SetListFragment extends ListFragment
         // Get stack title
         TextView textView = (TextView) view.findViewById(R.id.main_set_title);
         String title = textView.getText().toString();
-        Log.w("SetListFragment", "Title clicked: " + title);
 
         // Pass table name to SetOverview
         FlashcardProvider handle = new FlashcardProvider();

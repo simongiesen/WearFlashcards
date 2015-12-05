@@ -7,7 +7,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,7 +40,6 @@ public class CardListFragment extends ListFragment
         // Get table name from SetOverview
         Bundle bundle = getArguments();
         table_name = bundle.getString("table_name");
-        Log.d("cardList_onCreate: ", table_name);
         super.onCreate(savedInstanceState);
     }
 

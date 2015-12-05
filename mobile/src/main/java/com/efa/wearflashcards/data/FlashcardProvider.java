@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.efa.wearflashcards.MainActivity;
 import com.efa.wearflashcards.data.FlashcardContract.CardSet;
@@ -142,18 +141,15 @@ public class FlashcardProvider extends ContentProvider {
 
         mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        Log.d("provider_insert: ", uri.toString());
 
         // Insert a new card into the set
         final String table_name = uri.getLastPathSegment();
         long id = db.insert(table_name, null, contentValues);
-        Log.d("provider_insert: ", table_name);
 
         // Notify all listeners of changes and return
         if (id > 0) {
             Uri returnUri = ContentUris.withAppendedId(uri, id);
             MainActivity.getContext().getContentResolver().notifyChange(returnUri, null);
-            Log.d("provider_insert: ", returnUri.toString());
             return returnUri;
         }
 
@@ -379,13 +375,11 @@ public class FlashcardProvider extends ContentProvider {
 
     public void deleteSetTable(String title) {
         // Get the data repository in write mode
-        Log.d("SetListFragment", "Title clicked: " + title);
         mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Get table name from set title
         String tableName = getTableName(title);
-        Log.d("SetListFragment", "table name clicked: " + tableName);
 
         // Remove set from main database
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
