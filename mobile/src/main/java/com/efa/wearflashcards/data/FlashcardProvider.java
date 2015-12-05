@@ -133,24 +133,27 @@ public class FlashcardProvider extends ContentProvider {
                 URI_MATCHER.match(uri) == SET_ITEM) {
             throw new IllegalArgumentException("Cannot insert new sets directly into main table.");
         }
-        if (URI_MATCHER.match(uri) == CARD_LIST) {
-            throw new IllegalArgumentException("Use create() to create a new flashcard set.");
+        if (URI_MATCHER.match(uri) == CARD_ITEM) {
+            throw new IllegalArgumentException("Use update() to edit a flashcard.");
         }
-        if (URI_MATCHER.match(uri) != CARD_ITEM) {
+        if (URI_MATCHER.match(uri) != CARD_LIST) {
             throw new IllegalArgumentException("Uri not supported for insertion: " + uri);
         }
 
+        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        Log.d("provider_insert: ", uri.toString());
 
         // Insert a new card into the set
-        final String tableName = contentValues.getAsString(SetList.SET_TABLE_NAME);
-        contentValues.remove(SetList.SET_TABLE_NAME);
-        long id = db.insert(tableName, null, contentValues);
+        final String table_name = uri.getLastPathSegment();
+        long id = db.insert(table_name, null, contentValues);
+        Log.d("provider_insert: ", table_name);
 
         // Notify all listeners of changes and return
         if (id > 0) {
             Uri returnUri = ContentUris.withAppendedId(uri, id);
             MainActivity.getContext().getContentResolver().notifyChange(returnUri, null);
+            Log.d("provider_insert: ", returnUri.toString());
             return returnUri;
         }
 
@@ -160,6 +163,7 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int deleteCount;
 
@@ -242,6 +246,7 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int updateCount;
 

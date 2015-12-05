@@ -12,12 +12,9 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.CardSet;
-import com.efa.wearflashcards.data.FlashcardProvider;
 
 
 /**
@@ -38,20 +35,17 @@ public class CardListFragment extends ListFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Get table name
+        // Get table name from SetOverview
         Bundle bundle = getArguments();
         table_name = bundle.getString("table_name");
-        Log.w("card frag", table_name);
+        Log.d("cardList_onCreate: ", table_name);
+        getActivity().setContentView(R.layout.set_overview);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // Show text if database is empty
-        setEmptyText(getString(R.string.empty_stack));
-
         registerForContextMenu(getListView());
 
         // Create an empty adapter we will use to display the loaded data.
@@ -62,6 +56,9 @@ public class CardListFragment extends ListFragment
                 new int[]{R.id.card_term, R.id.card_definition},
                 0);
         setListAdapter(mAdapter);
+
+        // Show text if database is empty
+        setEmptyText(getString(R.string.empty_stack));
 
         // Prepare the loader. Either re-connect with an existing one, or start a new one.
         getLoaderManager().initLoader(0, null, this);
@@ -76,23 +73,24 @@ public class CardListFragment extends ListFragment
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete:
-                // Get title from textView item
-                TextView textView = (TextView) info.targetView.findViewById(R.id.main_set_title);
-                String title = textView.getText().toString();
-
-                // Delete set from database
-                FlashcardProvider handle = new FlashcardProvider();
-                handle.deleteSetTable(title);
-
-                // Refresh the loader with new data
-                getLoaderManager().initLoader(0, null, this);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
+        return true;
+//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        switch (item.getItemId()) {
+//            case R.id.delete:
+//                // Get title from textView item
+//                TextView textView = (TextView) info.targetView.findViewById(R.id.main_set_title);
+//                String title = textView.getText().toString();
+//
+//                // Delete set from database
+//                FlashcardProvider handle = new FlashcardProvider();
+//                handle.deleteSetTable(title);
+//
+//                // Refresh the loader with new data
+//                getLoaderManager().initLoader(0, null, this);
+//                return true;
+//            default:
+//                return super.onContextItemSelected(item);
+//        }
     }
 
     // Called when a new Loader needs to be created

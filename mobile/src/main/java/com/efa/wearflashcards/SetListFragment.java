@@ -3,6 +3,7 @@ package com.efa.wearflashcards;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -94,14 +95,19 @@ public class SetListFragment extends ListFragment
         String title = textView.getText().toString();
         Log.w("SetListFragment", "Title clicked: " + title);
 
-        // Pass stack title to CardListFragment
-        Bundle bundle = new Bundle();
-        bundle.putString("table_name", title);
-        CardListFragment frag = new CardListFragment();
-        frag.setArguments(bundle);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_layout, frag)
-                .commit();
+        // Pass table name to SetOverview
+        FlashcardProvider handle = new FlashcardProvider();
+        String table_name = handle.getTableName(title);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("table_name", table_name);
+//        CardListFragment frag = new CardListFragment();
+//        frag.setArguments(bundle);
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.main_layout, frag)
+//                .commit();
+        Intent intent = new Intent(getActivity(), SetOverview.class);
+        intent.putExtra("table_name", table_name);
+        startActivity(intent);
     }
 
     // Called when a new Loader needs to be created
