@@ -12,9 +12,12 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.CardSet;
+import com.efa.wearflashcards.data.FlashcardProvider;
 
 
 /**
@@ -72,24 +75,27 @@ public class CardListFragment extends ListFragment
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        return true;
-//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-//        switch (item.getItemId()) {
-//            case R.id.delete:
-//                // Get title from textView item
-//                TextView textView = (TextView) info.targetView.findViewById(R.id.main_set_title);
-//                String title = textView.getText().toString();
-//
-//                // Delete set from database
-//                FlashcardProvider handle = new FlashcardProvider();
-//                handle.deleteSetTable(title);
-//
-//                // Refresh the loader with new data
-//                getLoaderManager().initLoader(0, null, this);
-//                return true;
-//            default:
-//                return super.onContextItemSelected(item);
-//        }
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.delete:
+                // Get term and definition from textView item
+                TextView term = (TextView) info.targetView.findViewById(R.id.card_term);
+                TextView definition = (TextView) info.targetView.findViewById(R.id.card_definition);
+
+                // Build delete arguments
+                final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
+                final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
+
+                // Delete card from set
+                FlashcardProvider handle = new FlashcardProvider();
+                handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), selection, selectionArgs);
+
+                // Refresh the loader with new data
+                getLoaderManager().initLoader(0, null, this);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     // Called when a new Loader needs to be created
