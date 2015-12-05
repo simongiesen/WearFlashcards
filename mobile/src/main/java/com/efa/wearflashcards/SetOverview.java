@@ -35,7 +35,7 @@ public class SetOverview extends AppCompatActivity {
         // Load flashcard sets
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.set_overview, frag)
+                    .add(R.id.set_overview_layout, frag)
                     .commit();
         }
     }
