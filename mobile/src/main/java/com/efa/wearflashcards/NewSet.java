@@ -15,6 +15,7 @@ public class NewSet extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_set);
+        setTitle(getString(R.string.create_set));
     }
 
     // Create an empty set and return to MainActivity

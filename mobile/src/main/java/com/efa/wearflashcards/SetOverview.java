@@ -10,17 +10,21 @@ import android.view.View;
 
 public class SetOverview extends AppCompatActivity {
     private String table_name;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_overview);
 
-        // Get table name from SetListFragment and pass it to CardListFragment
+        // Get table name from SetListFragment or NewCard and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
         table_name = bundle.getString("table_name");
+        title = bundle.getString("title");
         CardListFragment frag = new CardListFragment();
         frag.setArguments(bundle);
+
+        setTitle(title);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.set_overview_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -28,6 +32,7 @@ public class SetOverview extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SetOverview.this, NewCard.class);
                 intent.putExtra("table_name", table_name);
+                intent.putExtra("title", title);
                 startActivity(intent);
             }
         });

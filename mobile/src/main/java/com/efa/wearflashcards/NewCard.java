@@ -15,15 +15,20 @@ import com.efa.wearflashcards.data.FlashcardProvider;
 
 public class NewCard extends AppCompatActivity {
     private String table_name;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get table name from CardListFragment
+        // Get table name and title from CardListFragment
         Bundle bundle = getIntent().getExtras();
         table_name = bundle.getString("table_name");
+        title = bundle.getString("title");
         setContentView(R.layout.activity_new_card);
+
+        // Put the set title in the toolbar
+        setTitle(getString(R.string.create_card));
     }
 
     // Create an empty set and return to MainActivity
@@ -53,9 +58,7 @@ public class NewCard extends AppCompatActivity {
         handle.insert(Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), contentValues);
 
         // Pass table name back to SetOverview and return
-        Intent intent = new Intent(NewCard.this, SetOverview.class);
-        intent.putExtra("table_name", table_name);
-        startActivity(intent);
+        onBackPressed();
         finish();
     }
 
@@ -76,6 +79,7 @@ public class NewCard extends AppCompatActivity {
         // Pass table name back to SetOverview
         Intent intent = new Intent(this, SetOverview.class);
         intent.putExtra("table_name", table_name);
+        intent.putExtra("title", title);
         startActivity(intent);
     }
 }

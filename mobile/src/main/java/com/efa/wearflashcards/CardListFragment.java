@@ -26,10 +26,10 @@ public class CardListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     // These are the set names that we will retrieve
     static final String[] SET_SUMMARY_PROJECTION = new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
-    // Save table name from SetOverview
-    public String table_name;
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
+    // Save table name from SetOverview
+    private String table_name;
 
     // Empty constructor
     public CardListFragment() {

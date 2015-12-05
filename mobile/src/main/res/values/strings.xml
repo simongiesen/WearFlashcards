@@ -12,4 +12,6 @@
     <string name="empty_term">Term cannot be blank</string>
     <string name="empty_definition">Definition cannot be blank</string>
     <string name="delete">Delete</string>
+    <string name="create_set">Create a new set</string>
+    <string name="create_card">Create a new card</string>
 </resources>
