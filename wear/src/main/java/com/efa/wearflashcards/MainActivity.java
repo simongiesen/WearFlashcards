@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,32 +14,25 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.Date;
 
 public class MainActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    private static MainActivity instance;
+
     private GoogleApiClient mGoogleApiClient;
     private String[] set_list = null;
-
-    // Allow other activities to get application context statically
-    // http://stackoverflow.com/a/5114361
-    public static Context getContext() {
-        return instance.getApplicationContext();
-    }
+    private String[] set_dummy = {"Vocabulary Part 1", "Vocabulary Part 2", "Vocabulary Part 3", "Vocabulary Part 4"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        instance = this;
         setContentView(R.layout.empty_database);
 
         // Listen for data item events
@@ -49,20 +43,42 @@ public class MainActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        // Get set list from phone
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
         putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, null);
+        putDataMapReq.getDataMap().putLong("time", new Date().getTime());
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        createList();
+//        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+//        PendingResult<DataItemBuffer> results = Wearable.DataApi.getDataItems(mGoogleApiClient);
+//        results.setResultCallback(new ResultCallback<DataItemBuffer>() {
+//            @Override
+//            public void onResult(DataItemBuffer dataItems) {
+//                if (dataItems.getCount() != 0) {
+//                    DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItems.get(0));
+//
+//                    // Put list into set list
+//                    set_list = dataMapItem.getDataMap().getStringArray(Constants.SET_LIST);
+//                    if (set_list != null) {
+//                        Log.d("Title works", set_list[0]);
+//                        createList();
+//                    }
+//                    return;
+//                }
+//
+//                dataItems.release();
+//            }
+//        });
     }
 
     protected void createList() {
         // Get the list component from the layout of the activity
-        setContentView(R.layout.empty_database);
+        setContentView(R.layout.activity_main);
         WearableListView listView =
                 (WearableListView) findViewById(R.id.list);
 
         // Assign an adapter to the list
-        listView.setAdapter(new Adapter(this, set_list));
+        listView.setAdapter(new Adapter(this, set_dummy));
 
         // Open SetView when an item is clicked
         listView.setClickListener(new WearableListView.ClickListener() {
@@ -97,30 +113,18 @@ public class MainActivity extends Activity implements
     }
 
     @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        for (DataEvent event : dataEvents) {
-            if (event.getType() == DataEvent.TYPE_CHANGED) {
-                // Get list from phone
-                DataItem item = event.getDataItem();
-                set_list = DataMapItem.fromDataItem(item).getDataMap().getStringArray(Constants.SET_LIST);
-
-                // Show list to the user
-                if (set_list == null) {
-                    setContentView(R.layout.empty_database);
-                } else {
-                    createList();
-                }
-                return;
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
+        Log.d("DataChangedWearable", "Great");
     }
 
     /**
