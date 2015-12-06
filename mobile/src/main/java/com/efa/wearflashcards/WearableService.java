@@ -10,8 +10,6 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import java.util.Date;
-
 /**
  * Provides data to the wearable app.
  */
@@ -28,13 +26,11 @@ public class WearableService extends WearableListenerService {
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
+        mGoogleApiClient.connect();
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
-        putDataMapReq.getDataMap().putLong("time", new Date().getTime());
-        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"table 1", "table 2"});
+        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"table 14", "table 27", "table 12323"});
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        mGoogleApiClient.disconnect();
-        mGoogleApiClient.connect();
         Log.d("DataChanged", "Great");
     }
 }

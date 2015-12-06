@@ -14,7 +14,11 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
@@ -28,7 +32,6 @@ public class MainActivity extends Activity implements
 
     private GoogleApiClient mGoogleApiClient;
     private String[] set_list = null;
-    private String[] set_dummy = {"Vocabulary Part 1", "Vocabulary Part 2", "Vocabulary Part 3", "Vocabulary Part 4"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,32 +46,7 @@ public class MainActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        // Get set list from phone
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
-        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, null);
-        putDataMapReq.getDataMap().putLong("time", new Date().getTime());
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        createList();
-//        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-//        PendingResult<DataItemBuffer> results = Wearable.DataApi.getDataItems(mGoogleApiClient);
-//        results.setResultCallback(new ResultCallback<DataItemBuffer>() {
-//            @Override
-//            public void onResult(DataItemBuffer dataItems) {
-//                if (dataItems.getCount() != 0) {
-//                    DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItems.get(0));
-//
-//                    // Put list into set list
-//                    set_list = dataMapItem.getDataMap().getStringArray(Constants.SET_LIST);
-//                    if (set_list != null) {
-//                        Log.d("Title works", set_list[0]);
-//                        createList();
-//                    }
-//                    return;
-//                }
-//
-//                dataItems.release();
-//            }
-//        });
+        mGoogleApiClient.connect();
     }
 
     protected void createList() {
@@ -78,7 +56,7 @@ public class MainActivity extends Activity implements
                 (WearableListView) findViewById(R.id.list);
 
         // Assign an adapter to the list
-        listView.setAdapter(new Adapter(this, set_dummy));
+        listView.setAdapter(new Adapter(this, set_list));
 
         // Open SetView when an item is clicked
         listView.setClickListener(new WearableListView.ClickListener() {
@@ -102,7 +80,15 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d("onConnected", "entering");
         Wearable.DataApi.addListener(mGoogleApiClient, this);
+
+        // Send message to phone asking for set list
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
+        putDataMapReq.getDataMap().putLong("time", new Date().getTime());
+        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"table 4", "table 187"});
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
     @Override
@@ -125,6 +111,18 @@ public class MainActivity extends Activity implements
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         Log.d("DataChangedWearable", "Great");
+        for (DataEvent event : dataEvents) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
+                // DataItem changed
+                DataItem item = event.getDataItem();
+                DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                set_list = dataMap.getStringArray(Constants.SET_LIST);
+                if (set_list != null) {
+                    Log.d("SetList", set_list[0]);
+                    createList();
+                }
+            }
+        }
     }
 
     /**
