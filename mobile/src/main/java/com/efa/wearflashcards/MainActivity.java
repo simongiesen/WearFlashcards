@@ -11,9 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
-
     private static MainActivity instance;
 
+    // Allow other activities to get application context statically
+    // http://stackoverflow.com/a/5114361
     public static Context getContext() {
         return instance.getApplicationContext();
     }
