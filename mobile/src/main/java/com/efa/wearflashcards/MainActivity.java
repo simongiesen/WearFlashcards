@@ -6,12 +6,19 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+
 public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
+    private GoogleApiClient mGoogleApiClient;
 
     // Allow other activities to get application context statically
     // http://stackoverflow.com/a/5114361
@@ -31,6 +38,27 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                final String[] set_list = {"table 1", "table 2"};
+                mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                        .addApi(Wearable.API)
+                        .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                            @Override
+                            public void onConnected(Bundle connectionHint) {
+                                Log.d("wow", "onConnected: " + connectionHint);
+                            }
+
+                            @Override
+                            public void onConnectionSuspended(int cause) {
+                                Log.d("wow", "onConnectionSuspended: " + cause);
+                            }
+                        })
+                        .build();
+                PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
+                putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, set_list);
+                PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+                Log.d("wow", " sending");
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
                 Intent intent = new Intent(MainActivity.this, NewSet.class);
                 startActivity(intent);
             }
