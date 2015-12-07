@@ -73,7 +73,7 @@ public class FlashcardProvider extends ContentProvider {
                 builder.appendWhere(SetList._ID + "=" + uri.getLastPathSegment());
                 break;
             case CARD_LIST:
-                builder.setTables(uri.getLastPathSegment());
+                builder.setTables("'" + uri.getLastPathSegment() + "'");
                 if (TextUtils.isEmpty(sortOrder)) {
                     sortOrder = CardSet.SORT_ORDER_DEFAULT;
                 }
@@ -81,7 +81,7 @@ public class FlashcardProvider extends ContentProvider {
             case CARD_ITEM:
                 // Get table name from uri
                 List<String> segments = uri.getPathSegments();
-                final String table = segments.get(segments.size() - 1);
+                final String table = "'" + segments.get(segments.size() - 1) + "'";
 
                 builder.setTables(table);
                 builder.appendWhere(CardSet._ID + "=" + uri.getLastPathSegment());
@@ -351,11 +351,11 @@ public class FlashcardProvider extends ContentProvider {
         // Check if the table already exists
         Cursor cursor;
         try {
-            cursor = db.rawQuery("select * from '" + tableName + "'", null);
+            cursor = db.rawQuery("SELECT * FROM '" + tableName + "'", null);
         } catch (Exception e) {
             // Build the CREATE command
             final String CARDSET_TABLE_CREATE =
-                    "CREATE TABLE " + tableName + " (" +
+                    "CREATE TABLE '" + tableName + "' (" +
                             CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                             CardSet.TERM + " TEXT NOT NULL," +
                             CardSet.DEFINITION + " TEXT NOT NULL);";
@@ -382,7 +382,7 @@ public class FlashcardProvider extends ContentProvider {
         String tableName = getTableName(title);
 
         // Remove set from main database
-        db.execSQL("DROP TABLE IF EXISTS " + tableName);
+        db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
         this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
     }
 }
