@@ -334,6 +334,10 @@ public class FlashcardProvider extends ContentProvider {
         // Remove all non-alphabetic characters and convert the letters to lower-case
         String tableName = title.replaceAll("[\\W\\s]", "");
         tableName = tableName.toLowerCase();
+
+        // Add two characters to the end of the table name to ensure that the name is not an SQLite command
+        // No SQLite command ends with wf (the app's initials), so this should be safe
+        tableName += "wf";
         return tableName;
     }
 
