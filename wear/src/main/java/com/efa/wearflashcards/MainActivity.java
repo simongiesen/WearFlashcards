@@ -85,7 +85,7 @@ public class MainActivity extends Activity implements
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
         putDataMapReq.getDataMap().putLong("time", new Date().getTime());
         putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"CS Classes",
-                "Android Wear", "Google Products", "Android Releases", "Windows Updates", "Math 21b Review"});
+                "Android Wear", "Google Apps", "Android Releases", "Windows Updates", "Math 21b Review"});
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
