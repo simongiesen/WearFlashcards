@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,13 +79,13 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("onConnected", "entering");
         Wearable.DataApi.addListener(mGoogleApiClient, this);
 
         // Send message to phone asking for set list
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
         putDataMapReq.getDataMap().putLong("time", new Date().getTime());
-        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"table 4", "table 187"});
+        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"CS Classes",
+                "Android Wear", "Google Products", "Android Releases", "Windows Updates", "Math 21b Review"});
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
@@ -110,7 +109,6 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.d("DataChangedWearable", "Great");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
@@ -118,7 +116,6 @@ public class MainActivity extends Activity implements
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 set_list = dataMap.getStringArray(Constants.SET_LIST);
                 if (set_list != null) {
-                    Log.d("SetList", set_list[0]);
                     createList();
                 }
             }

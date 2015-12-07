@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.wearable.view.WatchViewStub xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:rectLayout="@layout/rect_activity_set_view"
-    app:roundLayout="@layout/round_activity_set_view"
-    tools:context="com.efa.wearflashcards.SetView"
-    tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>
+    android:background="@color/colorPrimary">
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        app:layout_box="bottom">
+
+    </FrameLayout>
+</android.support.wearable.view.BoxInsetLayout>

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Wear Flashcards</string>
-    <string name="hello_round">Hello Round World!</string>
-    <string name="hello_square">Hello Square World!</string>
     <string name="empty">Open the app on your phone to create flashcards</string>
     <string name="list_item_description">Flashcard set name</string>
     <string name="title_activity_set_view">SetView</string>
+    <string name="term">CS50</string>
+    <string name="definition">Computer Science 50: Introduction to Computer Science I</string>
 </resources>
