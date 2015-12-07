@@ -10,11 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
-    private GoogleApiClient mGoogleApiClient;
 
     // Allow other activities to get application context statically
     // http://stackoverflow.com/a/5114361
