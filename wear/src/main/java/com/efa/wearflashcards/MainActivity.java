@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,9 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-
-import java.util.Date;
 
 public class MainActivity extends Activity implements
         DataApi.DataListener,
@@ -80,14 +79,23 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
+        sendMessage(Constants.SET_LIST_PATH, Constants.BLANK_MESSAGE);
+    }
 
-        // Send message to phone asking for set list
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.SET_LIST);
-        putDataMapReq.getDataMap().putLong("time", new Date().getTime());
-        putDataMapReq.getDataMap().putStringArray(Constants.SET_LIST, new String[]{"CS Classes",
-                "Android Wear", "Google Apps", "Android Releases", "Windows Updates", "Math 21b Review"});
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+    // https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
+    // http://developer.android.com/training/wearables/data-layer/messages.html
+    private void sendMessage(final String path, final String message) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+                for (Node node : nodes.getNodes()) {
+                    Wearable.MessageApi.sendMessage(
+                            mGoogleApiClient, node.getId(), path, message.getBytes()).await();
+                    Log.d("sendMessage", "message sent");
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -109,12 +117,13 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
+        Log.d("Wear:", "dataChanged");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                set_list = dataMap.getStringArray(Constants.SET_LIST);
+                set_list = dataMap.getStringArray(Constants.SET_LIST_PATH);
                 if (set_list != null) {
                     createList();
                 }
