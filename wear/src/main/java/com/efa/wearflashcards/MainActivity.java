@@ -117,7 +117,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.d("Wear:", "dataChanged");
+        Log.d("Wear", "dataChanged");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed

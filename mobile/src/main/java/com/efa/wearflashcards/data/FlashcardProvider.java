@@ -107,6 +107,10 @@ public class FlashcardProvider extends ContentProvider {
         return cursor;
     }
 
+    public Cursor fetchAllTitles() {
+        return query(SetList.CONTENT_URI, new String[]{SetList.SET_TITLE}, null, null, null);
+    }
+
     @Override
     public String getType(@NonNull Uri uri) {
         switch (URI_MATCHER.match(uri)) {
