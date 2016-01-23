@@ -60,7 +60,11 @@ public class MainActivity extends Activity implements
         listView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder view) {
+                // Get set title from list item and send it to SetView
+                Adapter.ItemViewHolder itemHolder = (Adapter.ItemViewHolder) view;
+                TextView tv = itemHolder.textView;
                 Intent intent = new Intent(MainActivity.this, SetView.class);
+                intent.putExtra("title", tv.getText().toString());
                 startActivity(intent);
             }
 
@@ -79,7 +83,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        sendMessage(Constants.SET_LIST_PATH, Constants.BLANK_MESSAGE);
+        sendMessage(Constants.SET_LIST, Constants.BLANK_MESSAGE);
     }
 
     // https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
@@ -123,7 +127,7 @@ public class MainActivity extends Activity implements
                 // DataItem changed
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                set_list = dataMap.getStringArray(Constants.SET_LIST_PATH);
+                set_list = dataMap.getStringArray(Constants.SET_LIST);
                 if (set_list != null) {
                     createList();
                 }

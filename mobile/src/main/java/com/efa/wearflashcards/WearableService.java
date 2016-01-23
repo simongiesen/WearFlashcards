@@ -24,31 +24,66 @@ public class WearableService extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        String path = messageEvent.getPath();
-        Log.d("messageReceived:", path);
-        sendData();
+        String message = messageEvent.getPath();
+
+        // Determine if the wearable is asking for the set list or for the list of cards in a set
+        if (message.equals(Constants.SET_LIST)) {
+            sendData();
+        } else {
+            sendSet(message);
+        }
+        Log.d("messageReceived:", message);
     }
 
     // http://stackoverflow.com/a/25244496/3522216
     private void sendData() {
-        GoogleApiClient mGoogleApiClient = wearConnect();
-        final PutDataMapRequest putRequest = PutDataMapRequest.create(Constants.SET_LIST);
-        final DataMap map = putRequest.getDataMap();
-        map.putLong("time", new Date().getTime());
-
         // Get titles from the database
-        // http://stackoverflow.com/a/8939324/3522216
         FlashcardProvider handle = new FlashcardProvider();
         Cursor cursor = handle.fetchAllTitles();
+
+        // Put titles in a string array
+        // http://stackoverflow.com/a/8939324/3522216
         ArrayList<String> columnArray = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             columnArray.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.SetList.SET_TITLE)));
         }
         String[] setList = columnArray.toArray(new String[columnArray.size()]);
 
+        // Send data to the wearable
+        GoogleApiClient mGoogleApiClient = wearConnect();
+        final PutDataMapRequest putRequest = PutDataMapRequest.create(Constants.SET_LIST);
+        final DataMap map = putRequest.getDataMap();
         map.putStringArray(Constants.SET_LIST, setList);
+        map.putLong(Constants.TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
-        Log.d("WearableService", "Message sent");
+        Log.d("WearableService", "Titles sent");
+    }
+
+    private void sendSet(String title) {
+        // Get terms and definitions from the database
+        FlashcardProvider handle = new FlashcardProvider();
+        String tableName = handle.getTableName(title);
+        Cursor cursor = handle.fetchAllCards(tableName);
+
+        // Put terms and definitions into string arrays
+        ArrayList<String> columnArray1 = new ArrayList<>();
+        ArrayList<String> columnArray2 = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            columnArray1.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.TERM)));
+            columnArray2.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
+        }
+        String[] terms = columnArray1.toArray(new String[columnArray1.size()]);
+        String[] definitions = columnArray2.toArray(new String[columnArray2.size()]);
+
+        // Send data to the wearable
+        GoogleApiClient mGoogleApiClient = wearConnect();
+        final PutDataMapRequest putRequest = PutDataMapRequest.create("/" + tableName);
+        final DataMap map = putRequest.getDataMap();
+        map.putStringArray(Constants.TERMS, terms);
+        map.putStringArray(Constants.DEFINITIONS, definitions);
+        map.putLong(Constants.TIME, new Date().getTime());
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
+        Log.d("WearableService", "Cards sent");
     }
 
     private GoogleApiClient wearConnect() {

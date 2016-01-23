@@ -111,6 +111,10 @@ public class FlashcardProvider extends ContentProvider {
         return query(SetList.CONTENT_URI, new String[]{SetList.SET_TITLE}, null, null, null);
     }
 
+    public Cursor fetchAllCards(String tableName) {
+        return query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), new String[]{CardSet.TERM, CardSet.DEFINITION}, null, null, null);
+    }
+
     @Override
     public String getType(@NonNull Uri uri) {
         switch (URI_MATCHER.match(uri)) {
