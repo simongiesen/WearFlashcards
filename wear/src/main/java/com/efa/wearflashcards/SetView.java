@@ -104,7 +104,7 @@ public class SetView extends Activity implements
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 terms = dataMap.getStringArray(Constants.TERMS);
                 definitions = dataMap.getStringArray(Constants.DEFINITIONS);
-                if (terms != null && definitions != null) {
+                if (terms.length > 0 && definitions.length > 0) {
                     createCards();
                 }
             }
@@ -112,11 +112,8 @@ public class SetView extends Activity implements
     }
 
     protected void createCards() {
-        if (terms.length > 0 && definitions.length > 0) {
-            Log.d("createCards", terms[0]);
-            Log.d("createCards", definitions[0]);
-        }
-
+        Log.d("createCards", terms[0]);
+        Log.d("createCards", definitions[0]);
         setContentView(R.layout.activity_set_view);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
