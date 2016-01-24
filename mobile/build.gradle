@@ -9,8 +9,7 @@ android {
         applicationId "com.efa.wearflashcards"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 0
-        versionName 'Alpha-0.5'
+        versionName '0.7-alpha'
     }
     buildTypes {
         release {
