@@ -59,7 +59,8 @@
         <service
             android:name=".WearableService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:stopWithTask="false">
             <intent-filter>
                 <!-- Listeners receive events that match the action and data filters -->
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
