@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 set_list = dataMap.getStringArray(Constants.SET_LIST);
-                if (set_list != null) {
+                if (set_list.length > 0) {
                     createList();
                 }
             }
