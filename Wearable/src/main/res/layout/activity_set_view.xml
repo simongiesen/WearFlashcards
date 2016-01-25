@@ -16,7 +16,8 @@
 <!-- Taken from the GridViewPager sample (https://goo.gl/ZGLbWH) -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/wl_teal">
 
     <android.support.wearable.view.GridViewPager
         android:id="@+id/pager"

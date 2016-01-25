@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
+import android.view.Gravity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
         // Add some extra bottom margin to leave room for the page indicator
         fragment.setCardMarginBottom(
                 res.getDimensionPixelSize(R.dimen.card_margin_bottom));
+        fragment.setCardGravity(Gravity.TOP);
         return fragment;
     }
 
