@@ -1,12 +1,13 @@
 package com.efa.wearflashcards;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.wearable.view.CardFragment;
+import android.support.wearable.view.DotsPageIndicator;
+import android.support.wearable.view.GridViewPager;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.View;
+import android.view.WindowInsets;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -111,18 +112,34 @@ public class SetView extends Activity implements
         }
     }
 
+    // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
     protected void createCards() {
         Log.d("createCards", terms[0]);
         Log.d("createCards", definitions[0]);
         setContentView(R.layout.activity_set_view);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        CardFragment cardFragment = CardFragment.create(getString(R.string.term),
-                getString(R.string.definition));
-        cardFragment.setCardGravity(Gravity.TOP);
-        cardFragment.setExpansionDirection(CardFragment.EXPAND_DOWN);
-        cardFragment.setExpansionEnabled(true);
-        fragmentTransaction.add(R.id.frame_layout, cardFragment);
-        fragmentTransaction.commit();
+        final Resources res = getResources();
+        final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
+        pager.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                // Adjust page margins:
+                //   A little extra horizontal spacing between pages looks a bit
+                //   less crowded on a round display.
+                final boolean round = insets.isRound();
+                int rowMargin = res.getDimensionPixelOffset(R.dimen.page_row_margin);
+                int colMargin = res.getDimensionPixelOffset(round ?
+                        R.dimen.page_column_margin_round : R.dimen.page_column_margin);
+                pager.setPageMargins(rowMargin, colMargin);
+
+                // GridViewPager relies on insets to properly handle
+                // layout for round displays. They must be explicitly
+                // applied since this listener has taken them over.
+                pager.onApplyWindowInsets(insets);
+                return insets;
+            }
+        });
+        pager.setAdapter(new SetViewAdapter(this, getFragmentManager(), terms, definitions));
+        DotsPageIndicator dotsPageIndicator = (DotsPageIndicator) findViewById(R.id.page_indicator);
+        dotsPageIndicator.setPager(pager);
     }
 }
