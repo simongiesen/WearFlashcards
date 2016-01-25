@@ -9,12 +9,16 @@ android {
         applicationId "com.efa.wearflashcards"
         minSdkVersion 18
         targetSdkVersion 23
-        versionName '0.7-alpha'
+        versionName '1.0'
+        versionCode 1
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            versionNameSuffix '-alpha'
         }
     }
     productFlavors {
@@ -26,7 +30,7 @@ dependencies {
     wearApp project(':Wearable')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.google.android.gms:play-services:8.3.0'
+    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
 }
