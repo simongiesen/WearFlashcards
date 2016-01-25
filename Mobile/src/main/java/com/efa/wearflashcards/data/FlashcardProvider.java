@@ -3,6 +3,7 @@ package com.efa.wearflashcards.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,8 +41,14 @@ public class FlashcardProvider extends ContentProvider {
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*/#", 4);
     }
 
+    // Get caller context
+    Context context = null;
     // Handle to the database helper object
     private FlashcardDbHelper mOpenHelper;
+
+    public FlashcardProvider(Context c) {
+        context = c;
+    }
 
     // Empty constructor
     public FlashcardProvider() {
@@ -54,9 +61,19 @@ public class FlashcardProvider extends ContentProvider {
         return true;
     }
 
+    private Context providerContext() {
+        // Use given context if there is one
+        if (context != null) {
+            return context;
+        }
+
+        // Get context from MainActivity
+        return MainActivity.getContext();
+    }
+
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
@@ -147,7 +164,7 @@ public class FlashcardProvider extends ContentProvider {
             throw new IllegalArgumentException("Uri not supported for insertion: " + uri);
         }
 
-        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Insert a new card into the set
@@ -157,7 +174,7 @@ public class FlashcardProvider extends ContentProvider {
         // Notify all listeners of changes and return
         if (id > 0) {
             Uri returnUri = ContentUris.withAppendedId(uri, id);
-            MainActivity.getContext().getContentResolver().notifyChange(returnUri, null);
+            providerContext().getContentResolver().notifyChange(returnUri, null);
             return returnUri;
         }
 
@@ -167,7 +184,7 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int deleteCount;
 
@@ -242,7 +259,7 @@ public class FlashcardProvider extends ContentProvider {
 
         // Notify all listeners of changes
         if (deleteCount > 0) {
-            MainActivity.getContext().getContentResolver().notifyChange(uri, null);
+            providerContext().getContentResolver().notifyChange(uri, null);
         }
 
         return deleteCount;
@@ -250,7 +267,7 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int updateCount;
 
@@ -329,7 +346,7 @@ public class FlashcardProvider extends ContentProvider {
 
         // Notify all listeners of changes
         if (updateCount > 0) {
-            MainActivity.getContext().getContentResolver().notifyChange(uri, null);
+            providerContext().getContentResolver().notifyChange(uri, null);
         }
 
         return updateCount;
@@ -354,7 +371,7 @@ public class FlashcardProvider extends ContentProvider {
      */
     public Boolean newSetTable(String title) {
         // Get the data repository in write mode
-        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Get table name from set title
@@ -387,7 +404,7 @@ public class FlashcardProvider extends ContentProvider {
 
     public void deleteSetTable(String title) {
         // Get the data repository in write mode
-        mOpenHelper = new FlashcardDbHelper(MainActivity.getContext());
+        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Get table name from set title

@@ -38,8 +38,13 @@ public class WearableService extends WearableListenerService {
     // http://stackoverflow.com/a/25244496/3522216
     private void sendData() {
         // Get titles from the database
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Cursor cursor = handle.fetchAllTitles();
+
+        if (cursor == null) {
+            Log.d("sendData", "fetchTitles failed");
+            return;
+        }
 
         // Put titles in a string array
         // http://stackoverflow.com/a/8939324/3522216
@@ -61,7 +66,7 @@ public class WearableService extends WearableListenerService {
 
     private void sendSet(String title) {
         // Get terms and definitions from the database
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         String tableName = handle.getTableName(title);
         Cursor cursor = handle.fetchAllCards(tableName);
 
