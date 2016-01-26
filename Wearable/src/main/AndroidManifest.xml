@@ -21,7 +21,7 @@
         </activity>
         <activity
             android:name=".SetView"
-            android:label="@string/title_activity_set_view"></activity>
+            android:label="@string/title_activity_set_view" />
     </application>
 
 </manifest>
