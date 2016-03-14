@@ -125,11 +125,19 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     public Cursor fetchAllTitles() {
-        return query(SetList.CONTENT_URI, new String[]{SetList.SET_TITLE}, null, null, null);
+        return query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TITLE},
+                null,
+                null,
+                null);
     }
 
     public Cursor fetchAllCards(String tableName) {
-        return query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), new String[]{CardSet.TERM, CardSet.DEFINITION}, null, null, null);
+        return query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
+                new String[]{CardSet.TERM, CardSet.DEFINITION},
+                null,
+                null,
+                null);
     }
 
     @Override
@@ -383,11 +391,11 @@ public class FlashcardProvider extends ContentProvider {
             cursor = db.rawQuery("SELECT * FROM '" + tableName + "'", null);
         } catch (Exception e) {
             // Build the CREATE command
-            final String CARDSET_TABLE_CREATE =
-                    "CREATE TABLE '" + tableName + "' (" +
-                            CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            CardSet.TERM + " TEXT NOT NULL," +
-                            CardSet.DEFINITION + " TEXT NOT NULL);";
+            final String CARDSET_TABLE_CREATE;
+            CARDSET_TABLE_CREATE = "CREATE TABLE '" + tableName + "' (" +
+                    CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CardSet.TERM + " TEXT NOT NULL," +
+                    CardSet.DEFINITION + " TEXT NOT NULL);";
             db.execSQL(CARDSET_TABLE_CREATE);
 
             // Link new set to main database
