@@ -413,6 +413,9 @@ public class FlashcardProvider extends ContentProvider {
         return false;
     }
 
+    /**
+     * Deletes a stack of flashcards from the database.
+     */
     public void deleteSetTable(String title) {
         // Get the data repository in write mode
         mOpenHelper = new FlashcardDbHelper(providerContext());
@@ -424,5 +427,24 @@ public class FlashcardProvider extends ContentProvider {
         // Remove set from main database
         db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
         this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
+    }
+
+    /**
+     * Check if a term already exists in a stack.
+     */
+    public boolean termExists(String term, Uri uri) {
+        Cursor cursor = query(uri,
+                new String[]{CardSet.TERM},
+                CardSet.TERM + "=?",
+                new String[]{term},
+                null);
+
+        // Term does not exist yet
+        if (cursor != null && cursor.getCount() == 0) {
+            cursor.close();
+            return false;
+        }
+
+        return true;
     }
 }

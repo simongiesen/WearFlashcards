@@ -50,12 +50,19 @@ public class NewCard extends AppCompatActivity {
             return;
         }
 
-        // Insert card into stack
+        // Check if the term already exists in the stack
         FlashcardProvider handle = new FlashcardProvider();
+        Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, table_name);
+        if (handle.termExists(term, tableUri)) {
+            text1.setError(getString(R.string.term_taken));
+            return;
+        }
+
+        // Insert card into stack
         ContentValues contentValues = new ContentValues();
         contentValues.put(CardSet.TERM, term);
         contentValues.put(CardSet.DEFINITION, definition);
-        handle.insert(Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), contentValues);
+        handle.insert(tableUri, contentValues);
 
         // Pass table name back to SetOverview and return
         onBackPressed();
