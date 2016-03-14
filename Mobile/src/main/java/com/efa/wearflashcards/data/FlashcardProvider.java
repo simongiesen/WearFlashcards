@@ -386,11 +386,14 @@ public class FlashcardProvider extends ContentProvider {
         String tableName = getTableName(title);
 
         // Check if the table already exists
-        Cursor cursor;
-        try {
-            cursor = db.rawQuery("SELECT * FROM '" + tableName + "'", null);
-        } catch (Exception e) {
-            // Build the CREATE command
+        Cursor cursor = query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TABLE_NAME},
+                SetList.SET_TABLE_NAME + "=?",
+                new String[]{tableName},
+                null);
+
+        // Table does not exist
+        if (cursor != null && cursor.getCount() == 0) {
             final String CARDSET_TABLE_CREATE;
             CARDSET_TABLE_CREATE = "CREATE TABLE '" + tableName + "' (" +
                     CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -403,10 +406,10 @@ public class FlashcardProvider extends ContentProvider {
             values.put(SetList.SET_TITLE, title);
             values.put(SetList.SET_TABLE_NAME, tableName);
             db.insert(SetList.TABLE_NAME, null, values);
+            cursor.close();
             return true;
         }
 
-        cursor.close();
         return false;
     }
 
