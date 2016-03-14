@@ -2,6 +2,7 @@ package com.efa.wearflashcards;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.efa.wearflashcards.data.FlashcardContract;
@@ -104,7 +105,7 @@ public class WearableService extends WearableListenerService {
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
-                    public void onConnectionFailed(ConnectionResult result) {
+                    public void onConnectionFailed(@NonNull ConnectionResult result) {
                     }
                 })
                 .addApi(Wearable.API)

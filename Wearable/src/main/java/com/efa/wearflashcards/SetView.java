@@ -3,6 +3,7 @@ package com.efa.wearflashcards;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
@@ -91,7 +92,7 @@ public class SetView extends Activity implements
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
