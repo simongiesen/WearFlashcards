@@ -116,7 +116,7 @@ public class SetView extends Activity implements
     protected void createCards() {
         Log.d("createCards", terms[0]);
         Log.d("createCards", definitions[0]);
-        setContentView(R.layout.activity_set_view);
+        setContentView(R.layout.set_view);
         final Resources res = getResources();
         final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
         pager.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {

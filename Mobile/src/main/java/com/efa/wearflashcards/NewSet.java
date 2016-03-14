@@ -14,11 +14,11 @@ public class NewSet extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_set);
+        setContentView(R.layout.new_set);
         setTitle(getString(R.string.create_set));
     }
 
-    // Create an empty set and return to MainActivity
+    // Create an empty set and return to Main
     public void newSet(View view) {
         EditText text = (EditText) findViewById(R.id.new_set_title);
         String title = text.getText().toString();
@@ -37,7 +37,7 @@ public class NewSet extends AppCompatActivity {
         }
 
         // Return to main screen
-        Intent main = new Intent(NewSet.this, MainActivity.class);
+        Intent main = new Intent(NewSet.this, Main.class);
         startActivity(main);
         finish();
     }

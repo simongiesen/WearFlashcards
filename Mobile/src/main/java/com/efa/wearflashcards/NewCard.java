@@ -25,13 +25,13 @@ public class NewCard extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         table_name = bundle.getString("table_name");
         title = bundle.getString("title");
-        setContentView(R.layout.activity_new_card);
+        setContentView(R.layout.new_card);
 
         // Put the set title in the toolbar
         setTitle(getString(R.string.create_card));
     }
 
-    // Create an empty set and return to MainActivity
+    // Create an empty set and return to Main
     public void newCard(View view) {
         EditText text1 = (EditText) findViewById(R.id.new_term_text);
         EditText text2 = (EditText) findViewById(R.id.new_definition_text);

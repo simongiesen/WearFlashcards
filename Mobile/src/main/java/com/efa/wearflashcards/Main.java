@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
-    private static MainActivity instance;
+public class Main extends AppCompatActivity {
+    private static Main instance;
 
     // Allow other activities to get application context statically
     // http://stackoverflow.com/a/5114361
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewSet.class);
+                Intent intent = new Intent(Main.this, NewSet.class);
                 startActivity(intent);
             }
         });

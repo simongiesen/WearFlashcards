@@ -23,7 +23,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
-public class MainActivity extends Activity implements
+public class Main extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements
 
     protected void createList() {
         // Get the list component from the layout of the activity
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main);
         WearableListView listView =
                 (WearableListView) findViewById(R.id.list);
 
@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements
                 // Get set title from list item and send it to SetView
                 Adapter.ItemViewHolder itemHolder = (Adapter.ItemViewHolder) view;
                 TextView tv = itemHolder.textView;
-                Intent intent = new Intent(MainActivity.this, SetView.class);
+                Intent intent = new Intent(Main.this, SetView.class);
                 intent.putExtra("title", tv.getText().toString());
                 startActivity(intent);
             }
