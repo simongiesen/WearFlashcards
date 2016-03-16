@@ -9,13 +9,16 @@
     android:paddingTop="25dp">
 
     <FrameLayout
+        android:id="@+id/card_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/windowBackground"
+        android:clickable="true"
         android:padding="5dp"
         app:layout_box="all">
 
         <ScrollView
+            android:id="@+id/term_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -28,13 +31,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="15dp"
-                android:text="@string/term"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
 
         </ScrollView>
 
         <ScrollView
+            android:id="@+id/def_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -49,7 +52,6 @@
                 android:paddingEnd="15dp"
                 android:paddingStart="15dp"
                 android:paddingTop="5dp"
-                android:text="@string/definition"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="16sp" />

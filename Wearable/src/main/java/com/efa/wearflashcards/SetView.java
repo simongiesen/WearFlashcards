@@ -139,7 +139,7 @@ public class SetView extends Activity implements
                 return insets;
             }
         });
-        pager.setAdapter(new SetViewAdapter(this, getFragmentManager(), terms, definitions));
+        pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions));
         DotsPageIndicator dotsPageIndicator = (DotsPageIndicator) findViewById(R.id.page_indicator);
         dotsPageIndicator.setPager(pager);
     }

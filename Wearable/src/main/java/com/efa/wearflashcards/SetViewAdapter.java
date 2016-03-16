@@ -18,11 +18,7 @@ package com.efa.wearflashcards;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.res.Resources;
-import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
-import android.view.Gravity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,29 +28,16 @@ import java.util.List;
  * provided. Taken from the GridViewPager sample (https://goo.gl/ZGLbWH)
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
-    private final Context mContext;
     private List<Row> mRows;
 
-    public SetViewAdapter(Context ctx, FragmentManager fm, String[] terms, String[] definitions) {
+    public SetViewAdapter(FragmentManager fm, String[] terms, String[] definitions) {
         super(fm);
-        mContext = ctx;
         mRows = new ArrayList<>();
 
         // Create cards with given data
         for (int i = 0, n = terms.length; i < n; i++) {
-            mRows.add(new Row(new CardView()));
+            mRows.add(new Row(CardView.create(terms[i], definitions[i])));
         }
-    }
-
-    private Fragment cardFragment(String title, String text) {
-        Resources res = mContext.getResources();
-        CardFragment fragment = CardFragment.create(title, text);
-
-        // Add some extra bottom margin to leave room for the page indicator
-        fragment.setCardMarginBottom(
-                res.getDimensionPixelSize(R.dimen.card_margin_bottom));
-        fragment.setCardGravity(Gravity.TOP);
-        return fragment;
     }
 
     @Override
