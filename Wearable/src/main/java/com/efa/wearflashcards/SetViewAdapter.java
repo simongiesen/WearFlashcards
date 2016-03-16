@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Constructs fragments as requested by the GridViewPager. For each row a different background is
- * provided. Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
+ * Constructs fragments as requested by the GridViewPager.
+ * Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
     private List<Row> mRows;

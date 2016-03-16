@@ -28,17 +28,21 @@ public class CardView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Create card and add term and definition
+        // Create card
         View card = inflater.inflate(R.layout.card_view, container, false);
+
+        // Get necessary views
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.frame);
-        TextView termView = (TextView) frame.findViewById(R.id.term);
+        final ScrollView termScroll = (ScrollView) frame.findViewById(R.id.term_scroll);
+        final ScrollView defScroll = (ScrollView) frame.findViewById(R.id.def_scroll);
+        TextView termView = (TextView) termScroll.findViewById(R.id.term);
+        TextView defView = (TextView) termScroll.findViewById(R.id.definition);
+
+        // Add term and definition
         termView.setText(term);
-        TextView defView = (TextView) frame.findViewById(R.id.definition);
         defView.setText(definition);
 
         // Add click listeners
-        final ScrollView termScroll = (ScrollView) card.findViewById(R.id.term_scroll);
-        final ScrollView defScroll = (ScrollView) card.findViewById(R.id.def_scroll);
         View.OnClickListener cardListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
