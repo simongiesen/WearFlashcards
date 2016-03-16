@@ -9,6 +9,7 @@
     android:paddingTop="25dp">
 
     <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/windowBackground"
@@ -55,13 +56,5 @@
                 android:textSize="20sp" />
 
         </ScrollView>
-
-        <!-- A TextView that takes up the whole card to catch taps in case the term
-             or the definition is too small -->
-        <TextView
-            android:id="@+id/card_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </FrameLayout>
 </android.support.wearable.view.BoxInsetLayout>

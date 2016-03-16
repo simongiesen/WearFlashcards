@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -29,15 +30,15 @@ public class CardView extends Fragment {
                              Bundle savedInstanceState) {
         // Create card and add term and definition
         View card = inflater.inflate(R.layout.card_view, container, false);
-        TextView termView = (TextView) card.findViewById(R.id.term);
+        FrameLayout frame = (FrameLayout) card.findViewById(R.id.frame);
+        TextView termView = (TextView) frame.findViewById(R.id.term);
         termView.setText(term);
-        TextView defView = (TextView) card.findViewById(R.id.definition);
+        TextView defView = (TextView) frame.findViewById(R.id.definition);
         defView.setText(definition);
 
         // Add click listeners
         final ScrollView termScroll = (ScrollView) card.findViewById(R.id.term_scroll);
         final ScrollView defScroll = (ScrollView) card.findViewById(R.id.def_scroll);
-        final TextView cardFrame = (TextView) card.findViewById(R.id.card_frame);
         View.OnClickListener cardListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +54,7 @@ public class CardView extends Fragment {
         };
         termView.setOnClickListener(cardListener);
         defView.setOnClickListener(cardListener);
-        cardFrame.setOnClickListener(cardListener);
+        frame.setOnClickListener(cardListener);
         return card;
     }
 }
