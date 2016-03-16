@@ -42,7 +42,7 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
 
         // Create cards with given data
         for (int i = 0, n = terms.length; i < n; i++) {
-            mRows.add(new Row(cardFragment(terms[i], definitions[i])));
+            mRows.add(new Row(new CardView()));
         }
     }
 
