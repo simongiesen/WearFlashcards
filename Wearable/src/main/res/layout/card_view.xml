@@ -9,11 +9,9 @@
     android:paddingTop="25dp">
 
     <FrameLayout
-        android:id="@+id/card_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/windowBackground"
-        android:clickable="true"
         android:padding="5dp"
         app:layout_box="all">
 
@@ -54,8 +52,16 @@
                 android:paddingTop="5dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="20sp" />
 
         </ScrollView>
+
+        <!-- A TextView that takes up the whole card to catch taps in case the term
+             or the definition is too small -->
+        <TextView
+            android:id="@+id/card_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </FrameLayout>
 </android.support.wearable.view.BoxInsetLayout>

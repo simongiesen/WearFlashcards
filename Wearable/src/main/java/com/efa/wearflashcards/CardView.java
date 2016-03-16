@@ -37,9 +37,11 @@ public class CardView extends Fragment {
         // Add click listeners
         final ScrollView termScroll = (ScrollView) card.findViewById(R.id.term_scroll);
         final ScrollView defScroll = (ScrollView) card.findViewById(R.id.def_scroll);
+        final TextView cardFrame = (TextView) card.findViewById(R.id.card_frame);
         View.OnClickListener cardListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Flip term/definition visibility
                 if (termScroll.getVisibility() == View.VISIBLE) {
                     termScroll.setVisibility(View.INVISIBLE);
                     defScroll.setVisibility(View.VISIBLE);
@@ -51,6 +53,7 @@ public class CardView extends Fragment {
         };
         termView.setOnClickListener(cardListener);
         defView.setOnClickListener(cardListener);
+        cardFrame.setOnClickListener(cardListener);
         return card;
     }
 }
