@@ -35,8 +35,8 @@ public class CardView extends Fragment {
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.frame);
         final ScrollView termScroll = (ScrollView) frame.findViewById(R.id.term_scroll);
         final ScrollView defScroll = (ScrollView) frame.findViewById(R.id.def_scroll);
-        TextView termView = (TextView) termScroll.findViewById(R.id.term);
-        TextView defView = (TextView) termScroll.findViewById(R.id.definition);
+        TextView termView = (TextView) frame.findViewById(R.id.term);
+        TextView defView = (TextView) frame.findViewById(R.id.definition);
 
         // Add term and definition
         termView.setText(term);
