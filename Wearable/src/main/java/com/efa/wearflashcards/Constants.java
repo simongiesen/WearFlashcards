@@ -8,5 +8,5 @@ public class Constants {
     public static String TERMS = "/terms";
     public static String DEFINITIONS = "/definitions";
     public static String BLANK_MESSAGE = "";
-    public static String BASE_URI = "content://com.efa.wearflashcards.app";
+    public static int COLUMN_COUNT = 1;
 }

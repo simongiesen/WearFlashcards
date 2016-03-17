@@ -19,65 +19,36 @@ package com.efa.wearflashcards;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.wearable.view.FragmentGridPagerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.util.Log;
 
 /**
- * Constructs fragments as requested by the GridViewPager.
- * Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
+ * Generates CardViews for SetView.
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
-    private List<Row> mRows;
+    private String[] terms;
+    private String[] definitions;
 
-    public SetViewAdapter(FragmentManager fm, String[] terms, String[] definitions) {
+    public SetViewAdapter(FragmentManager fm, String[] tms, String[] defs) {
         super(fm);
-        mRows = new ArrayList<>();
 
-        // Create cards with given data
-        for (int i = 0, n = terms.length; i < n; i++) {
-            mRows.add(new Row(CardView.create(terms[i], definitions[i])));
-        }
+        // Save terms and definitions
+        terms = tms;
+        definitions = defs;
     }
 
     @Override
     public Fragment getFragment(int row, int col) {
-        Row adapterRow = mRows.get(row);
-        return adapterRow.getColumn(col);
+        Log.d("Row: ", String.valueOf(row));
+        return CardView.create(terms[row], definitions[row]);
     }
 
     @Override
     public int getRowCount() {
-        return mRows.size();
+        return terms.length;
     }
 
     @Override
     public int getColumnCount(int rowNum) {
-        return mRows.get(rowNum).getColumnCount();
-    }
-
-    /**
-     * A convenient container for a row of fragments.
-     */
-    private class Row {
-        final List<Fragment> columns = new ArrayList<>();
-
-        public Row(Fragment... fragments) {
-            for (Fragment f : fragments) {
-                add(f);
-            }
-        }
-
-        public void add(Fragment f) {
-            columns.add(f);
-        }
-
-        Fragment getColumn(int i) {
-            return columns.get(i);
-        }
-
-        public int getColumnCount() {
-            return columns.size();
-        }
+        return Constants.COLUMN_COUNT;
     }
 }
