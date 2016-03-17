@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
+    android:paddingBottom="@dimen/list_vertical_padding_large"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingTop="@dimen/list_vertical_padding_large"
     android:textAppearance="?android:attr/textAppearanceListItem" />

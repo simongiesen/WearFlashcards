@@ -5,8 +5,6 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/list_vertical_padding"
-    android:paddingTop="@dimen/list_vertical_padding"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Main"
     tools:showIn="@layout/main">
