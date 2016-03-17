@@ -31,10 +31,6 @@ public class CardListFragment extends ListFragment
     // Save table name from SetOverview
     private String table_name;
 
-    // Empty constructor
-    public CardListFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Get table name from SetOverview
