@@ -21,35 +21,44 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Generates CardViews for SetView.
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
-    private String[] terms;
-    private String[] definitions;
+    private List<Fragment> cards = new ArrayList<>();
 
-    public SetViewAdapter(FragmentManager fm, String[] tms, String[] defs) {
+    public SetViewAdapter(FragmentManager fm, String[] terms, String[] definitions) {
         super(fm);
 
-        // Save terms and definitions
-        terms = tms;
-        definitions = defs;
+        // Create all cards
+        for (int i = 0, n = terms.length; i < n; i++) {
+            cards.add(newCard(terms[i], definitions[i]));
+        }
     }
 
-    @Override
-    public Fragment getFragment(int row, int col) {
-        // Send term and definition to CardView and create a new card
+    /**
+     * Sends term and definition to CardView and creates a new card.
+     */
+    private CardView newCard(String term, String definition) {
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TERM, terms[row]);
-        bundle.putString(Constants.DEFINITION, definitions[row]);
+        bundle.putString(Constants.TERM, term);
+        bundle.putString(Constants.DEFINITION, definition);
         CardView card = new CardView();
         card.setArguments(bundle);
         return card;
     }
 
     @Override
+    public Fragment getFragment(int row, int col) {
+        return cards.get(row);
+    }
+
+    @Override
     public int getRowCount() {
-        return terms.length;
+        return cards.size();
     }
 
     @Override
