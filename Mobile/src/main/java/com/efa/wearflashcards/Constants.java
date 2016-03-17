@@ -1,7 +1,7 @@
 package com.efa.wearflashcards;
 
 /**
- * Constants used by WearableService.
+ * Constants used by the app.
  */
 public class Constants {
     public static String PREFS_NAME = "settings";
@@ -13,4 +13,6 @@ public class Constants {
     public static String TERMS = "/terms";
     public static String DEFINITIONS = "/definitions";
     public static String TIME = "time";
+    public static String TABLE_NAME = "table_name";
+    public static String TITLE = "title";
 }

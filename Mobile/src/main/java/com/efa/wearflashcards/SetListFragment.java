@@ -97,8 +97,8 @@ public class SetListFragment extends ListFragment
         FlashcardProvider handle = new FlashcardProvider();
         String table_name = handle.getTableName(title);
         Intent intent = new Intent(getActivity(), SetOverview.class);
-        intent.putExtra("table_name", table_name);
-        intent.putExtra("title", title);
+        intent.putExtra(Constants.TABLE_NAME, table_name);
+        intent.putExtra(Constants.TITLE, title);
         startActivity(intent);
     }
 

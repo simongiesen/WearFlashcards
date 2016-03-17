@@ -23,8 +23,8 @@ public class NewCard extends AppCompatActivity {
 
         // Get table name and title from CardListFragment
         Bundle bundle = getIntent().getExtras();
-        table_name = bundle.getString("table_name");
-        title = bundle.getString("title");
+        table_name = bundle.getString(Constants.TABLE_NAME);
+        title = bundle.getString(Constants.TITLE);
         setContentView(R.layout.new_card);
 
         // Put the set title in the toolbar
@@ -85,8 +85,8 @@ public class NewCard extends AppCompatActivity {
     public void onBackPressed() {
         // Pass table name back to SetOverview
         Intent intent = new Intent(this, SetOverview.class);
-        intent.putExtra("table_name", table_name);
-        intent.putExtra("title", title);
+        intent.putExtra(Constants.TABLE_NAME, table_name);
+        intent.putExtra(Constants.TITLE, title);
         startActivity(intent);
     }
 }

@@ -35,7 +35,7 @@ public class CardListFragment extends ListFragment
     public void onCreate(Bundle savedInstanceState) {
         // Get table name from SetOverview
         Bundle bundle = getArguments();
-        table_name = bundle.getString("table_name");
+        table_name = bundle.getString(Constants.TABLE_NAME);
         super.onCreate(savedInstanceState);
     }
 

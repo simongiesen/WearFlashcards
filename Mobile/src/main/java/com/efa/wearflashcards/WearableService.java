@@ -3,7 +3,6 @@ package com.efa.wearflashcards;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.efa.wearflashcards.data.FlashcardContract;
 import com.efa.wearflashcards.data.FlashcardProvider;
@@ -33,7 +32,6 @@ public class WearableService extends WearableListenerService {
         } else {
             sendSet(message);
         }
-        Log.d("messageReceived:", message);
     }
 
     // http://stackoverflow.com/a/25244496/3522216
@@ -41,9 +39,7 @@ public class WearableService extends WearableListenerService {
         // Get titles from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Cursor cursor = handle.fetchAllTitles();
-
         if (cursor == null) {
-            Log.d("sendData", "fetchTitles failed");
             return;
         }
 
@@ -62,7 +58,6 @@ public class WearableService extends WearableListenerService {
         map.putStringArray(Constants.SET_LIST, setList);
         map.putLong(Constants.TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
-        Log.d("WearableService", "Titles sent");
     }
 
     private void sendSet(String title) {
@@ -89,7 +84,6 @@ public class WearableService extends WearableListenerService {
         map.putStringArray(Constants.DEFINITIONS, definitions);
         map.putLong(Constants.TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
-        Log.d("WearableService", "Cards sent");
     }
 
     private GoogleApiClient wearConnect() {

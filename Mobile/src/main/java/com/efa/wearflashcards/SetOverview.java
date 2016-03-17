@@ -25,8 +25,8 @@ public class SetOverview extends AppCompatActivity {
 
         // Get table name from SetListFragment or NewCard and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
-        table_name = bundle.getString("table_name");
-        title = bundle.getString("title");
+        table_name = bundle.getString(Constants.TABLE_NAME);
+        title = bundle.getString(Constants.TITLE);
         CardListFragment frag = new CardListFragment();
         frag.setArguments(bundle);
 
@@ -38,8 +38,8 @@ public class SetOverview extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SetOverview.this, NewCard.class);
-                intent.putExtra("table_name", table_name);
-                intent.putExtra("title", title);
+                intent.putExtra(Constants.TABLE_NAME, table_name);
+                intent.putExtra(Constants.TITLE, title);
                 startActivity(intent);
             }
         });
