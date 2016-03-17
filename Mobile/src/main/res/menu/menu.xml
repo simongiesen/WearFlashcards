@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/shuffle"
+            android:title="@string/shuffle" />
+        <item
+            android:id="@+id/definition_first"
+            android:title="@string/definition_first" />
+    </group>
+</menu>
