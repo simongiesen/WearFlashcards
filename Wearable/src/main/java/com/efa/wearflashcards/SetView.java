@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 
@@ -38,7 +37,6 @@ public class SetView extends Activity implements
         setContentView(R.layout.empty_database);
         Bundle bundle = getIntent().getExtras();
         path = "/" + bundle.getString("title");
-        Log.d("SetView", path);
 
         // Listen for data item events
         // http://developer.android.com/training/wearables/data-layer/data-items.html
@@ -73,7 +71,6 @@ public class SetView extends Activity implements
                 for (Node node : nodes.getNodes()) {
                     Wearable.MessageApi.sendMessage(
                             mGoogleApiClient, node.getId(), path, message.getBytes()).await();
-                    Log.d("sendMessage", "message sent");
                 }
             }
         }).start();
@@ -98,7 +95,6 @@ public class SetView extends Activity implements
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.d("Wear", "dataChanged");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
@@ -115,8 +111,6 @@ public class SetView extends Activity implements
 
     // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
     protected void createCards() {
-        Log.d("createCards", terms[0]);
-        Log.d("createCards", definitions[0]);
         setContentView(R.layout.set_view);
         final Resources res = getResources();
         final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);

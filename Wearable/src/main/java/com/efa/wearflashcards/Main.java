@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.wearable.view.WearableListView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +96,6 @@ public class Main extends Activity implements
                 for (Node node : nodes.getNodes()) {
                     Wearable.MessageApi.sendMessage(
                             mGoogleApiClient, node.getId(), path, message.getBytes()).await();
-                    Log.d("sendMessage", "message sent");
                 }
             }
         }).start();
@@ -115,13 +114,12 @@ public class Main extends Activity implements
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.d("Wear", "dataChanged");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
@@ -141,13 +139,13 @@ public class Main extends Activity implements
     private static final class Adapter extends WearableListView.Adapter {
         private final Context mContext;
         private final LayoutInflater mInflater;
-        private String[] mDataset;
+        private String[] mDataSet;
 
-        // Provide a suitable constructor (depends on the kind of dataset)
-        public Adapter(Context context, String[] dataset) {
+        // Provide a suitable constructor (depends on the kind of data set)
+        public Adapter(Context context, String[] dataSet) {
             mContext = context;
             mInflater = LayoutInflater.from(mContext);
-            mDataset = dataset;
+            mDataSet = dataSet;
         }
 
         // Create new views for list items
@@ -169,16 +167,16 @@ public class Main extends Activity implements
             ItemViewHolder itemHolder = (ItemViewHolder) holder;
             TextView view = itemHolder.textView;
             // Replace text contents
-            view.setText(mDataset[position]);
+            view.setText(mDataSet[position]);
             // Replace list item's metadata
             holder.itemView.setTag(position);
         }
 
-        // Return the size of your dataset
+        // Return the size of your data set
         // (invoked by the WearableListView's layout manager)
         @Override
         public int getItemCount() {
-            return mDataset.length;
+            return mDataSet.length;
         }
 
         // Provide a reference to the type of views you're using
