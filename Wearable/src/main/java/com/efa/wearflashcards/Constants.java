@@ -8,5 +8,7 @@ public class Constants {
     public static String TERMS = "/terms";
     public static String DEFINITIONS = "/definitions";
     public static String BLANK_MESSAGE = "";
+    public static String TERM = "term";
+    public static String DEFINITION = "definition";
     public static int COLUMN_COUNT = 1;
 }

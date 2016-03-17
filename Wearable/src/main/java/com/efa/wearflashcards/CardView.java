@@ -13,21 +13,14 @@ import android.widget.TextView;
  * Fragment used to display cards.
  */
 public class CardView extends Fragment {
-    private static String term;
-    private static String definition;
-
-    /**
-     * Initializes term and definition for onCreateView.
-     */
-    public static Fragment create(String tm, String def) {
-        term = tm;
-        definition = def;
-        return new CardView();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Get term and definition
+        Bundle bundle = getArguments();
+        final String term = bundle.getString(Constants.TERM);
+        final String definition = bundle.getString(Constants.DEFINITION);
+
         // Create card
         View card = inflater.inflate(R.layout.card_view, container, false);
 

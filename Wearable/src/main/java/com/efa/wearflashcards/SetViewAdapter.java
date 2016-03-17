@@ -18,8 +18,8 @@ package com.efa.wearflashcards;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Bundle;
 import android.support.wearable.view.FragmentGridPagerAdapter;
-import android.util.Log;
 
 /**
  * Generates CardViews for SetView.
@@ -38,8 +38,13 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
 
     @Override
     public Fragment getFragment(int row, int col) {
-        Log.d("Row: ", String.valueOf(row));
-        return CardView.create(terms[row], definitions[row]);
+        // Send term and definition to CardView and create a new card
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.TERM, terms[row]);
+        bundle.putString(Constants.DEFINITION, definitions[row]);
+        CardView card = new CardView();
+        card.setArguments(bundle);
+        return card;
     }
 
     @Override
