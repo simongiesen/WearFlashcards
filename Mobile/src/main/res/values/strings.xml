@@ -16,5 +16,5 @@
     <string name="create_set">Create a new set</string>
     <string name="create_card">Create a new card</string>
     <string name="shuffle">Shuffle</string>
-    <string name="definition_first">Show definition first</string>
+    <string name="definition_first">Definitions first</string>
 </resources>
