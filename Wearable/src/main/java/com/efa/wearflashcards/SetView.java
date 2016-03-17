@@ -101,7 +101,8 @@ public class SetView extends Activity implements
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 terms = dataMap.getStringArray(Constants.TERMS);
                 definitions = dataMap.getStringArray(Constants.DEFINITIONS);
-                if (terms.length > 0 && definitions.length > 0) {
+                if (terms != null && definitions != null &&
+                        terms.length > 0 && definitions.length > 0) {
                     createCards();
                 }
             }
