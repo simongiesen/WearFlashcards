@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
 import android.view.View;
 import android.view.WindowInsets;
@@ -134,7 +133,5 @@ public class SetView extends Activity implements
             }
         });
         pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions));
-        DotsPageIndicator dotsPageIndicator = (DotsPageIndicator) findViewById(R.id.page_indicator);
-        dotsPageIndicator.setPager(pager);
     }
 }
