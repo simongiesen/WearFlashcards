@@ -11,7 +11,7 @@
     </group>
     <item
         android:id="@+id/set_view_button"
-        android:icon="@drawable/ic_aspect_ratio_white_48px"
+        android:icon="@drawable/card_button"
         android:title="@string/set_view_button"
         app:showAsAction="always" />
 </menu>
