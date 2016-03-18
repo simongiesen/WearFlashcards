@@ -1,4 +1,4 @@
-package com.efa.wearflashcards;
+package com.ericfabreu.wearflashcards;
 
 import org.junit.Test;
 

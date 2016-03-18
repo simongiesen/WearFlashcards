@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.efa.wearflashcards">
+    package="com.ericfabreu.wearflashcards">
 
     <application
         android:allowBackup="true"
@@ -21,7 +21,7 @@
 
         <provider
             android:name=".data.FlashcardProvider"
-            android:authorities="com.efa.wearflashcards.app"
+            android:authorities="com.ericfabreu.wearflashcards.app"
             android:exported="false"
             android:grantUriPermissions="true"
             android:label="FlashcardProvider" />
