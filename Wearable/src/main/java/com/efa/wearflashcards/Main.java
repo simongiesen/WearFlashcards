@@ -29,7 +29,7 @@ public class Main extends Activity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private String[] set_list = null;
+    private String[] setList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class Main extends Activity implements
                 (WearableListView) findViewById(R.id.list);
 
         // Assign an adapter to the list
-        listView.setAdapter(new Adapter(this, set_list));
+        listView.setAdapter(new Adapter(this, setList));
 
         // Open SetView when an item is clicked
         listView.setClickListener(new WearableListView.ClickListener() {
@@ -130,8 +130,8 @@ public class Main extends Activity implements
                 // DataItem changed
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                set_list = dataMap.getStringArray(Constants.SET_LIST);
-                if (set_list.length > 0) {
+                setList = dataMap.getStringArray(Constants.SET_LIST);
+                if (setList.length > 0) {
                     createList();
                 }
             }
