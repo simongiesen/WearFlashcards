@@ -3,11 +3,13 @@ package com.efa.wearflashcards;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,28 +77,50 @@ public class CardListFragment extends ListFragment
             }
 
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
                 // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
                     case R.id.delete:
-                        for (int i = 0, n = selections.size(); i < n; i++) {
-                            // Get term and definition from the ListView item
-                            LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(i));
-                            TextView term = (TextView) card.getChildAt(Constants.TERM_POS);
-                            TextView definition = (TextView) card.getChildAt(Constants.DEF_POS);
+                        // Display alert message
+                        // http://stackoverflow.com/a/13511580/3522216
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.delete_card);
+                        builder.setMessage(R.string.cannot_undo);
+                        builder.setCancelable(true);
 
-                            // Build delete arguments
-                            final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
-                            final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
+                        builder.setPositiveButton(R.string.delete,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        for (int i = 0, n = selections.size(); i < n; i++) {
+                                            // Get term and definition from the ListView item
+                                            LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(i));
+                                            TextView term = (TextView) card.getChildAt(Constants.TERM_POS);
+                                            TextView definition = (TextView) card.getChildAt(Constants.DEF_POS);
 
-                            // Delete card from set
-                            FlashcardProvider handle = new FlashcardProvider();
-                            handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), selection, selectionArgs);
-                        }
+                                            // Build delete arguments
+                                            final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
+                                            final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
 
-                        // Reset selections list and hide the CAB
-                        selections = new ArrayList<>();
-                        mode.finish();
+                                            // Delete card from set
+                                            FlashcardProvider handle = new FlashcardProvider();
+                                            handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), selection, selectionArgs);
+                                        }
+
+                                        // Reset selections list and hide the CAB
+                                        selections = new ArrayList<>();
+                                        mode.finish();
+                                    }
+                                });
+
+                        builder.setNegativeButton(R.string.cancel,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert = builder.create();
+                        alert.show();
                         return true;
 
                     case R.id.edit:

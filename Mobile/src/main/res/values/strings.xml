@@ -21,6 +21,10 @@
     <string name="edit_card">Edit card</string>
     <string name="create_set">Create a new set</string>
     <string name="create_card">Create a new card</string>
+    <string name="delete_set">Delete set?</string>
+    <string name="delete_card">Delete card?</string>
+    <string name="cannot_undo">This cannot be undone.</string>
+    <string name="cancel">Cancel</string>
     <string name="shuffle">Shuffle</string>
     <string name="definition_first">Definitions first</string>
     <string name="set_view_button">Show cards</string>
