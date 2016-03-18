@@ -86,6 +86,13 @@ public class SetOverview extends AppCompatActivity {
             editor.putBoolean(Constants.DEF_FIRST, !item.isChecked());
             editor.apply();
             return true;
+        } else if (id == R.id.study_set_button) {
+            Intent intent = new Intent(SetOverview.this, StudySet.class);
+            intent.putExtra(Constants.TERM, new String[]{"Term one", "Term two"});
+            intent.putExtra(Constants.DEFINITION, new String[]{"Def one", "Def two"});
+            intent.putExtra(Constants.TITLE, title);
+            startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -71,7 +71,7 @@ public class Main extends AppCompatActivity {
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
 
         // Set view button is unnecessary in Main
-        menu.removeItem(R.id.set_view_button);
+        menu.removeItem(R.id.study_set_button);
         return true;
     }
 

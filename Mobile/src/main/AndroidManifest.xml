@@ -75,6 +75,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".StudySet"
+            android:label="@string/app_name"
+            android:parentActivityName=".SetOverview">
+            <intent-filter>
+                <action android:name=".StudySet" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".WearableService"

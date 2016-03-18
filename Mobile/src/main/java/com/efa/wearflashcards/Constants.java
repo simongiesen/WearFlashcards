@@ -19,4 +19,5 @@ public class Constants {
     public static int DEF_FIRST_POS = 1;
     public static int TERM_POS = 0;
     public static int DEF_POS = 1;
+    public static int COLUMN_COUNT = 1;
 }
