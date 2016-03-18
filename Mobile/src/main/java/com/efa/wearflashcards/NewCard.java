@@ -64,6 +64,7 @@ public class NewCard extends AppCompatActivity {
         Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, table_name);
         if (handle.termExists(term, tableUri)) {
             text1.setError(getString(R.string.term_taken));
+            text1.requestFocus();
             return;
         }
 
