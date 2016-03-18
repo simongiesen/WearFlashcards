@@ -91,6 +91,7 @@ public class SetListFragment extends ListFragment
                         return true;
 
                     case R.id.edit:
+                        // Get set title and send it to EditSetTitle
                         TextView set = (TextView) getListView().getChildAt(selections.get(0));
                         String title = set.getText().toString();
                         Intent intent = new Intent(getActivity(), EditSetTitle.class);

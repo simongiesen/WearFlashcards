@@ -16,7 +16,9 @@
     <string name="term_taken">Term already exists</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="save">Save</string>
     <string name="edit_set">Edit set</string>
+    <string name="edit_card">Edit card</string>
     <string name="create_set">Create a new set</string>
     <string name="create_card">Create a new card</string>
     <string name="shuffle">Shuffle</string>

@@ -3,6 +3,7 @@ package com.efa.wearflashcards;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -34,7 +35,7 @@ public class CardListFragment extends ListFragment
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
     // Save table name from SetOverview
-    private String table_name;
+    private String tableName;
     // Store position of selected items
     private List<Integer> selections = new ArrayList<>();
 
@@ -42,7 +43,7 @@ public class CardListFragment extends ListFragment
     public void onCreate(Bundle savedInstanceState) {
         // Get table name from SetOverview
         Bundle bundle = getArguments();
-        table_name = bundle.getString(Constants.TABLE_NAME);
+        tableName = bundle.getString(Constants.TABLE_NAME);
         super.onCreate(savedInstanceState);
     }
 
@@ -81,8 +82,8 @@ public class CardListFragment extends ListFragment
                         for (int i = 0, n = selections.size(); i < n; i++) {
                             // Get term and definition from the ListView item
                             LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(i));
-                            TextView term = (TextView) card.findViewById(R.id.card_term);
-                            TextView definition = (TextView) card.findViewById(R.id.card_definition);
+                            TextView term = (TextView) card.getChildAt(Constants.TERM_POS);
+                            TextView definition = (TextView) card.getChildAt(Constants.DEF_POS);
 
                             // Build delete arguments
                             final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
@@ -90,13 +91,30 @@ public class CardListFragment extends ListFragment
 
                             // Delete card from set
                             FlashcardProvider handle = new FlashcardProvider();
-                            handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), selection, selectionArgs);
+                            handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), selection, selectionArgs);
                         }
 
                         // Reset selections list and hide the CAB
                         selections = new ArrayList<>();
                         mode.finish();
                         return true;
+
+                    case R.id.edit:
+                        // Get term and definition and send them to EditCard
+                        LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(0));
+                        TextView tView = (TextView) card.getChildAt(Constants.TERM_POS);
+                        TextView defView = (TextView) card.getChildAt(Constants.DEF_POS);
+                        String term = tView.getText().toString();
+                        String definition = defView.getText().toString();
+                        Intent intent = new Intent(getActivity(), EditCard.class);
+                        intent.putExtra(Constants.TERM, term);
+                        intent.putExtra(Constants.DEFINITION, definition);
+                        intent.putExtra(Constants.TABLE_NAME, tableName);
+                        intent.putExtra(Constants.TITLE, getActivity().getTitle());
+                        startActivity(intent);
+                        mode.finish();
+                        return true;
+
                     default:
                         return false;
                 }
@@ -145,7 +163,7 @@ public class CardListFragment extends ListFragment
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed
-        return new CursorLoader(getActivity(), Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), SET_SUMMARY_PROJECTION, SET_SELECTION, null, null);
+        return new CursorLoader(getActivity(), Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), SET_SUMMARY_PROJECTION, SET_SELECTION, null, null);
     }
 
     // Called when a previously created loader has finished loading

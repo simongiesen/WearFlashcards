@@ -496,4 +496,36 @@ public class FlashcardProvider extends ContentProvider {
 
         return true;
     }
+
+    /**
+     * Edits a card.
+     */
+    public boolean editCard(Uri uri, String oldTerm, String newTerm, String newDef) {
+        // Check if new term already exists
+        if (!oldTerm.equals(newTerm) && termExists(newTerm, uri)) {
+            return false;
+        }
+
+        // Get row id in the set table
+        Cursor cursor = query(uri,
+                new String[]{CardSet.TERM, CardSet._ID},
+                CardSet.TERM + "=?",
+                new String[]{oldTerm},
+                null);
+        String rowId;
+        if (cursor != null && cursor.moveToFirst()) {
+            rowId = String.valueOf(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
+            cursor.close();
+
+            // Update term and definition in the set table
+            ContentValues values = new ContentValues();
+            values.put(CardSet.TERM, newTerm);
+            values.put(CardSet.DEFINITION, newDef);
+            update(uri, values, CardSet._ID + "=?", new String[]{rowId});
+            cursor.close();
+            return true;
+        }
+
+        return false;
+    }
 }

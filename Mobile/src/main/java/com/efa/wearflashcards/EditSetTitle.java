@@ -33,7 +33,7 @@ public class EditSetTitle extends AppCompatActivity {
         super.onStart();
 
         // Add title to EditText and move cursor to the end
-        EditText text = (EditText) findViewById(R.id.set_title);
+        EditText text = (EditText) findViewById(R.id.edit_set_title);
         text.setText(title);
         text.setSelection(title.length());
     }
@@ -42,7 +42,7 @@ public class EditSetTitle extends AppCompatActivity {
      * Edits a set's title and returns to Main.
      */
     public void editSetTitle(View view) {
-        EditText text = (EditText) findViewById(R.id.set_title);
+        EditText text = (EditText) findViewById(R.id.edit_set_title);
         String newTitle = text.getText().toString();
 
         // Check if title has changed

@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme.Base">
 
         <EditText
-            android:id="@+id/set_title"
+            android:id="@+id/edit_set_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/set_title_hint"
