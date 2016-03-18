@@ -7,6 +7,8 @@
     <string name="new_term_hint">Term</string>
     <string name="new_definition_hint">Definition</string>
     <string name="create">Create</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
     <string name="title_taken">Title is already taken</string>
     <string name="empty_title">Please enter a title</string>
     <string name="empty_term">Term cannot be blank</string>

@@ -40,13 +40,22 @@
             android:theme="@style/AppTheme.Base" />
     </android.support.design.widget.TextInputLayout>
 
-
     <Button
+        android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/new_definition"
         android:layout_below="@+id/new_definition"
         android:onClick="newCard"
-        android:text="@string/create" />
+        android:text="@string/done" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_definition"
+        android:layout_toStartOf="@+id/done"
+        android:onClick="newCard"
+        android:text="@string/next" />
 
 </RelativeLayout>

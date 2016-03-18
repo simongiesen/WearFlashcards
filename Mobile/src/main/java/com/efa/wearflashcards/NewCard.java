@@ -31,12 +31,21 @@ public class NewCard extends AppCompatActivity {
         setTitle(getString(R.string.create_card));
     }
 
-    // Create an empty set and return to Main
+    // Create a card and either return to Main or reset view
     public void newCard(View view) {
         EditText text1 = (EditText) findViewById(R.id.new_term_text);
         EditText text2 = (EditText) findViewById(R.id.new_definition_text);
         String term = text1.getText().toString();
         String definition = text2.getText().toString();
+
+        // Return to SetOverview if the view is empty and 'done' was selected
+        if (view.getId() == R.id.done &&
+                TextUtils.isEmpty(term) &&
+                TextUtils.isEmpty(definition)) {
+            onBackPressed();
+            finish();
+            return;
+        }
 
         // Check if term is blank
         if (TextUtils.isEmpty(term)) {
@@ -63,6 +72,14 @@ public class NewCard extends AppCompatActivity {
         contentValues.put(CardSet.TERM, term);
         contentValues.put(CardSet.DEFINITION, definition);
         handle.insert(tableUri, contentValues);
+
+        // Check if it should reset view
+        if (view.getId() == R.id.next) {
+            text1.setText(null);
+            text2.setText(null);
+            text1.requestFocus();
+            return;
+        }
 
         // Pass table name back to SetOverview and return
         onBackPressed();
