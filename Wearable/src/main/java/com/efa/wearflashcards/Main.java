@@ -47,6 +47,11 @@ public class Main extends Activity implements
         mGoogleApiClient.connect();
     }
 
+    public void openSettings(View view) {
+        Intent intent = new Intent(Main.this, Settings.class);
+        startActivity(intent);
+    }
+
     protected void createList() {
         // Get the list component from the layout of the activity
         setContentView(R.layout.main);
@@ -64,7 +69,7 @@ public class Main extends Activity implements
                 Adapter.ItemViewHolder itemHolder = (Adapter.ItemViewHolder) view;
                 TextView tv = itemHolder.textView;
                 Intent intent = new Intent(Main.this, SetView.class);
-                intent.putExtra("title", tv.getText().toString());
+                intent.putExtra(Constants.TITLE, tv.getText().toString());
                 startActivity(intent);
             }
 

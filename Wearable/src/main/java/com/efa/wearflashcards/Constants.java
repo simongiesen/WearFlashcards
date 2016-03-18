@@ -10,5 +10,9 @@ public class Constants {
     public static String BLANK_MESSAGE = "";
     public static String TERM = "term";
     public static String DEFINITION = "definition";
+    public static String TITLE = "title";
+    public static String PREFS_NAME = "settings";
+    public static String SHUFFLE = "shuffle";
+    public static String DEF_FIRST = "definition_first";
     public static int COLUMN_COUNT = 1;
 }

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:paddingBottom="40dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp"
+    android:paddingTop="40dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:clickable="true"
+            android:onClick="flipShuffle">
+
+            <ImageView
+                android:id="@+id/shuffle_circle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/list_item_description"
+                android:src="@drawable/settings_circle" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/shuffle_circle"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/shuffle_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/shuffle"
+                    android:textColor="@color/list_text"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/shuffle_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:gravity="center_vertical|start"
+                    android:textAllCaps="true"
+                    android:textColor="@color/list_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="flipDefFirst">
+
+            <ImageView
+                android:id="@+id/def_first_circle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/list_item_description"
+                android:src="@drawable/settings_circle" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/def_first_circle"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/def_first_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/def_first"
+                    android:textColor="@color/list_text"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/def_first_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:gravity="center_vertical|start"
+                    android:textAllCaps="true"
+                    android:textColor="@color/list_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.wearable.view.BoxInsetLayout>

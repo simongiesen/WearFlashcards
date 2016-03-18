@@ -35,7 +35,7 @@ public class SetView extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.empty_database);
         Bundle bundle = getIntent().getExtras();
-        path = "/" + bundle.getString("title");
+        path = "/" + bundle.getString(Constants.TITLE);
 
         // Listen for data item events
         // http://developer.android.com/training/wearables/data-layer/data-items.html
