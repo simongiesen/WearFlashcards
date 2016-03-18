@@ -2,7 +2,6 @@ package com.efa.wearflashcards;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -29,7 +28,7 @@ public class StudySet extends AppCompatActivity {
 
     // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
     protected void createCards() {
-        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager);
         pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), terms, definitions));
     }
 
