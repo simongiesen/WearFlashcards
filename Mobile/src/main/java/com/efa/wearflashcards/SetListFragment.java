@@ -7,17 +7,22 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.SetList;
 import com.efa.wearflashcards.data.FlashcardProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,10 +31,14 @@ import com.efa.wearflashcards.data.FlashcardProvider;
 public class SetListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     // These are the set names that we will retrieve
-    static final String[] SET_SUMMARY_PROJECTION = new String[]{SetList._ID, SetList.SET_TITLE};
+    private static final String[] SET_SUMMARY_PROJECTION =
+            new String[]{SetList._ID, SetList.SET_TITLE};
 
     // This is the Adapter being used to display the list's data
-    SimpleCursorAdapter mAdapter;
+    private SimpleCursorAdapter mAdapter;
+
+    // Store position of selected items
+    private List<Integer> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +52,61 @@ public class SetListFragment extends ListFragment
         // Show text if database is empty
         setEmptyText(getString(R.string.empty_database));
 
-        registerForContextMenu(getListView());
+        // Contextual action mode code adapted from
+        // http://developer.android.com/guide/topics/ui/menus.html#context-menu
+        ListView listView = getListView();
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                                  long id, boolean checked) {
+                // Store position of selected items
+                if (checked) {
+                    selections.add(position);
+                } else {
+                    selections.remove(position);
+                }
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                // Respond to clicks on the actions in the CAB
+                switch (item.getItemId()) {
+                    case R.id.delete:
+                        // Get table name from the set list and delete it from the database
+                        for (int i = 0, n = selections.size(); i < n; i++) {
+                            TextView set = (TextView) getListView().getChildAt(selections.get(i));
+                            String title = set.getText().toString();
+                            FlashcardProvider handle = new FlashcardProvider();
+                            handle.deleteSetTable(title);
+                        }
+
+                        // Reset selections list and hide the CAB
+                        selections = new ArrayList<>();
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate the menu for the CAB
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.context_menu, menu);
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+        });
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
@@ -63,27 +126,6 @@ public class SetListFragment extends ListFragment
         super.onCreateContextMenu(menu, view, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete:
-                // Get title from textView item
-                TextView textView = (TextView) info.targetView.findViewById(R.id.main_set_title);
-                String title = textView.getText().toString();
-
-                // Delete set from database
-                FlashcardProvider handle = new FlashcardProvider();
-                handle.deleteSetTable(title);
-
-                // Refresh the loader with new data
-                getLoaderManager().initLoader(0, null, this);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
     }
 
     // Open the flashcard set when it is clicked

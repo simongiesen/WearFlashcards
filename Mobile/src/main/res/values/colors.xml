@@ -5,4 +5,5 @@
     <color name="colorAccent">#F44336</color>
     <color name="colorEdit">#009688</color>
     <color name="windowBackground">#ECEFF1</color>
+    <color name="listActivated">#B0BEC5</color>
 </resources>

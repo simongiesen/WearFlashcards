@@ -3,6 +3,7 @@
     android:id="@+id/main_set_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/activatedBackgroundIndicator"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingBottom="@dimen/list_vertical_padding_large"
