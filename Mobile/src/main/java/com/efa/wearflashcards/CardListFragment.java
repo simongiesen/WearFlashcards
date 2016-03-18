@@ -84,7 +84,11 @@ public class CardListFragment extends ListFragment
                         // Display alert message
                         // http://stackoverflow.com/a/13511580/3522216
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.delete_card);
+                        if (selections.size() > 1) {
+                            builder.setTitle(R.string.delete_cards);
+                        } else {
+                            builder.setTitle(R.string.delete_card);
+                        }
                         builder.setMessage(R.string.cannot_undo);
                         builder.setCancelable(true);
 

@@ -23,6 +23,8 @@
     <string name="create_card">Create a new card</string>
     <string name="delete_set">Delete set?</string>
     <string name="delete_card">Delete card?</string>
+    <string name="delete_sets">Delete sets?</string>
+    <string name="delete_cards">Delete cards?</string>
     <string name="cannot_undo">This cannot be undone.</string>
     <string name="cancel">Cancel</string>
     <string name="shuffle">Shuffle</string>

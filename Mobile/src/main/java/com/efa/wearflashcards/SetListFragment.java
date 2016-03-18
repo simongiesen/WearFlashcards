@@ -82,7 +82,11 @@ public class SetListFragment extends ListFragment
                         // Display alert message
                         // http://stackoverflow.com/a/13511580/3522216
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.delete_set);
+                        if (selections.size() > 1) {
+                            builder.setTitle(R.string.delete_sets);
+                        } else {
+                            builder.setTitle(R.string.delete_set);
+                        }
                         builder.setMessage(R.string.cannot_undo);
                         builder.setCancelable(true);
 
