@@ -1,12 +1,16 @@
 package com.efa.wearflashcards;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 public class StudySet extends AppCompatActivity {
-    private String[] terms = null;
-    private String[] definitions = null;
+    private String[] terms;
+    private String[] definitions;
+    private String title;
+    private String tableName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +21,9 @@ public class StudySet extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         terms = bundle.getStringArray(Constants.TERM);
         definitions = bundle.getStringArray(Constants.DEFINITION);
-        setTitle(bundle.getString(Constants.TITLE));
+        title = bundle.getString(Constants.TITLE);
+        tableName = bundle.getString(Constants.TABLE_NAME);
+        setTitle(title);
         createCards();
     }
 
@@ -25,5 +31,26 @@ public class StudySet extends AppCompatActivity {
     protected void createCards() {
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), terms, definitions));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Pass table name back to SetOverview if the toolbar back button is clicked
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Pass table name back to SetOverview
+        Intent intent = new Intent(this, SetOverview.class);
+        intent.putExtra(Constants.TABLE_NAME, tableName);
+        intent.putExtra(Constants.TITLE, title);
+        startActivity(intent);
     }
 }

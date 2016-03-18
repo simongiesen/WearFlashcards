@@ -3,6 +3,7 @@ package com.efa.wearflashcards;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,8 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.efa.wearflashcards.data.FlashcardContract;
+import com.efa.wearflashcards.data.FlashcardProvider;
+
+import java.util.ArrayList;
+
 public class SetOverview extends AppCompatActivity {
-    private String table_name;
+    private String tableName;
     private String title;
     private SharedPreferences settings;
 
@@ -25,7 +31,7 @@ public class SetOverview extends AppCompatActivity {
 
         // Get table name from SetListFragment or NewCard and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
-        table_name = bundle.getString(Constants.TABLE_NAME);
+        tableName = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
         CardListFragment frag = new CardListFragment();
         frag.setArguments(bundle);
@@ -38,7 +44,7 @@ public class SetOverview extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SetOverview.this, NewCard.class);
-                intent.putExtra(Constants.TABLE_NAME, table_name);
+                intent.putExtra(Constants.TABLE_NAME, tableName);
                 intent.putExtra(Constants.TITLE, title);
                 startActivity(intent);
             }
@@ -87,10 +93,27 @@ public class SetOverview extends AppCompatActivity {
             editor.apply();
             return true;
         } else if (id == R.id.study_set_button) {
+            // Get terms and definitions from the database
+            FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+            String tableName = handle.getTableName(title);
+            Cursor cursor = handle.fetchAllCards(tableName);
+
+            // Put terms and definitions into string arrays
+            ArrayList<String> columnArray1 = new ArrayList<>();
+            ArrayList<String> columnArray2 = new ArrayList<>();
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                columnArray1.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.TERM)));
+                columnArray2.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
+            }
+            String[] terms = columnArray1.toArray(new String[columnArray1.size()]);
+            String[] definitions = columnArray2.toArray(new String[columnArray2.size()]);
+
+            // Send terms and definitions to StudySet
             Intent intent = new Intent(SetOverview.this, StudySet.class);
-            intent.putExtra(Constants.TERM, new String[]{"Term one", "Term two"});
-            intent.putExtra(Constants.DEFINITION, new String[]{"Def one", "Def two"});
+            intent.putExtra(Constants.TERM, terms);
+            intent.putExtra(Constants.DEFINITION, definitions);
             intent.putExtra(Constants.TITLE, title);
+            intent.putExtra(Constants.TABLE_NAME, tableName);
             startActivity(intent);
             return true;
         }
