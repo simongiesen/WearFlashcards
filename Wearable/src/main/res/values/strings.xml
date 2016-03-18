@@ -8,4 +8,6 @@
     <string name="def_first">Definitions first</string>
     <string name="on">On</string>
     <string name="off">Off</string>
+    <string name="offline">Offline</string>
+    <string name="offline_message">Cannot sync flashcards offline</string>
 </resources>

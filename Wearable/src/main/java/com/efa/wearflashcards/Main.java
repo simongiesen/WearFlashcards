@@ -45,6 +45,10 @@ public class Main extends Activity implements
                 .build();
 
         mGoogleApiClient.connect();
+
+        // Check if watch is connected
+        Thread checkThread = new Thread(new CheckConnection());
+        checkThread.start();
     }
 
     public void openSettings(View view) {
@@ -115,12 +119,10 @@ public class Main extends Activity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -192,6 +194,21 @@ public class Main extends Activity implements
                 super(itemView);
                 // Find the text view within the custom item's layout
                 textView = (TextView) itemView.findViewById(R.id.name);
+            }
+        }
+    }
+
+    private class CheckConnection implements Runnable {
+        @Override
+        public void run() {
+            if (Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
+                // Display offline message
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setContentView(R.layout.offline);
+                    }
+                });
             }
         }
     }

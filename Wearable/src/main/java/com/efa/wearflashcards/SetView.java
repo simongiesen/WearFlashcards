@@ -50,6 +50,10 @@ public class SetView extends Activity implements
                 .build();
 
         mGoogleApiClient.connect();
+
+        // Check if watch is connected
+        Thread checkThread = new Thread(new CheckConnection());
+        checkThread.start();
     }
 
     @Override
@@ -194,5 +198,20 @@ public class SetView extends Activity implements
             }
         }
         return array;
+    }
+
+    private class CheckConnection implements Runnable {
+        @Override
+        public void run() {
+            if (Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
+                // Display offline message
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setContentView(R.layout.offline);
+                    }
+                });
+            }
+        }
     }
 }
