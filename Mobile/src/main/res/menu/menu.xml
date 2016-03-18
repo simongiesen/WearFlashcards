@@ -1,4 +1,6 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="all">
         <item
             android:id="@+id/shuffle"
@@ -7,4 +9,9 @@
             android:id="@+id/definition_first"
             android:title="@string/definition_first" />
     </group>
+    <item
+        android:id="@+id/set_view_button"
+        android:icon="@drawable/ic_aspect_ratio_white_48px"
+        android:title="@string/set_view_button"
+        app:showAsAction="always" />
 </menu>

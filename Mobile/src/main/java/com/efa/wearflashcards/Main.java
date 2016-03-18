@@ -69,6 +69,9 @@ public class Main extends AppCompatActivity {
         // Restore settings
         shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
+
+        // Set view button is unnecessary in Main
+        menu.removeItem(R.id.set_view_button);
         return true;
     }
 
