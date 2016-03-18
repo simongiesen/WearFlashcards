@@ -430,6 +430,55 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
+     * Renames a set of flashcards.
+     */
+    public boolean renameSet(String oldTitle, String newTitle) {
+        // Get the data repository in write mode
+        mOpenHelper = new FlashcardDbHelper(providerContext());
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        // Get table names from set titles
+        String oldName = getTableName(oldTitle);
+        String newName = getTableName(newTitle);
+
+        // Check if the new title is taken
+        Cursor cursor = query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TABLE_NAME},
+                SetList.SET_TABLE_NAME + "=?",
+                new String[]{newName},
+                null);
+
+        // New title is not taken
+        if (cursor != null && cursor.getCount() == 0) {
+            // Rename flashcard table
+            db.execSQL("ALTER TABLE '" + oldName + "' RENAME TO '" + newName + "'");
+
+            // Get row id in main table
+            Cursor oldCursor = query(SetList.CONTENT_URI,
+                    new String[]{SetList.SET_TABLE_NAME, SetList._ID},
+                    SetList.SET_TABLE_NAME + "=?",
+                    new String[]{oldName},
+                    null);
+            String rowId;
+            if (oldCursor != null && oldCursor.moveToFirst()) {
+                rowId = String.valueOf(oldCursor.getLong(oldCursor.getColumnIndex(SetList._ID)));
+                oldCursor.close();
+
+                // Update set name in main table
+                ContentValues values = new ContentValues();
+                values.put(SetList.SET_TITLE, newTitle);
+                values.put(SetList.SET_TABLE_NAME, newName);
+                db.update(SetList.TABLE_NAME, values, SetList._ID + "=?", new String[]{rowId});
+            }
+
+            cursor.close();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Check if a term already exists in a stack.
      */
     public boolean termExists(String term, Uri uri) {

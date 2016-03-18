@@ -89,6 +89,16 @@ public class SetListFragment extends ListFragment
                         selections = new ArrayList<>();
                         mode.finish();
                         return true;
+
+                    case R.id.edit:
+                        TextView set = (TextView) getListView().getChildAt(selections.get(0));
+                        String title = set.getText().toString();
+                        Intent intent = new Intent(getActivity(), EditSetTitle.class);
+                        intent.putExtra(Constants.TITLE, title);
+                        startActivity(intent);
+                        mode.finish();
+                        return true;
+
                     default:
                         return false;
                 }

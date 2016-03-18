@@ -37,7 +37,7 @@ public class NewSet extends AppCompatActivity {
         }
 
         // Return to main screen
-        Intent main = new Intent(NewSet.this, Main.class);
+        Intent main = new Intent(this, Main.class);
         startActivity(main);
         finish();
     }
