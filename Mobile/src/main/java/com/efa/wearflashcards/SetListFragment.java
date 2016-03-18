@@ -8,7 +8,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,10 +32,8 @@ public class SetListFragment extends ListFragment
     // These are the set names that we will retrieve
     private static final String[] SET_SUMMARY_PROJECTION =
             new String[]{SetList._ID, SetList.SET_TITLE};
-
     // This is the Adapter being used to display the list's data
     private SimpleCursorAdapter mAdapter;
-
     // Store position of selected items
     private List<Integer> selections = new ArrayList<>();
 
@@ -64,7 +61,7 @@ public class SetListFragment extends ListFragment
                 if (checked) {
                     selections.add(position);
                 } else {
-                    selections.remove(position);
+                    selections.remove(Integer.valueOf(position));
                 }
             }
 
@@ -119,13 +116,6 @@ public class SetListFragment extends ListFragment
 
         // Prepare the loader. Either re-connect with an existing one, or start a new one.
         getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, view, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_menu, menu);
     }
 
     // Open the flashcard set when it is clicked

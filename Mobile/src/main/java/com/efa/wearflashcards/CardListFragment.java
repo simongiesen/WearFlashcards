@@ -7,16 +7,21 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.view.ActionMode;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.efa.wearflashcards.data.FlashcardContract.CardSet;
 import com.efa.wearflashcards.data.FlashcardProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,6 +35,8 @@ public class CardListFragment extends ListFragment
     SimpleCursorAdapter mAdapter;
     // Save table name from SetOverview
     private String table_name;
+    // Store position of selected items
+    private List<Integer> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +49,69 @@ public class CardListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        registerForContextMenu(getListView());
+
+        // Contextual action mode code adapted from
+        // http://developer.android.com/guide/topics/ui/menus.html#context-menu
+        ListView listView = getListView();
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                                  long id, boolean checked) {
+                // Store position of selected items
+                if (checked) {
+                    selections.add(position);
+                } else {
+                    selections.remove(Integer.valueOf(position));
+                }
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                // Respond to clicks on the actions in the CAB
+                switch (item.getItemId()) {
+                    case R.id.delete:
+                        for (int i = 0, n = selections.size(); i < n; i++) {
+                            // Get term and definition from the ListView item
+                            LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(i));
+                            TextView term = (TextView) card.findViewById(R.id.card_term);
+                            TextView definition = (TextView) card.findViewById(R.id.card_definition);
+
+                            // Build delete arguments
+                            final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
+                            final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
+
+                            // Delete card from set
+                            FlashcardProvider handle = new FlashcardProvider();
+                            handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), selection, selectionArgs);
+                        }
+
+                        // Reset selections list and hide the CAB
+                        selections = new ArrayList<>();
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate the menu for the CAB
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.context_menu, menu);
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+        });
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
@@ -58,38 +127,6 @@ public class CardListFragment extends ListFragment
 
         // Prepare the loader. Either re-connect with an existing one, or start a new one.
         getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, view, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete:
-                // Get term and definition from textView item
-                TextView term = (TextView) info.targetView.findViewById(R.id.card_term);
-                TextView definition = (TextView) info.targetView.findViewById(R.id.card_definition);
-
-                // Build delete arguments
-                final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
-                final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
-
-                // Delete card from set
-                FlashcardProvider handle = new FlashcardProvider();
-                handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, table_name), selection, selectionArgs);
-
-                // Refresh the loader with new data
-                getLoaderManager().initLoader(0, null, this);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
     }
 
     // Called when a new Loader needs to be created
