@@ -17,7 +17,6 @@ public class Constants {
     public static String TITLE = "title";
     public static int SHUFFLE_POS = 0;
     public static int DEF_FIRST_POS = 1;
-    public static int STUDY_SET_POS = 2;
     public static int TERM_POS = 0;
     public static int DEF_POS = 1;
 }

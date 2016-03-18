@@ -17,6 +17,8 @@ import com.efa.wearflashcards.data.FlashcardProvider;
 import java.util.ArrayList;
 
 public class SetOverview extends AppCompatActivity {
+    private String[] terms;
+    private String[] definitions;
     private String tableName;
     private String title;
     private SharedPreferences settings;
@@ -56,6 +58,21 @@ public class SetOverview extends AppCompatActivity {
                     .add(R.id.set_overview_layout, frag)
                     .commit();
         }
+
+        // Get terms and definitions from the database
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+        String tableName = handle.getTableName(title);
+        Cursor cursor = handle.fetchAllCards(tableName);
+
+        // Put terms and definitions into string arrays
+        ArrayList<String> columnArray1 = new ArrayList<>();
+        ArrayList<String> columnArray2 = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            columnArray1.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.TERM)));
+            columnArray2.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
+        }
+        terms = columnArray1.toArray(new String[columnArray1.size()]);
+        definitions = columnArray2.toArray(new String[columnArray2.size()]);
     }
 
     @Override
@@ -73,6 +90,11 @@ public class SetOverview extends AppCompatActivity {
         // Restore settings
         shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
+
+        // Hide StudySet button if there are no cards
+        if (terms.length == 0) {
+            menu.removeItem(R.id.study_set_button);
+        }
         return true;
     }
 
@@ -93,21 +115,6 @@ public class SetOverview extends AppCompatActivity {
             editor.apply();
             return true;
         } else if (id == R.id.study_set_button) {
-            // Get terms and definitions from the database
-            FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-            String tableName = handle.getTableName(title);
-            Cursor cursor = handle.fetchAllCards(tableName);
-
-            // Put terms and definitions into string arrays
-            ArrayList<String> columnArray1 = new ArrayList<>();
-            ArrayList<String> columnArray2 = new ArrayList<>();
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                columnArray1.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.TERM)));
-                columnArray2.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
-            }
-            String[] terms = columnArray1.toArray(new String[columnArray1.size()]);
-            String[] definitions = columnArray2.toArray(new String[columnArray2.size()]);
-
             // Send terms and definitions to StudySet
             Intent intent = new Intent(SetOverview.this, StudySet.class);
             intent.putExtra(Constants.TERM, terms);
