@@ -64,6 +64,13 @@ public class CardListFragment extends ListFragment
                 } else {
                     selections.remove(Integer.valueOf(position));
                 }
+
+                // Only show the edit button if there is only one item selected
+                if (selections.size() == 1) {
+                    mode.getMenu().findItem(R.id.edit).setVisible(true);
+                } else {
+                    mode.getMenu().findItem(R.id.edit).setVisible(false);
+                }
             }
 
             @Override
