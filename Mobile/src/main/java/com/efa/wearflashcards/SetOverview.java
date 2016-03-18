@@ -15,6 +15,7 @@ import com.efa.wearflashcards.data.FlashcardContract;
 import com.efa.wearflashcards.data.FlashcardProvider;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SetOverview extends AppCompatActivity {
     private String[] terms;
@@ -115,6 +116,16 @@ public class SetOverview extends AppCompatActivity {
             editor.apply();
             return true;
         } else if (id == R.id.study_set_button) {
+            // Apply settings
+            if (settings.getBoolean(Constants.DEF_FIRST, false)) {
+                String[] temp = terms;
+                terms = definitions;
+                definitions = temp;
+            }
+            if (settings.getBoolean(Constants.SHUFFLE, false)) {
+                shuffleCards();
+            }
+
             // Send terms and definitions to StudySet
             Intent intent = new Intent(SetOverview.this, StudySet.class);
             intent.putExtra(Constants.TERM, terms);
@@ -133,5 +144,50 @@ public class SetOverview extends AppCompatActivity {
         // Return to Main if back key is pressed instead of going to previous activity
         Intent intent = new Intent(this, Main.class);
         startActivity(intent);
+    }
+
+    private void shuffleCards() {
+        int size = terms.length;
+        int[] shuffleOrder = getShuffledArray(size);
+        String[] newTerms = new String[size];
+        String[] newDefs = new String[size];
+
+        // Use shuffled int array to ensure that the new terms and definitions match
+        for (int i = 0; i < size; i++) {
+            newTerms[i] = terms[shuffleOrder[i]];
+            newDefs[i] = definitions[shuffleOrder[i]];
+        }
+
+        terms = newTerms;
+        definitions = newDefs;
+    }
+
+    /**
+     * Creates an int array of size 'size' in increasing order and shuffles it.
+     */
+    private int[] getShuffledArray(int size) {
+        int[] array = new int[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = i;
+        }
+        return shuffleArray(array);
+    }
+
+    /**
+     * Shuffles an int array.
+     * http://stackoverflow.com/a/18456998/3522216
+     */
+    private int[] shuffleArray(int[] array) {
+        int index;
+        Random random = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            index = random.nextInt(i + 1);
+            if (index != i) {
+                array[index] ^= array[i];
+                array[i] ^= array[index];
+                array[index] ^= array[i];
+            }
+        }
+        return array;
     }
 }
