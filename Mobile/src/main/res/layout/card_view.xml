@@ -28,7 +28,7 @@
                 android:gravity="center"
                 android:padding="15dp"
                 android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                android:textSize="38sp" />
 
         </ScrollView>
 
@@ -49,7 +49,7 @@
                 android:paddingTop="5dp"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
         </ScrollView>
     </FrameLayout>
