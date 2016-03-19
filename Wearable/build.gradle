@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+// Use number of commits as the version code
+// https://plus.google.com/+MarcReichelt/posts/BX2he4vSJaM
+def getNumberOfCommits() {
+    return 'git rev-list --count HEAD'.execute().text.trim().toInteger()
+}
 
 android {
     compileSdkVersion 23
@@ -9,7 +14,7 @@ android {
         minSdkVersion 20
         targetSdkVersion 23
         versionName '1.0.0'
-        versionCode 1
+        versionCode getNumberOfCommits()
     }
     buildTypes {
         release {
