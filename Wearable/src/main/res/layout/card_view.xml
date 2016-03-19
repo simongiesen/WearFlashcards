@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:background="@color/windowBackground"
         android:padding="5dp"
-        app:layout_box="all">
+        app:layout_box="left|right">
 
         <ScrollView
             android:id="@+id/term_scroll"
