@@ -1,4 +1,7 @@
 # Wear Flashcards
+
+[![Build Status](https://travis-ci.org/ericfabreu/WearFlashcards.svg?branch=master)](https://travis-ci.org/ericfabreu/WearFlashcards)
+
 Flashcards for Android Wear
 
 ## Requirements
