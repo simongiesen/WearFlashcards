@@ -50,12 +50,14 @@ public class NewCard extends AppCompatActivity {
         // Check if term is blank
         if (TextUtils.isEmpty(term)) {
             text1.setError(getString(R.string.empty_term));
+            text1.requestFocus();
             return;
         }
 
         // Check if definition is blank
         if (TextUtils.isEmpty(definition)) {
             text2.setError(getString(R.string.empty_definition));
+            text2.requestFocus();
             return;
         }
 
