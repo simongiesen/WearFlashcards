@@ -11,10 +11,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginBottom="8dp"
         android:drawablePadding="8dp"
         android:drawableTop="@drawable/offline"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:text="@string/offline_message"
         android:textColor="@color/list_text"
         android:textSize="16sp" />
