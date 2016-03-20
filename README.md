@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ericfabreu/WearFlashcards.svg?branch=master)](https://travis-ci.org/ericfabreu/WearFlashcards)
 
-Flashcards for Android Wear
+Flashcards for Android Wear (available on the [Play Store](https://play.google.com/store/apps/details?id=com.ericfabreu.wearflashcards))
 
 ## Requirements
 * Java JDK 1.7+
