@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements
         // Get the list component from the layout of the activity
         setContentView(R.layout.activity_main);
         WearableListView listView =
-                (WearableListView) findViewById(R.id.list);
+                (WearableListView) findViewById(R.id.layout_list);
 
         // Assign an adapter to the list
         listView.setAdapter(new Adapter(this, setList));
@@ -195,7 +195,7 @@ public class MainActivity extends Activity implements
             public ItemViewHolder(View itemView) {
                 super(itemView);
                 // Find the text view within the custom item's layout
-                textView = (TextView) itemView.findViewById(R.id.name);
+                textView = (TextView) itemView.findViewById(R.id.text_name);
             }
         }
     }

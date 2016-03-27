@@ -2,7 +2,7 @@
 <android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/windowBackground"
+    android:background="@color/window_background"
     android:paddingBottom="40dp"
     android:paddingEnd="8dp"
     android:paddingStart="8dp"
@@ -22,7 +22,7 @@
             android:onClick="flipShuffle">
 
             <ImageView
-                android:id="@+id/shuffle_circle"
+                android:id="@+id/image_shuffle"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
@@ -33,12 +33,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_toEndOf="@+id/shuffle_circle"
+                android:layout_toEndOf="@+id/image_shuffle"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/shuffle_setting"
+                    android:id="@+id/text_shuffle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -50,7 +50,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/shuffle_status"
+                    android:id="@+id/text_shuffle_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -69,7 +69,7 @@
             android:onClick="flipDefFirst">
 
             <ImageView
-                android:id="@+id/def_first_circle"
+                android:id="@+id/image_definition_first"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
@@ -80,12 +80,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_toEndOf="@+id/def_first_circle"
+                android:layout_toEndOf="@+id/image_definition_first"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/def_first_setting"
+                    android:id="@+id/text_definition_first"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -97,7 +97,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/def_first_status"
+                    android:id="@+id/text_definition_first_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"

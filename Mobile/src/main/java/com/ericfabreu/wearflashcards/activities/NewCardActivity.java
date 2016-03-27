@@ -29,19 +29,19 @@ public class NewCardActivity extends AppCompatActivity {
         title = bundle.getString(Constants.TITLE);
         setContentView(R.layout.activity_new_card);
 
-        // Put the set title in the toolbar
+        // Put the set title in the toolbar_main
         setTitle(getString(R.string.create_card));
     }
 
     // Create a card and either return to MainActivity or reset view
     public void newCard(View view) {
-        EditText text1 = (EditText) findViewById(R.id.new_term_text);
-        EditText text2 = (EditText) findViewById(R.id.new_definition_text);
+        EditText text1 = (EditText) findViewById(R.id.edit_new_term);
+        EditText text2 = (EditText) findViewById(R.id.edit_new_definition);
         String term = text1.getText().toString();
         String definition = text2.getText().toString();
 
         // Return to SetOverviewActivity if the view is empty and 'done' was selected
-        if (view.getId() == R.id.done &&
+        if (view.getId() == R.id.button_done &&
                 TextUtils.isEmpty(term) &&
                 TextUtils.isEmpty(definition)) {
             onBackPressed();
@@ -79,7 +79,7 @@ public class NewCardActivity extends AppCompatActivity {
         handle.insert(tableUri, contentValues);
 
         // Check if it should reset view
-        if (view.getId() == R.id.next) {
+        if (view.getId() == R.id.button_next) {
             text1.setText(null);
             text2.setText(null);
             text1.requestFocus();
@@ -94,7 +94,7 @@ public class NewCardActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverviewActivity if the toolbar back button is clicked
+            // Pass table name back to SetOverviewActivity if the toolbar_main back button is clicked
             case android.R.id.home:
                 onBackPressed();
                 return true;

@@ -10,7 +10,7 @@
     tools:context=".activities.EditSetTitleActivity">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/edit_set_layout"
+        android:id="@+id/layout_edit_set"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.Base">
@@ -22,15 +22,13 @@
             android:hint="@string/set_title_hint"
             android:inputType="textCapWords"
             android:theme="@style/AppTheme.Base" />
-
     </android.support.design.widget.TextInputLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/edit_set_layout"
-        android:layout_below="@+id/edit_set_layout"
+        android:layout_alignEnd="@+id/layout_edit_set"
+        android:layout_below="@+id/layout_edit_set"
         android:onClick="editSetTitle"
         android:text="@string/save" />
-
 </RelativeLayout>

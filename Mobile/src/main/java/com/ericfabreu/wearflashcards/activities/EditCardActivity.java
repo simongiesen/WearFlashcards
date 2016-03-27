@@ -44,8 +44,8 @@ public class EditCardActivity extends AppCompatActivity {
         super.onStart();
 
         // Add term and definition to EditText and move cursor to the end of the term
-        EditText tView = (EditText) findViewById(R.id.edit_term_text);
-        EditText defView = (EditText) findViewById(R.id.edit_definition_text);
+        EditText tView = (EditText) findViewById(R.id.edit_term);
+        EditText defView = (EditText) findViewById(R.id.edit_definition);
         tView.setText(term);
         tView.setSelection(term.length());
         defView.setText(definition);
@@ -55,8 +55,8 @@ public class EditCardActivity extends AppCompatActivity {
      * Edits a card and returns to SetOverviewActivity.
      */
     public void editCard(View view) {
-        EditText tView = (EditText) findViewById(R.id.edit_term_text);
-        EditText defView = (EditText) findViewById(R.id.edit_definition_text);
+        EditText tView = (EditText) findViewById(R.id.edit_term);
+        EditText defView = (EditText) findViewById(R.id.edit_definition);
         String newTerm = tView.getText().toString();
         String newDef = defView.getText().toString();
 

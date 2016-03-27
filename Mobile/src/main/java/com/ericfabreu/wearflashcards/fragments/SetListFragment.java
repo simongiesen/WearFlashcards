@@ -70,11 +70,11 @@ public class SetListFragment extends ListFragment
                     selections.remove(Integer.valueOf(position));
                 }
 
-                // Only show the edit button if there is only one item selected
+                // Only show the item_edit button if there is only one item selected
                 if (selections.size() == 1) {
-                    mode.getMenu().findItem(R.id.edit).setVisible(true);
+                    mode.getMenu().findItem(R.id.item_edit).setVisible(true);
                 } else {
-                    mode.getMenu().findItem(R.id.edit).setVisible(false);
+                    mode.getMenu().findItem(R.id.item_edit).setVisible(false);
                 }
             }
 
@@ -82,7 +82,7 @@ public class SetListFragment extends ListFragment
             public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
                 // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
-                    case R.id.delete:
+                    case R.id.item_delete:
                         // Display alert message
                         // http://stackoverflow.com/a/13511580/3522216
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -122,7 +122,7 @@ public class SetListFragment extends ListFragment
                         alert.show();
                         return true;
 
-                    case R.id.edit:
+                    case R.id.item_edit:
                         // Get set title and send it to EditSetTitleActivity
                         TextView set = (TextView) getListView().getChildAt(selections.get(0));
                         String title = set.getText().toString();
@@ -160,7 +160,7 @@ public class SetListFragment extends ListFragment
                 R.layout.fragment_set_list,
                 null,
                 new String[]{SetList.SET_TITLE},
-                new int[]{R.id.main_set_title},
+                new int[]{R.id.text_set_title},
                 0);
         setListAdapter(mAdapter);
 
@@ -172,7 +172,7 @@ public class SetListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         // Get stack title
-        TextView textView = (TextView) view.findViewById(R.id.main_set_title);
+        TextView textView = (TextView) view.findViewById(R.id.text_set_title);
         String title = textView.getText().toString();
 
         // Pass table name to SetOverviewActivity

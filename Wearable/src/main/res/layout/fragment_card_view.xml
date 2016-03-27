@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Based on sample layout from
      http://developer.android.com/training/wearables/ui/layouts.html -->
 <android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -9,15 +10,15 @@
     android:paddingTop="25dp">
 
     <FrameLayout
-        android:id="@+id/frame"
+        android:id="@+id/layout_card_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/windowBackground"
+        android:background="@color/window_background"
         android:padding="5dp"
         app:layout_box="left|right">
 
         <ScrollView
-            android:id="@+id/term_scroll"
+            android:id="@+id/scroll_card_term"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -25,18 +26,17 @@
             app:layout_box="all">
 
             <TextView
-                android:id="@+id/term"
+                android:id="@+id/text_term"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
-
         </ScrollView>
 
         <ScrollView
-            android:id="@+id/def_scroll"
+            android:id="@+id/scroll_definition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -44,7 +44,7 @@
             app:layout_box="all">
 
             <TextView
-                android:id="@+id/definition"
+                android:id="@+id/text_card_definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
@@ -54,7 +54,6 @@
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
-
         </ScrollView>
     </FrameLayout>
 </android.support.wearable.view.BoxInsetLayout>

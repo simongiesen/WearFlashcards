@@ -21,7 +21,7 @@ public class NewSetActivity extends AppCompatActivity {
 
     // Create an empty set and return to MainActivity
     public void newSet(View view) {
-        EditText text = (EditText) findViewById(R.id.new_set_title);
+        EditText text = (EditText) findViewById(R.id.edit_new_set_title);
         String title = text.getText().toString();
 
         // Check if title is empty

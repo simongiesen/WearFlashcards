@@ -8,26 +8,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@color/windowBackground"
+        android:background="@color/window_background"
         android:orientation="horizontal">
 
         <ImageButton
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_gravity="center"
-            android:background="@color/windowBackground"
+            android:background="@color/window_background"
             android:contentDescription="@string/settings"
             android:onClick="openSettings"
             android:src="@drawable/btn_settings" />
     </LinearLayout>
 
     <android.support.wearable.view.WearableListView
-        android:id="@+id/list"
+        android:id="@+id/layout_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/windowBackground"
+        android:background="@color/window_background"
         android:dividerHeight="0dp"
         android:scrollbars="none" />
-
 </LinearLayout>

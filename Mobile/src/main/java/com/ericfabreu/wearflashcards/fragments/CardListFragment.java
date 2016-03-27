@@ -73,9 +73,9 @@ public class CardListFragment extends ListFragment
 
                 // Only show the edit button if there is only one item selected
                 if (selections.size() == 1) {
-                    mode.getMenu().findItem(R.id.edit).setVisible(true);
+                    mode.getMenu().findItem(R.id.item_edit).setVisible(true);
                 } else {
-                    mode.getMenu().findItem(R.id.edit).setVisible(false);
+                    mode.getMenu().findItem(R.id.item_edit).setVisible(false);
                 }
             }
 
@@ -83,7 +83,7 @@ public class CardListFragment extends ListFragment
             public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
                 // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
-                    case R.id.delete:
+                    case R.id.item_delete:
                         // Display alert message
                         // http://stackoverflow.com/a/13511580/3522216
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -130,7 +130,7 @@ public class CardListFragment extends ListFragment
                         alert.show();
                         return true;
 
-                    case R.id.edit:
+                    case R.id.item_edit:
                         // Get term and definition and send them to EditCardActivity
                         LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(0));
                         TextView tView = (TextView) card.getChildAt(Constants.TERM_POS);
@@ -174,7 +174,7 @@ public class CardListFragment extends ListFragment
                 R.layout.fragment_card_list,
                 null,
                 new String[]{CardSet.TERM, CardSet.DEFINITION},
-                new int[]{R.id.card_term, R.id.card_definition},
+                new int[]{R.id.text_term, R.id.text_definition},
                 0);
         setListAdapter(mAdapter);
 

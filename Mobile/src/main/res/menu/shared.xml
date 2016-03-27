@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <group android:checkableBehavior="all">
+
         <item
-            android:id="@+id/shuffle"
+            android:id="@+id/item_shuffle"
             android:title="@string/shuffle" />
+
         <item
-            android:id="@+id/definition_first"
+            android:id="@+id/item_definition_first"
             android:title="@string/definition_first" />
     </group>
+
     <item
-        android:id="@+id/study_set_button"
+        android:id="@+id/item_study_set"
         android:icon="@drawable/ic_menu_card"
         android:title="@string/set_view_button"
         app:showAsAction="always" />

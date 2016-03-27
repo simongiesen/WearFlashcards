@@ -24,14 +24,14 @@ public class SettingsActivity extends Activity {
         // Load and apply activity_settings
         settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         if (settings.getBoolean(Constants.SHUFFLE, false)) {
-            ((TextView) findViewById(R.id.shuffle_status)).setText(getText(R.string.on));
+            ((TextView) findViewById(R.id.text_shuffle_status)).setText(getText(R.string.on));
         } else {
-            ((TextView) findViewById(R.id.shuffle_status)).setText(getText(R.string.off));
+            ((TextView) findViewById(R.id.text_shuffle_status)).setText(getText(R.string.off));
         }
         if (settings.getBoolean(Constants.DEF_FIRST, false)) {
-            ((TextView) findViewById(R.id.def_first_status)).setText(getText(R.string.on));
+            ((TextView) findViewById(R.id.text_definition_first_status)).setText(getText(R.string.on));
         } else {
-            ((TextView) findViewById(R.id.def_first_status)).setText(getText(R.string.off));
+            ((TextView) findViewById(R.id.text_definition_first_status)).setText(getText(R.string.off));
         }
     }
 
@@ -46,9 +46,9 @@ public class SettingsActivity extends Activity {
 
         // Update screen
         if (settings.getBoolean(Constants.SHUFFLE, false)) {
-            ((TextView) findViewById(R.id.shuffle_status)).setText(getText(R.string.on));
+            ((TextView) findViewById(R.id.text_shuffle_status)).setText(getText(R.string.on));
         } else {
-            ((TextView) findViewById(R.id.shuffle_status)).setText(getText(R.string.off));
+            ((TextView) findViewById(R.id.text_shuffle_status)).setText(getText(R.string.off));
         }
     }
 
@@ -63,9 +63,9 @@ public class SettingsActivity extends Activity {
 
         // Update screen
         if (settings.getBoolean(Constants.DEF_FIRST, false)) {
-            ((TextView) findViewById(R.id.def_first_status)).setText(getText(R.string.on));
+            ((TextView) findViewById(R.id.text_definition_first_status)).setText(getText(R.string.on));
         } else {
-            ((TextView) findViewById(R.id.def_first_status)).setText(getText(R.string.off));
+            ((TextView) findViewById(R.id.text_definition_first_status)).setText(getText(R.string.off));
         }
     }
 }

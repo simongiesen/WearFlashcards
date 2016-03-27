@@ -33,14 +33,14 @@ public class StudySetActivity extends AppCompatActivity {
 
     // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
     protected void createCards() {
-        final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager);
+        final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
         pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), terms, definitions));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverviewActivity if the toolbar back button is clicked
+            // Pass table name back to SetOverviewActivity if the toolbar_main back button is clicked
             case android.R.id.home:
                 onBackPressed();
                 return true;

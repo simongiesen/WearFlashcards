@@ -1,19 +1,19 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:windowBackground">@color/window_background</item>
         <item name="android:activatedBackgroundIndicator">@drawable/list_selected</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorPrimary</item>
+        <item name="actionModeBackground">@color/color_primary</item>
     </style>
 
-    <!-- EditText theme. -->
+    <!-- EditText theme -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/colorEdit</item>
+        <item name="colorAccent">@color/color_edit</item>
         <item name="android:editTextStyle">@style/EditTextStyle</item>
     </style>
 

@@ -30,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         instance = this;
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
         // Load settings
         settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // Load flashcard sets
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.main_layout, new SetListFragment())
+                    .add(R.id.layout_main, new SetListFragment())
                     .commit();
         }
     }
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
 
         // Set view button is unnecessary in MainActivity
-        menu.removeItem(R.id.study_set_button);
+        menu.removeItem(R.id.item_study_set);
         return true;
     }
 
@@ -84,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         // Flip the item's checked state and save settings
-        if (id == R.id.shuffle) {
+        if (id == R.id.item_shuffle) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(Constants.SHUFFLE, !item.isChecked());
             editor.apply();
             item.setChecked(!item.isChecked());
             return true;
-        } else if (id == R.id.definition_first) {
+        } else if (id == R.id.item_definition_first) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(Constants.DEF_FIRST, !item.isChecked());
             editor.apply();

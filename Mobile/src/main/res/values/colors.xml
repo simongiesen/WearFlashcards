@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#00796B</color>
-    <color name="colorAccent">#F44336</color>
-    <color name="colorEdit">#009688</color>
-    <color name="windowBackground">#ECEFF1</color>
-    <color name="listActivated">#B0BEC5</color>
+    <color name="color_primary">#009688</color>
+    <color name="color_primary_dark">#00796B</color>
+    <color name="color_accent">#F44336</color>
+    <color name="color_edit">#009688</color>
+    <color name="window_background">#ECEFF1</color>
+    <color name="list_activated">#B0BEC5</color>
 </resources>

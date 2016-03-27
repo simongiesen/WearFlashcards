@@ -20,7 +20,7 @@
     android:background="@color/wl_teal">
 
     <android.support.wearable.view.GridViewPager
-        android:id="@+id/pager"
+        android:id="@+id/pager_set_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

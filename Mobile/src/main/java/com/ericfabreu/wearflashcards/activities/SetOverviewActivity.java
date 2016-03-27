@@ -45,7 +45,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         // Use the set title as the activity title
         setTitle(title);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.set_overview_fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_set_overview);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +59,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         // Load flashcard sets
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.set_overview_layout, frag)
+                    .add(R.id.layout_set_overview, frag)
                     .commit();
         }
 
@@ -97,7 +97,7 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Hide StudySetActivity button if there are no cards
         if (terms.length == 0) {
-            menu.removeItem(R.id.study_set_button);
+            menu.removeItem(R.id.item_study_set);
         }
         return true;
     }
@@ -106,19 +106,19 @@ public class SetOverviewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // Flip the item's checked state and save settings
-        if (id == R.id.shuffle) {
+        // Flip the item's checked state and button_save settings
+        if (id == R.id.item_shuffle) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(Constants.SHUFFLE, !item.isChecked());
             editor.apply();
             item.setChecked(!item.isChecked());
             return true;
-        } else if (id == R.id.definition_first) {
+        } else if (id == R.id.item_definition_first) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(Constants.DEF_FIRST, !item.isChecked());
             editor.apply();
             return true;
-        } else if (id == R.id.study_set_button) {
+        } else if (id == R.id.item_study_set) {
             // Apply settings
             if (settings.getBoolean(Constants.DEF_FIRST, false)) {
                 String[] temp = terms;
