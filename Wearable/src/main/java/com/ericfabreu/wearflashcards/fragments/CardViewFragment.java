@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -9,10 +9,13 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.utils.Constants;
+
 /**
  * Fragment used to display cards.
  */
-public class CardView extends Fragment {
+public class CardViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

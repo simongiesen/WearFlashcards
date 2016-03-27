@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
@@ -23,7 +25,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
-public class Main extends Activity implements
+public class MainActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -52,7 +54,7 @@ public class Main extends Activity implements
     }
 
     public void openSettings(View view) {
-        Intent intent = new Intent(Main.this, Settings.class);
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 
@@ -65,14 +67,14 @@ public class Main extends Activity implements
         // Assign an adapter to the list
         listView.setAdapter(new Adapter(this, setList));
 
-        // Open SetView when an item is clicked
+        // Open SetViewActivity when an item is clicked
         listView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder view) {
-                // Get set title from list item and send it to SetView
+                // Get set title from list item and send it to SetViewActivity
                 Adapter.ItemViewHolder itemHolder = (Adapter.ItemViewHolder) view;
                 TextView tv = itemHolder.textView;
-                Intent intent = new Intent(Main.this, SetView.class);
+                Intent intent = new Intent(MainActivity.this, SetViewActivity.class);
                 intent.putExtra(Constants.TITLE, tv.getText().toString());
                 startActivity(intent);
             }

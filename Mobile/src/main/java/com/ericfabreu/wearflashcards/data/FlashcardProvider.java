@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.ericfabreu.wearflashcards.Main;
+import com.ericfabreu.wearflashcards.activities.MainActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 
@@ -67,8 +67,8 @@ public class FlashcardProvider extends ContentProvider {
             return context;
         }
 
-        // Get context from Main
-        return Main.getContext();
+        // Get context from MainActivity
+        return MainActivity.getContext();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -20,8 +20,11 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.activities.EditCardActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +39,14 @@ public class CardListFragment extends ListFragment
     static final String[] SET_SUMMARY_PROJECTION = new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
-    // Save table name from SetOverview
+    // Save table name from SetOverviewActivity
     private String tableName;
     // Store position of selected items
     private List<Integer> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Get table name from SetOverview
+        // Get table name from SetOverviewActivity
         Bundle bundle = getArguments();
         tableName = bundle.getString(Constants.TABLE_NAME);
         super.onCreate(savedInstanceState);
@@ -128,13 +131,13 @@ public class CardListFragment extends ListFragment
                         return true;
 
                     case R.id.edit:
-                        // Get term and definition and send them to EditCard
+                        // Get term and definition and send them to EditCardActivity
                         LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(0));
                         TextView tView = (TextView) card.getChildAt(Constants.TERM_POS);
                         TextView defView = (TextView) card.getChildAt(Constants.DEF_POS);
                         String term = tView.getText().toString();
                         String definition = defView.getText().toString();
-                        Intent intent = new Intent(getActivity(), EditCard.class);
+                        Intent intent = new Intent(getActivity(), EditCardActivity.class);
                         intent.putExtra(Constants.TERM, term);
                         intent.putExtra(Constants.DEFINITION, definition);
                         intent.putExtra(Constants.TABLE_NAME, tableName);

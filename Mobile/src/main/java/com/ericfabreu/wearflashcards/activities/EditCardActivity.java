@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,13 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.utils.Constants;
 
 /**
  * Edits a card.
  */
-public class EditCard extends AppCompatActivity {
+public class EditCardActivity extends AppCompatActivity {
     private String term;
     private String definition;
     private String tableName;
@@ -25,7 +27,7 @@ public class EditCard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get term and definition from SetOverview
+        // Get term and definition from SetOverviewActivity
         Bundle bundle = getIntent().getExtras();
         term = bundle.getString(Constants.TERM);
         definition = bundle.getString(Constants.DEFINITION);
@@ -50,7 +52,7 @@ public class EditCard extends AppCompatActivity {
     }
 
     /**
-     * Edits a card and returns to SetOverview.
+     * Edits a card and returns to SetOverviewActivity.
      */
     public void editCard(View view) {
         EditText tView = (EditText) findViewById(R.id.edit_term_text);
@@ -85,7 +87,7 @@ public class EditCard extends AppCompatActivity {
         }
 
 
-        // Pass set title and table name back to SetOverview and return
+        // Pass set title and table name back to SetOverviewActivity and return
         onBackPressed();
         finish();
     }
@@ -93,7 +95,7 @@ public class EditCard extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverview if the toolbar back button is clicked
+            // Pass table name back to SetOverviewActivity if the toolbar back button is clicked
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -104,8 +106,8 @@ public class EditCard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Pass set title and table name back to SetOverview
-        Intent intent = new Intent(this, SetOverview.class);
+        // Pass set title and table name back to SetOverviewActivity
+        Intent intent = new Intent(this, SetOverviewActivity.class);
         intent.putExtra(Constants.TABLE_NAME, tableName);
         intent.putExtra(Constants.TITLE, setTitle);
         startActivity(intent);

@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.utils;
 
 /**
  * Constants used by the app.

@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.utils.Constants;
+
 /**
  * Allows user to change the app's settings.
  */
-public class Settings extends Activity {
+public class SettingsActivity extends Activity {
     private SharedPreferences settings;
 
     @Override

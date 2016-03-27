@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_padding"
     android:paddingRight="@dimen/activity_horizontal_padding"
     android:paddingTop="@dimen/activity_vertical_padding"
-    tools:context=".EditSetTitle">
+    tools:context=".activities.EditSetTitleActivity">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/edit_set_layout"

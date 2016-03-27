@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
+import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 
-public class NewSet extends AppCompatActivity {
+public class NewSetActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +19,7 @@ public class NewSet extends AppCompatActivity {
         setTitle(getString(R.string.create_set));
     }
 
-    // Create an empty set and return to Main
+    // Create an empty set and return to MainActivity
     public void newSet(View view) {
         EditText text = (EditText) findViewById(R.id.new_set_title);
         String title = text.getText().toString();
@@ -37,7 +38,7 @@ public class NewSet extends AppCompatActivity {
         }
 
         // Return to main screen
-        Intent main = new Intent(this, Main.class);
+        Intent main = new Intent(this, MainActivity.class);
         startActivity(main);
         finish();
     }

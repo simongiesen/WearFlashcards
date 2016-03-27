@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.adapters;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.wearable.view.FragmentGridPagerAdapter;
+
+import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
+import com.ericfabreu.wearflashcards.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Generates CardViews for SetView.
+ * Generates CardViews for SetViewActivity.
  */
-public class StudySetAdapter extends FragmentStatePagerAdapter {
+public class SetViewAdapter extends FragmentGridPagerAdapter {
     private List<Fragment> cards = new ArrayList<>();
 
-    public StudySetAdapter(FragmentManager fm, String[] terms, String[] definitions) {
+    public SetViewAdapter(FragmentManager fm, String[] terms, String[] definitions) {
         super(fm);
 
         // Create all cards
@@ -40,24 +43,29 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
     }
 
     /**
-     * Sends term and definition to CardView and creates a new card.
+     * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private Fragment newCard(String term, String definition) {
+    private CardViewFragment newCard(String term, String definition) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TERM, term);
         bundle.putString(Constants.DEFINITION, definition);
-        CardView card = new CardView();
+        CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         return card;
     }
 
     @Override
-    public Fragment getItem(int position) {
-        return cards.get(position);
+    public Fragment getFragment(int row, int col) {
+        return cards.get(row);
     }
 
     @Override
-    public int getCount() {
+    public int getRowCount() {
         return cards.size();
+    }
+
+    @Override
+    public int getColumnCount(int rowNum) {
+        return Constants.COLUMN_COUNT;
     }
 }

@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class Main extends AppCompatActivity {
-    private static Main instance;
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.fragments.SetListFragment;
+import com.ericfabreu.wearflashcards.utils.Constants;
+
+public class MainActivity extends AppCompatActivity {
+    private static MainActivity instance;
     private SharedPreferences settings;
 
     // Allow other activities to get application context statically
@@ -36,7 +40,7 @@ public class Main extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Main.this, NewSet.class);
+                Intent intent = new Intent(MainActivity.this, NewSetActivity.class);
                 startActivity(intent);
             }
         });
@@ -70,7 +74,7 @@ public class Main extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
 
-        // Set view button is unnecessary in Main
+        // Set view button is unnecessary in MainActivity
         menu.removeItem(R.id.study_set_button);
         return true;
     }

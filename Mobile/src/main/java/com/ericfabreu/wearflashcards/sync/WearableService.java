@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.sync;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataMap;

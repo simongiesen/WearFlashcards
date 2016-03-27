@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Main"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,9 +27,9 @@
             android:label="FlashcardProvider" />
 
         <activity
-            android:name=".NewSet"
+            android:name=".activities.NewSetActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name=".NewSet" />
@@ -37,9 +37,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditSetTitle"
+            android:name=".activities.EditSetTitleActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name=".EditSetTitle" />
@@ -47,9 +47,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewCard"
+            android:name=".activities.NewCardActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".SetOverview"
+            android:parentActivityName=".activities.SetOverviewActivity"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name=".NewCard" />
@@ -57,9 +57,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditCard"
+            android:name=".activities.EditCardActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".SetOverview"
+            android:parentActivityName=".activities.SetOverviewActivity"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name=".EditCard" />
@@ -67,18 +67,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SetOverview"
+            android:name=".activities.SetOverviewActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".Main">
+            android:parentActivityName=".activities.MainActivity">
             <intent-filter>
                 <action android:name=".SetOverview" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".StudySet"
+            android:name=".activities.StudySetActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".SetOverview">
+            android:parentActivityName=".activities.SetOverviewActivity">
             <intent-filter>
                 <action android:name=".StudySet" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -86,7 +86,7 @@
         </activity>
 
         <service
-            android:name=".WearableService"
+            android:name=".sync.WearableService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false">

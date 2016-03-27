@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,19 +7,21 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
+import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.utils.Constants;
 
 /**
  * Edits a set's title.
  */
-public class EditSetTitle extends AppCompatActivity {
+public class EditSetTitleActivity extends AppCompatActivity {
     private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get set title from Main
+        // Get set title from MainActivity
         Bundle bundle = getIntent().getExtras();
         title = bundle.getString(Constants.TITLE);
 
@@ -39,7 +41,7 @@ public class EditSetTitle extends AppCompatActivity {
     }
 
     /**
-     * Edits a set's title and returns to Main.
+     * Edits a set's title and returns to MainActivity.
      */
     public void editSetTitle(View view) {
         EditText text = (EditText) findViewById(R.id.edit_set_title);
@@ -68,10 +70,10 @@ public class EditSetTitle extends AppCompatActivity {
     }
 
     /**
-     * Returns to Main.
+     * Returns to MainActivity.
      */
     private void returnMain() {
-        Intent main = new Intent(this, Main.class);
+        Intent main = new Intent(this, MainActivity.class);
         startActivity(main);
         finish();
     }

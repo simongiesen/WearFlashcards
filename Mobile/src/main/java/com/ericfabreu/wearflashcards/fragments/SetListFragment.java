@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -19,8 +19,12 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.activities.EditSetTitleActivity;
+import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,10 +123,10 @@ public class SetListFragment extends ListFragment
                         return true;
 
                     case R.id.edit:
-                        // Get set title and send it to EditSetTitle
+                        // Get set title and send it to EditSetTitleActivity
                         TextView set = (TextView) getListView().getChildAt(selections.get(0));
                         String title = set.getText().toString();
-                        Intent intent = new Intent(getActivity(), EditSetTitle.class);
+                        Intent intent = new Intent(getActivity(), EditSetTitleActivity.class);
                         intent.putExtra(Constants.TITLE, title);
                         startActivity(intent);
                         mode.finish();
@@ -171,10 +175,10 @@ public class SetListFragment extends ListFragment
         TextView textView = (TextView) view.findViewById(R.id.main_set_title);
         String title = textView.getText().toString();
 
-        // Pass table name to SetOverview
+        // Pass table name to SetOverviewActivity
         FlashcardProvider handle = new FlashcardProvider();
         String table_name = handle.getTableName(title);
-        Intent intent = new Intent(getActivity(), SetOverview.class);
+        Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
         intent.putExtra(Constants.TABLE_NAME, table_name);
         intent.putExtra(Constants.TITLE, title);
         startActivity(intent);

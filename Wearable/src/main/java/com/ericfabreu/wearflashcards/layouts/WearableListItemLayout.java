@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.layouts;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.ericfabreu.wearflashcards.R;
 
 /**
  * http://developer.android.com/training/wearables/ui/lists.html

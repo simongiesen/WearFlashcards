@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +11,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.fragments.CardListFragment;
+import com.ericfabreu.wearflashcards.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SetOverview extends AppCompatActivity {
+public class SetOverviewActivity extends AppCompatActivity {
     private String[] terms;
     private String[] definitions;
     private String tableName;
@@ -32,7 +35,7 @@ public class SetOverview extends AppCompatActivity {
         // Load settings
         settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
 
-        // Get table name from SetListFragment or NewCard and pass it to CardListFragment
+        // Get table name from SetListFragment or NewCardActivity and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
         tableName = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
@@ -46,7 +49,7 @@ public class SetOverview extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SetOverview.this, NewCard.class);
+                Intent intent = new Intent(SetOverviewActivity.this, NewCardActivity.class);
                 intent.putExtra(Constants.TABLE_NAME, tableName);
                 intent.putExtra(Constants.TITLE, title);
                 startActivity(intent);
@@ -92,7 +95,7 @@ public class SetOverview extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
 
-        // Hide StudySet button if there are no cards
+        // Hide StudySetActivity button if there are no cards
         if (terms.length == 0) {
             menu.removeItem(R.id.study_set_button);
         }
@@ -126,8 +129,8 @@ public class SetOverview extends AppCompatActivity {
                 shuffleCards();
             }
 
-            // Send terms and definitions to StudySet
-            Intent intent = new Intent(SetOverview.this, StudySet.class);
+            // Send terms and definitions to StudySetActivity
+            Intent intent = new Intent(SetOverviewActivity.this, StudySetActivity.class);
             intent.putExtra(Constants.TERM, terms);
             intent.putExtra(Constants.DEFINITION, definitions);
             intent.putExtra(Constants.TITLE, title);
@@ -141,8 +144,8 @@ public class SetOverview extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Return to Main if back key is pressed instead of going to previous activity
-        Intent intent = new Intent(this, Main.class);
+        // Return to MainActivity if back key is pressed instead of going to previous activity
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

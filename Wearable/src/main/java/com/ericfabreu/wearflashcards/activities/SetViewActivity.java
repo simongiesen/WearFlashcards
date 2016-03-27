@@ -1,4 +1,4 @@
-package com.ericfabreu.wearflashcards;
+package com.ericfabreu.wearflashcards.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.support.wearable.view.GridViewPager;
 import android.view.View;
 import android.view.WindowInsets;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.adapters.SetViewAdapter;
+import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
@@ -24,7 +27,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.Random;
 
-public class SetView extends Activity implements
+public class SetViewActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
