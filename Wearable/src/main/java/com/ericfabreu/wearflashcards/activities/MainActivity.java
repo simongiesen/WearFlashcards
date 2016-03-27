@@ -36,7 +36,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.empty_database);
+        setContentView(R.layout.status_empty_database);
 
         // Listen for data item events
         // http://developer.android.com/training/wearables/data-layer/data-items.html
@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements
 
     protected void createList() {
         // Get the list component from the layout of the activity
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
         WearableListView listView =
                 (WearableListView) findViewById(R.id.list);
 
@@ -163,7 +163,7 @@ public class MainActivity extends Activity implements
         public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                               int viewType) {
             // Inflate our custom layout for list items
-            return new ItemViewHolder(mInflater.inflate(R.layout.set_list_item, parent, false));
+            return new ItemViewHolder(mInflater.inflate(R.layout.item_set_list, parent, false));
         }
 
         // Replace the contents of a list item
@@ -208,7 +208,7 @@ public class MainActivity extends Activity implements
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setContentView(R.layout.offline);
+                        setContentView(R.layout.status_offline);
                     }
                 });
             }

@@ -25,7 +25,7 @@ public class CardViewFragment extends Fragment {
         final String definition = bundle.getString(Constants.DEFINITION);
 
         // Create card
-        View card = inflater.inflate(R.layout.card_view, container, false);
+        View card = inflater.inflate(R.layout.fragment_card_view, container, false);
 
         // Get necessary views
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.card_frame);

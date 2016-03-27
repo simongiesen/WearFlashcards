@@ -40,7 +40,7 @@ public class SetViewActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.empty_database);
+        setContentView(R.layout.status_empty_database);
         Bundle bundle = getIntent().getExtras();
         path = "/" + bundle.getString(Constants.TITLE);
 
@@ -122,7 +122,7 @@ public class SetViewActivity extends Activity implements
 
     // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
     protected void createCards() {
-        setContentView(R.layout.set_view);
+        setContentView(R.layout.activity_set_view);
         final Resources res = getResources();
         final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
         pager.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
@@ -145,7 +145,7 @@ public class SetViewActivity extends Activity implements
             }
         });
 
-        // Apply settings and open cards
+        // Apply activity_settings and open cards
         SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         if (settings.getBoolean(Constants.DEF_FIRST, false)) {
             String[] temp = terms;
@@ -207,11 +207,11 @@ public class SetViewActivity extends Activity implements
         @Override
         public void run() {
             if (Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
-                // Display offline message
+                // Display status_offline message
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setContentView(R.layout.offline);
+                        setContentView(R.layout.status_offline);
                     }
                 });
             }

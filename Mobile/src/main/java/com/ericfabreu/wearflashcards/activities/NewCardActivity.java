@@ -27,7 +27,7 @@ public class NewCardActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         table_name = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
-        setContentView(R.layout.new_card);
+        setContentView(R.layout.activity_new_card);
 
         // Put the set title in the toolbar
         setTitle(getString(R.string.create_card));

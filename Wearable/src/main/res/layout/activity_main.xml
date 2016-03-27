@@ -18,7 +18,7 @@
             android:background="@color/windowBackground"
             android:contentDescription="@string/settings"
             android:onClick="openSettings"
-            android:src="@drawable/settings_button" />
+            android:src="@drawable/btn_settings" />
     </LinearLayout>
 
     <android.support.wearable.view.WearableListView

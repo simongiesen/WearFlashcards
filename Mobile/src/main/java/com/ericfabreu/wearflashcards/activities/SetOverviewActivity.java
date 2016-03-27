@@ -30,7 +30,7 @@ public class SetOverviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.set_overview);
+        setContentView(R.layout.activity_set_overview);
 
         // Load settings
         settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
@@ -81,13 +81,13 @@ public class SetOverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.shared, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Get menu items
+        // Get shared items
         MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
         MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
 

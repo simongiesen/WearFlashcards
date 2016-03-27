@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 
-<!-- Taken from the GridViewPager sample (https://goo.gl/ZGLbWH) -->
+<!-- Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH) -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

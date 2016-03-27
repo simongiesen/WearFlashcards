@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     tools:context=".activities.SetOverviewActivity">
 
-    <include layout="@layout/set_overview_content" />
+    <include layout="@layout/activity_set_overview_content" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/set_overview_fab"
@@ -14,6 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/plus_sign" />
+        android:src="@drawable/ic_fab_plus" />
 
 </android.support.design.widget.CoordinatorLayout>

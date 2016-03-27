@@ -139,9 +139,9 @@ public class SetListFragment extends ListFragment
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                // Inflate the menu for the CAB
+                // Inflate the shared for the CAB
                 MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.context_menu, menu);
+                inflater.inflate(R.menu.contextual, menu);
                 return true;
             }
 
@@ -157,7 +157,7 @@ public class SetListFragment extends ListFragment
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.main_list_item,
+                R.layout.fragment_set_list,
                 null,
                 new String[]{SetList.SET_TITLE},
                 new int[]{R.id.main_set_title},

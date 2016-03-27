@@ -19,7 +19,7 @@ public class StudySetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.study_set);
+        setContentView(R.layout.activity_study_set);
 
         // Get set title, terms, and definitions from SetOverviewActivity
         Bundle bundle = getIntent().getExtras();

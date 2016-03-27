@@ -163,7 +163,7 @@ public class FlashcardProvider extends ContentProvider {
         // Validate URI
         if (URI_MATCHER.match(uri) == SET_LIST ||
                 URI_MATCHER.match(uri) == SET_ITEM) {
-            throw new IllegalArgumentException("Cannot insert new sets directly into main table.");
+            throw new IllegalArgumentException("Cannot insert new sets directly into activity_main table.");
         }
         if (URI_MATCHER.match(uri) == CARD_ITEM) {
             throw new IllegalArgumentException("Use update() to edit a flashcard.");
@@ -401,7 +401,7 @@ public class FlashcardProvider extends ContentProvider {
                     CardSet.DEFINITION + " TEXT NOT NULL);";
             db.execSQL(CARDSET_TABLE_CREATE);
 
-            // Link new set to main database
+            // Link new set to activity_main database
             ContentValues values = new ContentValues();
             values.put(SetList.SET_TITLE, title);
             values.put(SetList.SET_TABLE_NAME, tableName);
@@ -424,7 +424,7 @@ public class FlashcardProvider extends ContentProvider {
         // Get table name from set title
         String tableName = getTableName(title);
 
-        // Remove set from main database
+        // Remove set from activity_main database
         db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
         this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
     }
@@ -453,7 +453,7 @@ public class FlashcardProvider extends ContentProvider {
             // Rename flashcard table
             db.execSQL("ALTER TABLE '" + oldName + "' RENAME TO '" + newName + "'");
 
-            // Get row id in main table
+            // Get row id in activity_main table
             Cursor oldCursor = query(SetList.CONTENT_URI,
                     new String[]{SetList.SET_TABLE_NAME, SetList._ID},
                     SetList.SET_TABLE_NAME + "=?",
@@ -464,7 +464,7 @@ public class FlashcardProvider extends ContentProvider {
                 rowId = String.valueOf(oldCursor.getLong(oldCursor.getColumnIndex(SetList._ID)));
                 oldCursor.close();
 
-                // Update set name in main table
+                // Update set name in activity_main table
                 ContentValues values = new ContentValues();
                 values.put(SetList.SET_TITLE, newTitle);
                 values.put(SetList.SET_TABLE_NAME, newName);

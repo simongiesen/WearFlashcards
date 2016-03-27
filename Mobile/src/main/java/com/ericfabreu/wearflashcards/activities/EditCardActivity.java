@@ -35,7 +35,7 @@ public class EditCardActivity extends AppCompatActivity {
         setTitle = bundle.getString(Constants.TITLE);
 
         // Create view
-        setContentView(R.layout.edit_card);
+        setContentView(R.layout.activity_edit_card);
         setTitle(getString(R.string.edit_card));
     }
 

@@ -153,9 +153,9 @@ public class CardListFragment extends ListFragment
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                // Inflate the menu for the CAB
+                // Inflate the shared for the CAB
                 MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.context_menu, menu);
+                inflater.inflate(R.menu.contextual, menu);
                 return true;
             }
 
@@ -171,7 +171,7 @@ public class CardListFragment extends ListFragment
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.card_list,
+                R.layout.fragment_card_list,
                 null,
                 new String[]{CardSet.TERM, CardSet.DEFINITION},
                 new int[]{R.id.card_term, R.id.card_definition},

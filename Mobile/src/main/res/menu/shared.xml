@@ -11,7 +11,7 @@
     </group>
     <item
         android:id="@+id/study_set_button"
-        android:icon="@drawable/card_button"
+        android:icon="@drawable/ic_menu_card"
         android:title="@string/set_view_button"
         app:showAsAction="always" />
 </menu>

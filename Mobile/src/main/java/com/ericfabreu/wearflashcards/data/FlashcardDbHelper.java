@@ -29,7 +29,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                         SetList.SET_TABLE_NAME + " TEXT UNIQUE NOT NULL," +
                         SetList.SET_TITLE + " TEXT NOT NULL);";
 
-        // Create main table
+        // Create activity_main table
         db.execSQL(SETLIST_TABLE_CREATE);
     }
 

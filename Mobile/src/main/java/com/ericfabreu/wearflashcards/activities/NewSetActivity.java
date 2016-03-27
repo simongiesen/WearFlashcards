@@ -15,7 +15,7 @@ public class NewSetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_set);
+        setContentView(R.layout.activity_new_set);
         setTitle(getString(R.string.create_set));
     }
 
@@ -37,7 +37,7 @@ public class NewSetActivity extends AppCompatActivity {
             return;
         }
 
-        // Return to main screen
+        // Return to activity_main screen
         Intent main = new Intent(this, MainActivity.class);
         startActivity(main);
         finish();
