@@ -368,6 +368,11 @@ public class FlashcardProvider extends ContentProvider {
         String tableName = title.replaceAll("[\\W\\s]", "");
         tableName = tableName.toLowerCase();
 
+        // Table name cannot start with a number
+        if (Character.isDigit(tableName.charAt(0))) {
+            tableName = "n" + tableName;
+        }
+
         // Add two characters to the end of the table name to ensure that the name is not an SQLite command
         // No SQLite command ends with wf (the app's initials), so this should be safe
         tableName += "wf";
