@@ -30,6 +30,12 @@ public class NewSetActivity extends AppCompatActivity {
             return;
         }
 
+        // Check if title does not have any letters
+        if (!title.matches(".*[a-zA-Z]+.*")) {
+            text.setError(getString(R.string.invalid_title));
+            return;
+        }
+
         // Check if title is available
         FlashcardProvider handle = new FlashcardProvider();
         if (!handle.newSetTable(title)) {

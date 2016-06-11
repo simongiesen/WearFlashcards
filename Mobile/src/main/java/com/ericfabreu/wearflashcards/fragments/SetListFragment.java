@@ -185,10 +185,11 @@ public class SetListFragment extends ListFragment
                 new String[]{title},
                 null);
 
-        // Due to a bug in 1.0.0, if the title starts with a number, the table might not exist
+        // Due to a bug present in 1.0.0,
+        // if the title does not start with a letter, the table will not exist
         if (cursor != null && cursor.moveToFirst()) {
             final String setTitle = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
-            if (Character.isDigit((setTitle).charAt(0)) && handle.newSetTable(title)) {
+            if (!Character.isLetter((setTitle).charAt(0)) && handle.newSetTable(title)) {
                 // Remove additional entry created by newSetTable
                 handle.delete(SetList.CONTENT_URI,
                         SetList.SET_TABLE_NAME + "=?",

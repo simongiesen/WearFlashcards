@@ -368,8 +368,8 @@ public class FlashcardProvider extends ContentProvider {
         String tableName = title.replaceAll("[\\W\\s]", "");
         tableName = tableName.toLowerCase();
 
-        // Table name cannot start with a number
-        if (Character.isDigit(tableName.charAt(0))) {
+        // Table name must start with a letter
+        if (!Character.isLetter(tableName.charAt(0))) {
             tableName = "n" + tableName;
         }
 
