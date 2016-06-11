@@ -2,6 +2,7 @@ package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -176,9 +177,35 @@ public class SetListFragment extends ListFragment
 
         // Pass table name to SetOverviewActivity
         FlashcardProvider handle = new FlashcardProvider();
-        String table_name = handle.getTableName(title);
+        String tableName = handle.getTableName(title);
+
+        Cursor cursor = handle.query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TITLE},
+                SetList.SET_TITLE + "=?",
+                new String[]{title},
+                null);
+
+        // Due to a bug in 1.0.0, if the title starts with a number, the table might not exist
+        if (cursor != null && cursor.moveToFirst()) {
+            final String setTitle = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
+            if (Character.isDigit((setTitle).charAt(0)) && handle.newSetTable(title)) {
+                // Remove additional entry created by newSetTable
+                handle.delete(SetList.CONTENT_URI,
+                        SetList.SET_TABLE_NAME + "=?",
+                        new String[]{tableName});
+                // Update entry in the main table
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SetList.SET_TABLE_NAME, tableName);
+                handle.update(SetList.CONTENT_URI,
+                        contentValues,
+                        SetList.SET_TITLE + "=\"" + title + "\"",
+                        null);
+                cursor.close();
+            }
+        }
+
         Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
-        intent.putExtra(Constants.TABLE_NAME, table_name);
+        intent.putExtra(Constants.TABLE_NAME, tableName);
         intent.putExtra(Constants.TITLE, title);
         startActivity(intent);
     }
