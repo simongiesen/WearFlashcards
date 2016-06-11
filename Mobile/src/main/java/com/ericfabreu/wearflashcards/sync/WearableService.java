@@ -25,7 +25,7 @@ public class WearableService extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        String message = messageEvent.getPath();
+        String message = new String(messageEvent.getData());
 
         // Determine if the wearable is asking for the set list or for the list of cards in a set
         if (message.equals(Constants.SET_LIST)) {

@@ -94,19 +94,19 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        sendMessage(Constants.SET_LIST, Constants.BLANK_MESSAGE);
+        sendMessage(Constants.SET_LIST);
     }
 
     // https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
     // http://developer.android.com/training/wearables/data-layer/messages.html
-    private void sendMessage(final String path, final String message) {
+    private void sendMessage(final String message) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
                 for (Node node : nodes.getNodes()) {
                     Wearable.MessageApi.sendMessage(
-                            mGoogleApiClient, node.getId(), path, message.getBytes()).await();
+                            mGoogleApiClient, node.getId(), Constants.PATH, message.getBytes()).await();
                 }
             }
         }).start();

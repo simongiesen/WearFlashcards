@@ -33,7 +33,7 @@ public class SetViewActivity extends Activity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private String path = null;
+    private String title = null;
     private String[] terms = null;
     private String[] definitions = null;
 
@@ -42,7 +42,7 @@ public class SetViewActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.status_empty_database);
         Bundle bundle = getIntent().getExtras();
-        path = "/" + bundle.getString(Constants.TITLE);
+        title = "/" + bundle.getString(Constants.TITLE);
 
         // Listen for data item events
         // http://developer.android.com/training/wearables/data-layer/data-items.html
@@ -68,19 +68,19 @@ public class SetViewActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        sendMessage(path, Constants.BLANK_MESSAGE);
+        sendMessage(title);
     }
 
     // https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
     // http://developer.android.com/training/wearables/data-layer/messages.html
-    private void sendMessage(final String path, final String message) {
+    private void sendMessage(final String message) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
                 for (Node node : nodes.getNodes()) {
                     Wearable.MessageApi.sendMessage(
-                            mGoogleApiClient, node.getId(), path, message.getBytes()).await();
+                            mGoogleApiClient, node.getId(), Constants.PATH, message.getBytes()).await();
                 }
             }
         }).start();
@@ -162,16 +162,16 @@ public class SetViewActivity extends Activity implements
         int size = terms.length;
         int[] shuffleOrder = getShuffledArray(size);
         String[] newTerms = new String[size];
-        String[] newDefs = new String[size];
+        String[] newDefinitions = new String[size];
 
         // Use shuffled int array to ensure that the new terms and definitions match
         for (int i = 0; i < size; i++) {
             newTerms[i] = terms[shuffleOrder[i]];
-            newDefs[i] = definitions[shuffleOrder[i]];
+            newDefinitions[i] = definitions[shuffleOrder[i]];
         }
 
         terms = newTerms;
-        definitions = newDefs;
+        definitions = newDefinitions;
     }
 
     /**

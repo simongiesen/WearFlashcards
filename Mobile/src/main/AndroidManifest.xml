@@ -85,11 +85,7 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".sync.WearableService"
-            android:enabled="true"
-            android:exported="false"
-            android:stopWithTask="false">
+        <service android:name=".sync.WearableService">
             <intent-filter>
                 <!-- Listen only for messages -->
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />

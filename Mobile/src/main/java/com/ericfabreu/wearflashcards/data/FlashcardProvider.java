@@ -373,8 +373,7 @@ public class FlashcardProvider extends ContentProvider {
             tableName = "n" + tableName;
         }
 
-        // Add two characters to the end of the table name to ensure that the name is not an SQLite command
-        // No SQLite command ends with wf (the app's initials), so this should be safe
+        // Add "wf" to the end of the table name to ensure that the name is not an SQLite command
         tableName += "wf";
         return tableName;
     }
@@ -464,9 +463,8 @@ public class FlashcardProvider extends ContentProvider {
                     SetList.SET_TABLE_NAME + "=?",
                     new String[]{oldName},
                     null);
-            String rowId;
             if (oldCursor != null && oldCursor.moveToFirst()) {
-                rowId = String.valueOf(oldCursor.getLong(oldCursor.getColumnIndex(SetList._ID)));
+                String rowId = String.valueOf(oldCursor.getLong(oldCursor.getColumnIndex(SetList._ID)));
                 oldCursor.close();
 
                 // Update set name in activity_main table
@@ -517,9 +515,8 @@ public class FlashcardProvider extends ContentProvider {
                 CardSet.TERM + "=?",
                 new String[]{oldTerm},
                 null);
-        String rowId;
         if (cursor != null && cursor.moveToFirst()) {
-            rowId = String.valueOf(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
+            String rowId = String.valueOf(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
             cursor.close();
 
             // Update term and definition in the set table
