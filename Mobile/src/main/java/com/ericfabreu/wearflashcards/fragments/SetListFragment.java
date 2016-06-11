@@ -104,9 +104,6 @@ public class SetListFragment extends ListFragment
                                             FlashcardProvider handle = new FlashcardProvider();
                                             handle.deleteSetTable(title);
                                         }
-
-                                        // Reset selections list and hide the CAB
-                                        selections = new ArrayList<>();
                                         mode.finish();
                                     }
                                 });
@@ -147,6 +144,8 @@ public class SetListFragment extends ListFragment
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
+                // Reset selections when action mode is dismissed
+                selections = new ArrayList<>();
             }
 
             @Override

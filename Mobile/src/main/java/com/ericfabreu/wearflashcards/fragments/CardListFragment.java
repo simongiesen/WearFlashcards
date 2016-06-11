@@ -112,9 +112,6 @@ public class CardListFragment extends ListFragment
                                             FlashcardProvider handle = new FlashcardProvider();
                                             handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), selection, selectionArgs);
                                         }
-
-                                        // Reset selections list and hide the CAB
-                                        selections = new ArrayList<>();
                                         mode.finish();
                                     }
                                 });
@@ -161,6 +158,8 @@ public class CardListFragment extends ListFragment
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
+                // Reset selections when action mode is dismissed
+                selections = new ArrayList<>();
             }
 
             @Override
