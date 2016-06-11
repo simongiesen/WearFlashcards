@@ -15,7 +15,7 @@ android {
         applicationId "com.ericfabreu.wearflashcards"
         minSdkVersion 18
         targetSdkVersion 23
-        versionName '1.0.1'
+        versionName '1.0.2'
         versionCode getNumberOfCommits()
         multiDexEnabled true
     }
