@@ -5,8 +5,8 @@
 Flashcards for Android Wear (available on the [Play Store](https://play.google.com/store/apps/details?id=com.ericfabreu.wearflashcards))
 
 ## Requirements
-* Java JDK 1.7+
-* Android SDK 23+
+* Java JDK 1.8+
+* Android SDK 24+
 * Android Studio
 
 ## Acknowledgements 
