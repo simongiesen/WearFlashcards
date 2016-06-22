@@ -4,19 +4,20 @@ package com.ericfabreu.wearflashcards.utils;
  * Constants used by the app.
  */
 public class Constants {
-    public static String PREFS_NAME = "settings";
-    public static String SHUFFLE = "shuffle";
-    public static String DEF_FIRST = "definition_first";
-    public static String SET_LIST = "/set_list";
-    public static String TERMS = "/terms";
-    public static String DEFINITIONS = "/definitions";
-    public static String TERM = "term";
-    public static String DEFINITION = "definition";
-    public static String TIME = "time";
-    public static String TABLE_NAME = "table_name";
-    public static String TITLE = "title";
-    public static int SHUFFLE_POS = 0;
-    public static int DEF_FIRST_POS = 1;
-    public static int TERM_POS = 0;
-    public static int DEF_POS = 1;
+    public final static String PREFS_NAME = "settings";
+    public final static String SHUFFLE = "shuffle";
+    public final static String DEF_FIRST = "definition_first";
+    public final static String SET_LIST = "/set_list";
+    public final static String TERMS = "/terms";
+    public final static String DEFINITIONS = "/definitions";
+    public final static String TERM = "term";
+    public final static String DEFINITION = "definition";
+    public final static String TIME = "time";
+    public final static String TABLE_NAME = "table_name";
+    public final static String TITLE = "title";
+    public final static int SHUFFLE_POS = 0;
+    public final static int DEF_FIRST_POS = 1;
+    public final static int TERM_POS = 0;
+    public final static int DEF_POS = 1;
+    public final static float TOOLBAR_ELEVATION = 10;
 }

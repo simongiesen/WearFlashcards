@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -28,6 +29,10 @@ public class NewCardActivity extends AppCompatActivity {
         table_name = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
         setContentView(R.layout.activity_new_card);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+        }
 
         // Put the set title in the toolbar_main
         setTitle(getString(R.string.create_card));

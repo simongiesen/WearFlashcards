@@ -2,6 +2,7 @@ package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -20,6 +21,10 @@ public class StudySetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_set);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+        }
 
         // Get set title, terms, and definitions from SetOverviewActivity
         Bundle bundle = getIntent().getExtras();

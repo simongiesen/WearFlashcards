@@ -3,6 +3,7 @@ package com.ericfabreu.wearflashcards.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -36,6 +37,10 @@ public class EditCardActivity extends AppCompatActivity {
 
         // Create view
         setContentView(R.layout.activity_edit_card);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+        }
         setTitle(getString(R.string.edit_card));
     }
 
