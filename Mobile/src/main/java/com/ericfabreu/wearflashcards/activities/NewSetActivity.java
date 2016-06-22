@@ -30,8 +30,8 @@ public class NewSetActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if title does not have any letters
-        if (!title.matches(".*[a-zA-Z]+.*")) {
+        // Check if title is valid (must have at least one letter or number)
+        if (!title.matches("[a-zA-Z0-9 ]+")) {
             text.setError(getString(R.string.invalid_title));
             return;
         }
