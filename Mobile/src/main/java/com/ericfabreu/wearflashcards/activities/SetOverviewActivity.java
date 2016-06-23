@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SetOverviewActivity extends AppCompatActivity {
-    private String[] terms;
-    private String[] definitions;
-    private String tableName;
-    private String title;
+    private String tableName, title;
+    private String[] terms, definitions;
     private SharedPreferences settings;
 
     @Override
@@ -40,16 +38,14 @@ public class SetOverviewActivity extends AppCompatActivity {
         // Load settings
         settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
 
-        // Get table name from SetListFragment or NewCardActivity and pass it to CardListFragment
+        // Get table name from the caller activity and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
         tableName = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
         CardListFragment frag = new CardListFragment();
         frag.setArguments(bundle);
 
-        // Use the set title as the activity title
         setTitle(title);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_set_overview);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,17 +64,17 @@ public class SetOverviewActivity extends AppCompatActivity {
                     .commit();
         }
 
-        // Get terms and definitions from the database
+        // Get terms and definitions from the database and put them into arrays
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         String tableName = handle.getTableName(title);
         Cursor cursor = handle.fetchAllCards(tableName);
-
-        // Put terms and definitions into string arrays
         ArrayList<String> columnArray1 = new ArrayList<>();
         ArrayList<String> columnArray2 = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            columnArray1.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.TERM)));
-            columnArray2.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
+            columnArray1.add(cursor.getString(cursor
+                    .getColumnIndex(FlashcardContract.CardSet.TERM)));
+            columnArray2.add(cursor.getString(cursor
+                    .getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
         }
         terms = columnArray1.toArray(new String[columnArray1.size()]);
         definitions = columnArray2.toArray(new String[columnArray2.size()]);
@@ -92,15 +88,13 @@ public class SetOverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Get shared items
+        // Load settings
         MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
         MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
-
-        // Restore settings
         shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
 
-        // Hide StudySetActivity button if there are no cards
+        // Hide set study button if there are no cards
         if (terms.length == 0) {
             menu.removeItem(R.id.item_study_set);
         }
@@ -111,7 +105,7 @@ public class SetOverviewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // Flip the item's checked state and button_save settings
+        // Flip the item's checked state and save settings
         if (id == R.id.item_shuffle) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(Constants.SHUFFLE, !item.isChecked());
@@ -123,8 +117,10 @@ public class SetOverviewActivity extends AppCompatActivity {
             editor.putBoolean(Constants.DEF_FIRST, !item.isChecked());
             editor.apply();
             return true;
-        } else if (id == R.id.item_study_set) {
-            // Apply settings
+        }
+
+        // Load set study settings
+        else if (id == R.id.item_study_set) {
             if (settings.getBoolean(Constants.DEF_FIRST, false)) {
                 String[] temp = terms;
                 terms = definitions;
@@ -143,7 +139,6 @@ public class SetOverviewActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -158,16 +153,15 @@ public class SetOverviewActivity extends AppCompatActivity {
         int size = terms.length;
         int[] shuffleOrder = getShuffledArray(size);
         String[] newTerms = new String[size];
-        String[] newDefs = new String[size];
+        String[] newDefinitions = new String[size];
 
         // Use shuffled int array to ensure that the new terms and definitions match
         for (int i = 0; i < size; i++) {
             newTerms[i] = terms[shuffleOrder[i]];
-            newDefs[i] = definitions[shuffleOrder[i]];
+            newDefinitions[i] = definitions[shuffleOrder[i]];
         }
-
         terms = newTerms;
-        definitions = newDefs;
+        definitions = newDefinitions;
     }
 
     /**

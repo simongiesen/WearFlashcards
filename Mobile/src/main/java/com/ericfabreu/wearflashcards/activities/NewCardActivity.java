@@ -17,8 +17,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
 public class NewCardActivity extends AppCompatActivity {
-    private String table_name;
-    private String title;
+    private String tableName, title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +25,7 @@ public class NewCardActivity extends AppCompatActivity {
 
         // Get table name and title from CardListFragment
         Bundle bundle = getIntent().getExtras();
-        table_name = bundle.getString(Constants.TABLE_NAME);
+        tableName = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
         setContentView(R.layout.activity_new_card);
         ActionBar actionBar = getSupportActionBar();
@@ -34,18 +33,20 @@ public class NewCardActivity extends AppCompatActivity {
             getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
-        // Put the set title in the toolbar_main
+        // Put the set title in the toolbar
         setTitle(getString(R.string.create_card));
     }
 
-    // Create a card and either return to MainActivity or reset view
+    /**
+     * Creates a card and either resets the view or return to SetOverviewActivity
+     */
     public void newCard(View view) {
         EditText text1 = (EditText) findViewById(R.id.edit_new_term);
         EditText text2 = (EditText) findViewById(R.id.edit_new_definition);
         String term = text1.getText().toString();
         String definition = text2.getText().toString();
 
-        // Return to SetOverviewActivity if the view is empty and 'done' was selected
+        // Return to SetOverviewActivity if the view is empty and 'DONE' was selected
         if (view.getId() == R.id.button_done &&
                 TextUtils.isEmpty(term) &&
                 TextUtils.isEmpty(definition)) {
@@ -70,7 +71,7 @@ public class NewCardActivity extends AppCompatActivity {
 
         // Check if the term already exists in the stack
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, table_name);
+        Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
         if (handle.termExists(term, tableUri)) {
             text1.setError(getString(R.string.term_taken));
             text1.requestFocus();
@@ -90,8 +91,6 @@ public class NewCardActivity extends AppCompatActivity {
             text1.requestFocus();
             return;
         }
-
-        // Pass table name back to SetOverviewActivity and return
         onBackPressed();
         finish();
     }
@@ -112,7 +111,7 @@ public class NewCardActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Pass table name back to SetOverviewActivity
         Intent intent = new Intent(this, SetOverviewActivity.class);
-        intent.putExtra(Constants.TABLE_NAME, table_name);
+        intent.putExtra(Constants.TABLE_NAME, tableName);
         intent.putExtra(Constants.TITLE, title);
         startActivity(intent);
     }

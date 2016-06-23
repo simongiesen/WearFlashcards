@@ -64,7 +64,7 @@ public class EditSetTitleActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if title is valid (must have at least one letter or number)
+        // Check if title is valid (can only have letters, numbers, and spaces)
         if (!newTitle.matches("[a-zA-Z0-9 ]+")) {
             text.setError(getString(R.string.invalid_title));
             return;
@@ -76,7 +76,6 @@ public class EditSetTitleActivity extends AppCompatActivity {
             text.setError(getString(R.string.title_taken));
             return;
         }
-
         returnMain();
     }
 

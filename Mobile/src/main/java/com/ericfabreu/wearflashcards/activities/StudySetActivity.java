@@ -12,10 +12,8 @@ import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.views.VerticalViewPager;
 
 public class StudySetActivity extends AppCompatActivity {
-    private String[] terms;
-    private String[] definitions;
-    private String title;
-    private String tableName;
+    private String title, tableName;
+    private String[] terms, definitions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +34,9 @@ public class StudySetActivity extends AppCompatActivity {
         createCards();
     }
 
-    // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
+    /**
+     * Creates flashcards using a VerticalViewPager.
+     */
     protected void createCards() {
         final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
         pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), terms, definitions));
@@ -45,7 +45,7 @@ public class StudySetActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverviewActivity if the toolbar_main back button is clicked
+            // Pass table name back to SetOverviewActivity if the main back button is clicked
             case android.R.id.home:
                 onBackPressed();
                 return true;

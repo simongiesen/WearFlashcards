@@ -19,10 +19,7 @@ import com.ericfabreu.wearflashcards.utils.Constants;
  * Edits a card.
  */
 public class EditCardActivity extends AppCompatActivity {
-    private String term;
-    private String definition;
-    private String tableName;
-    private String setTitle;
+    private String term, definition, tableName, setTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,50 +46,47 @@ public class EditCardActivity extends AppCompatActivity {
         super.onStart();
 
         // Add term and definition to EditText and move cursor to the end of the term
-        EditText tView = (EditText) findViewById(R.id.edit_term);
-        EditText defView = (EditText) findViewById(R.id.edit_definition);
-        tView.setText(term);
-        tView.setSelection(term.length());
-        defView.setText(definition);
+        EditText termView = (EditText) findViewById(R.id.edit_term);
+        EditText definitionView = (EditText) findViewById(R.id.edit_definition);
+        termView.setText(term);
+        termView.setSelection(term.length());
+        definitionView.setText(definition);
     }
 
     /**
      * Edits a card and returns to SetOverviewActivity.
      */
     public void editCard(View view) {
-        EditText tView = (EditText) findViewById(R.id.edit_term);
-        EditText defView = (EditText) findViewById(R.id.edit_definition);
-        String newTerm = tView.getText().toString();
-        String newDef = defView.getText().toString();
+        EditText termView = (EditText) findViewById(R.id.edit_term);
+        EditText definitionView = (EditText) findViewById(R.id.edit_definition);
+        String newTerm = termView.getText().toString();
+        String newDefinition = definitionView.getText().toString();
 
         // Check if term and definition have changed
-        if (term.equals(newTerm) && definition.equals(newDef)) {
+        if (term.equals(newTerm) && definition.equals(newDefinition)) {
             onBackPressed();
             return;
         }
 
         // Check if term is blank
         if (TextUtils.isEmpty(newTerm)) {
-            tView.setError(getString(R.string.empty_term));
+            termView.setError(getString(R.string.empty_term));
             return;
         }
 
         // Check if definition is blank
-        if (TextUtils.isEmpty(newDef)) {
-            defView.setError(getString(R.string.empty_definition));
+        if (TextUtils.isEmpty(newDefinition)) {
+            definitionView.setError(getString(R.string.empty_definition));
             return;
         }
 
         // Edit card
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Uri tableUri = Uri.withAppendedPath(FlashcardContract.CardSet.CONTENT_URI, tableName);
-        if (!handle.editCard(tableUri, term, newTerm, newDef)) {
-            tView.setError(getString(R.string.term_taken));
+        if (!handle.editCard(tableUri, term, newTerm, newDefinition)) {
+            termView.setError(getString(R.string.term_taken));
             return;
         }
-
-
-        // Pass set title and table name back to SetOverviewActivity and return
         onBackPressed();
         finish();
     }

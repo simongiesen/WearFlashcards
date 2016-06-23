@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
 
-        // Set view button is unnecessary in MainActivity
+        // Set study button is unnecessary in MainActivity
         menu.removeItem(R.id.item_study_set);
         return true;
     }
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

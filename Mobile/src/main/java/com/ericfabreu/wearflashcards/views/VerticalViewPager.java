@@ -29,7 +29,7 @@ public class VerticalViewPager extends ViewPager {
     }
 
     /**
-     * Swaps the X and Y coordinates of a touch event
+     * Swaps the X and Y coordinates of a touch event.
      */
     private MotionEvent swapXY(MotionEvent ev) {
         float width = getWidth();
