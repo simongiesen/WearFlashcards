@@ -102,7 +102,7 @@ public class SetListFragment extends ListFragment
                                         for (int i = 0, n = selections.size(); i < n; i++) {
                                             TextView set = (TextView) getListView().getChildAt(selections.get(i));
                                             String title = set.getText().toString();
-                                            FlashcardProvider handle = new FlashcardProvider();
+                                            FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
                                             handle.deleteSetTable(title);
                                         }
                                         mode.finish();
@@ -176,7 +176,7 @@ public class SetListFragment extends ListFragment
         String title = textView.getText().toString();
 
         // Pass table name to SetOverviewActivity
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
         String tableName = handle.getTableName(title);
 
         Cursor cursor = handle.query(SetList.CONTENT_URI,

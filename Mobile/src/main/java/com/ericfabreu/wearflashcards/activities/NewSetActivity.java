@@ -43,7 +43,7 @@ public class NewSetActivity extends AppCompatActivity {
         }
 
         // Check if title is available
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         if (!handle.newSetTable(title)) {
             text.setError(getString(R.string.title_taken));
             return;

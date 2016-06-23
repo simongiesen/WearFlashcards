@@ -71,7 +71,7 @@ public class EditSetTitleActivity extends AppCompatActivity {
         }
 
         // Check if new title is available
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         if (!handle.renameSet(title, newTitle)) {
             text.setError(getString(R.string.title_taken));
             return;

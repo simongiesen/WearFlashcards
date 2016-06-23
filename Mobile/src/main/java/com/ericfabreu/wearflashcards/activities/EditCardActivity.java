@@ -84,7 +84,7 @@ public class EditCardActivity extends AppCompatActivity {
         }
 
         // Edit card
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Uri tableUri = Uri.withAppendedPath(FlashcardContract.CardSet.CONTENT_URI, tableName);
         if (!handle.editCard(tableUri, term, newTerm, newDef)) {
             tView.setError(getString(R.string.term_taken));

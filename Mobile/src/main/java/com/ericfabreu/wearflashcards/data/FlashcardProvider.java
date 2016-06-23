@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.ericfabreu.wearflashcards.activities.MainActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 
@@ -22,7 +21,6 @@ import java.util.List;
  * Manages access to the flashcard database.
  * http://developer.android.com/guide/topics/providers/content-provider-basics.html
  * http://www.grokkingandroid.com/android-tutorial-writing-your-own-content-provider/
- * http://www.sitepoint.com/using-androids-content-providers-manage-app-data/
  */
 public class FlashcardProvider extends ContentProvider {
     // Helper constants for URI matcher
@@ -41,39 +39,27 @@ public class FlashcardProvider extends ContentProvider {
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*/#", 4);
     }
 
-    // Get caller context
-    Context context = null;
-    // Handle to the database helper object
+    Context context;
     private FlashcardDbHelper mOpenHelper;
 
     public FlashcardProvider(Context c) {
         context = c;
+        mOpenHelper = new FlashcardDbHelper(context);
     }
 
-    // Empty constructor
+    @SuppressWarnings("unused")
     public FlashcardProvider() {
     }
 
-    // Create a FlashcardDBHelper
     @Override
     public boolean onCreate() {
-        mOpenHelper = new FlashcardDbHelper(getContext());
+        context = getContext();
+        mOpenHelper = new FlashcardDbHelper(context);
         return true;
-    }
-
-    private Context providerContext() {
-        // Use given context if there is one
-        if (context != null) {
-            return context;
-        }
-
-        // Get context from MainActivity
-        return MainActivity.getContext();
     }
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
@@ -99,7 +85,6 @@ public class FlashcardProvider extends ContentProvider {
                 // Get table name from uri
                 List<String> segments = uri.getPathSegments();
                 final String table = "'" + segments.get(segments.size() - 1) + "'";
-
                 builder.setTables(table);
                 builder.appendWhere(CardSet._ID + "=" + uri.getLastPathSegment());
                 break;
@@ -107,7 +92,6 @@ public class FlashcardProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
-        // Issue query statement
         Cursor cursor = builder.query(db,
                 projection,
                 selection,
@@ -117,10 +101,7 @@ public class FlashcardProvider extends ContentProvider {
                 sortOrder);
 
         // Notify all listeners of changes
-        if (getContext() != null) {
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        }
-
+        cursor.setNotificationUri(context.getContentResolver(), uri);
         return cursor;
     }
 
@@ -151,7 +132,6 @@ public class FlashcardProvider extends ContentProvider {
                 return CardSet.CONTENT_TYPE;
             case CARD_ITEM:
                 return CardSet.CONTENT_ITEM_TYPE;
-
             // Unsupported type
             default:
                 return null;
@@ -163,7 +143,7 @@ public class FlashcardProvider extends ContentProvider {
         // Validate URI
         if (URI_MATCHER.match(uri) == SET_LIST ||
                 URI_MATCHER.match(uri) == SET_ITEM) {
-            throw new IllegalArgumentException("Cannot insert new sets directly into activity_main table.");
+            throw new IllegalArgumentException("Cannot insert new sets directly into main table.");
         }
         if (URI_MATCHER.match(uri) == CARD_ITEM) {
             throw new IllegalArgumentException("Use update() to edit a flashcard.");
@@ -172,17 +152,16 @@ public class FlashcardProvider extends ContentProvider {
             throw new IllegalArgumentException("Uri not supported for insertion: " + uri);
         }
 
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Insert a new card into the set
         final String table_name = uri.getLastPathSegment();
         long id = db.insert(table_name, null, contentValues);
 
-        // Notify all listeners of changes and return
+        // Notify all listeners of changes
         if (id > 0) {
             Uri returnUri = ContentUris.withAppendedId(uri, id);
-            providerContext().getContentResolver().notifyChange(returnUri, null);
+            context.getContentResolver().notifyChange(returnUri, null);
             return returnUri;
         }
 
@@ -192,21 +171,18 @@ public class FlashcardProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int deleteCount;
 
         // Handle update differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
             case SET_LIST: {
-                deleteCount = db.delete(
-                        SetList.TABLE_NAME,
+                deleteCount = db.delete(SetList.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
                 break;
             }
-
             // Used for updating the set name
             case SET_ITEM: {
                 // Build where statement
@@ -215,21 +191,14 @@ public class FlashcardProvider extends ContentProvider {
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
-
-                // Issue update statement
-                deleteCount = db.delete(
-                        SetList.TABLE_NAME,
+                deleteCount = db.delete(SetList.TABLE_NAME,
                         where,
                         selectionArgs
                 );
                 break;
             }
-
             case CARD_LIST: {
-                // Get table name from uri
                 final String table = uri.getLastPathSegment();
-
-                // Issue update statement
                 deleteCount = db.delete(
                         table,
                         selection,
@@ -237,21 +206,15 @@ public class FlashcardProvider extends ContentProvider {
                 );
                 break;
             }
-
             // Used for updating individual cards
             case CARD_ITEM: {
-                // Build where statement
                 final String id = uri.getLastPathSegment();
                 String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
-
-                // Get table name from uri
                 List<String> segments = uri.getPathSegments();
                 final String table = segments.get(segments.size() - 1);
-
-                // Issue update statement
                 deleteCount = db.delete(
                         table,
                         where,
@@ -259,104 +222,77 @@ public class FlashcardProvider extends ContentProvider {
                 );
                 break;
             }
-
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
             }
         }
-
-        // Notify all listeners of changes
         if (deleteCount > 0) {
-            providerContext().getContentResolver().notifyChange(uri, null);
+            context.getContentResolver().notifyChange(uri, null);
         }
-
         return deleteCount;
     }
 
     @Override
     public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int updateCount;
 
         // Handle update differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
             case SET_LIST: {
-                updateCount = db.update(
-                        SetList.TABLE_NAME,
+                updateCount = db.update(SetList.TABLE_NAME,
                         contentValues,
                         selection,
                         selectionArgs
                 );
                 break;
             }
-
             // Used for updating the set name
             case SET_ITEM: {
-                // Build where statement
                 final String id = uri.getLastPathSegment();
                 String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
-
-                // Issue update statement
-                updateCount = db.update(
-                        SetList.TABLE_NAME,
+                updateCount = db.update(SetList.TABLE_NAME,
                         contentValues,
                         where,
                         selectionArgs
                 );
                 break;
             }
-
             case CARD_LIST: {
-                // Get table name from uri
                 final String table = uri.getLastPathSegment();
-
-                // Issue update statement
-                updateCount = db.update(
-                        table,
+                updateCount = db.update(table,
                         contentValues,
                         selection,
                         selectionArgs
                 );
                 break;
             }
-
             // Used for updating individual cards
             case CARD_ITEM: {
-                // Build where statement
                 final String id = uri.getLastPathSegment();
                 String where = SetList._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
-
-                // Get table name from uri
                 List<String> segments = uri.getPathSegments();
                 final String table = segments.get(segments.size() - 1);
-
-                // Issue update statement
-                updateCount = db.update(
-                        table,
+                updateCount = db.update(table,
                         contentValues,
                         where,
                         selectionArgs
                 );
                 break;
             }
-
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
             }
         }
-
-        // Notify all listeners of changes
         if (updateCount > 0) {
-            providerContext().getContentResolver().notifyChange(uri, null);
+            context.getContentResolver().notifyChange(uri, null);
         }
-
         return updateCount;
     }
 
@@ -382,11 +318,7 @@ public class FlashcardProvider extends ContentProvider {
      * Creates an empty set of flashcards.
      */
     public Boolean newSetTable(String title) {
-        // Get the data repository in write mode
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        // Get table name from set title
         String tableName = getTableName(title);
 
         // Check if the table already exists
@@ -405,7 +337,7 @@ public class FlashcardProvider extends ContentProvider {
                     CardSet.DEFINITION + " TEXT NOT NULL);";
             db.execSQL(CARDSET_TABLE_CREATE);
 
-            // Link new set to activity_main database
+            // Link new set to main database
             ContentValues values = new ContentValues();
             values.put(SetList.SET_TITLE, title);
             values.put(SetList.SET_TABLE_NAME, tableName);
@@ -413,7 +345,6 @@ public class FlashcardProvider extends ContentProvider {
             cursor.close();
             return true;
         }
-
         return false;
     }
 
@@ -421,14 +352,10 @@ public class FlashcardProvider extends ContentProvider {
      * Deletes a stack of flashcards from the database.
      */
     public void deleteSetTable(String title) {
-        // Get the data repository in write mode
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        // Get table name from set title
         String tableName = getTableName(title);
 
-        // Remove set from activity_main database
+        // Remove set from main database
         db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
         this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
     }
@@ -437,11 +364,7 @@ public class FlashcardProvider extends ContentProvider {
      * Renames a set of flashcards.
      */
     public boolean renameSet(String oldTitle, String newTitle) {
-        // Get the data repository in write mode
-        mOpenHelper = new FlashcardDbHelper(providerContext());
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        // Get table names from set titles
         String oldName = getTableName(oldTitle);
         String newName = getTableName(newTitle);
 
@@ -457,27 +380,26 @@ public class FlashcardProvider extends ContentProvider {
             // Rename flashcard table
             db.execSQL("ALTER TABLE '" + oldName + "' RENAME TO '" + newName + "'");
 
-            // Get row id in activity_main table
+            // Get row id in main table
             Cursor oldCursor = query(SetList.CONTENT_URI,
                     new String[]{SetList.SET_TABLE_NAME, SetList._ID},
                     SetList.SET_TABLE_NAME + "=?",
                     new String[]{oldName},
                     null);
             if (oldCursor != null && oldCursor.moveToFirst()) {
-                String rowId = String.valueOf(oldCursor.getLong(oldCursor.getColumnIndex(SetList._ID)));
+                String rowId = String.valueOf(oldCursor.getLong(oldCursor
+                        .getColumnIndex(SetList._ID)));
                 oldCursor.close();
 
-                // Update set name in activity_main table
+                // Update set name in main table
                 ContentValues values = new ContentValues();
                 values.put(SetList.SET_TITLE, newTitle);
                 values.put(SetList.SET_TABLE_NAME, newName);
                 db.update(SetList.TABLE_NAME, values, SetList._ID + "=?", new String[]{rowId});
             }
-
             cursor.close();
             return true;
         }
-
         return false;
     }
 
@@ -496,7 +418,6 @@ public class FlashcardProvider extends ContentProvider {
             cursor.close();
             return false;
         }
-
         return true;
     }
 
@@ -527,7 +448,6 @@ public class FlashcardProvider extends ContentProvider {
             cursor.close();
             return true;
         }
-
         return false;
     }
 }

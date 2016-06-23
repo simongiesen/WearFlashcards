@@ -109,7 +109,7 @@ public class CardListFragment extends ListFragment
                                             final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
 
                                             // Delete card from set
-                                            FlashcardProvider handle = new FlashcardProvider();
+                                            FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
                                             handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), selection, selectionArgs);
                                         }
                                         mode.finish();

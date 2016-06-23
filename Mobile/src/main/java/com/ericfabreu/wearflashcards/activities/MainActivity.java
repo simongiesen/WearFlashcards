@@ -16,19 +16,11 @@ import com.ericfabreu.wearflashcards.fragments.SetListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
-    private static MainActivity instance;
     private SharedPreferences settings;
-
-    // Allow other activities to get application context statically
-    // http://stackoverflow.com/a/5114361
-    public static Context getContext() {
-        return instance.getApplicationContext();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        instance = this;
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

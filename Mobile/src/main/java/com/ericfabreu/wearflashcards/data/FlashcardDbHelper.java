@@ -11,8 +11,6 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
  * http://developer.android.com/training/basics/data-storage/databases.html
  */
 public class FlashcardDbHelper extends SQLiteOpenHelper {
-
-    // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "flashcards";
 
@@ -29,7 +27,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                         SetList.SET_TABLE_NAME + " TEXT UNIQUE NOT NULL," +
                         SetList.SET_TITLE + " TEXT NOT NULL);";
 
-        // Create activity_main table
+        // Create main table
         db.execSQL(SETLIST_TABLE_CREATE);
     }
 

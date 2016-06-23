@@ -69,7 +69,7 @@ public class NewCardActivity extends AppCompatActivity {
         }
 
         // Check if the term already exists in the stack
-        FlashcardProvider handle = new FlashcardProvider();
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, table_name);
         if (handle.termExists(term, tableUri)) {
             text1.setError(getString(R.string.term_taken));
@@ -99,7 +99,7 @@ public class NewCardActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverviewActivity if the toolbar_main back button is clicked
+            // Pass table name back to SetOverviewActivity if the main back button is clicked
             case android.R.id.home:
                 onBackPressed();
                 return true;
