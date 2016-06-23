@@ -1,7 +1,7 @@
 package com.ericfabreu.wearflashcards.utils;
 
 /**
- * Constants used in the wearable app.
+ * Constants used throughout the wearable app.
  */
 public class Constants {
     public static String SET_LIST = "/set_list";

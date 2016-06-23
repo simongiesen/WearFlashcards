@@ -1,7 +1,7 @@
 package com.ericfabreu.wearflashcards.utils;
 
 /**
- * Constants used by the app.
+ * Constants used throughout the app.
  */
 public class Constants {
     public final static String PREFS_NAME = "settings";

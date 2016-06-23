@@ -29,14 +29,16 @@ public class WearableService extends WearableListenerService {
 
         // Determine if the wearable is asking for the set list or for the list of cards in a set
         if (message.equals(Constants.SET_LIST)) {
-            sendData();
+            sendSetList();
         } else {
             sendSet(message);
         }
     }
 
-    // http://stackoverflow.com/a/25244496/3522216
-    private void sendData() {
+    /**
+     * Sends a list of all sets to the wearable device.
+     */
+    private void sendSetList() {
         // Get titles from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Cursor cursor = handle.fetchAllTitles();
@@ -45,10 +47,10 @@ public class WearableService extends WearableListenerService {
         }
 
         // Put titles in a string array
-        // http://stackoverflow.com/a/8939324/3522216
         ArrayList<String> columnArray = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            columnArray.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.SetList.SET_TITLE)));
+            columnArray.add(cursor.getString(cursor
+                    .getColumnIndex(FlashcardContract.SetList.SET_TITLE)));
         }
         String[] setList = columnArray.toArray(new String[columnArray.size()]);
 
@@ -61,6 +63,9 @@ public class WearableService extends WearableListenerService {
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
     }
 
+    /**
+     * Sends all the cards in a set to the wearable device.
+     */
     private void sendSet(String title) {
         // Get terms and definitions from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
@@ -71,8 +76,10 @@ public class WearableService extends WearableListenerService {
         ArrayList<String> columnArray1 = new ArrayList<>();
         ArrayList<String> columnArray2 = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            columnArray1.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.TERM)));
-            columnArray2.add(cursor.getString(cursor.getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
+            columnArray1.add(cursor.getString(cursor
+                    .getColumnIndex(FlashcardContract.CardSet.TERM)));
+            columnArray2.add(cursor.getString(cursor
+                    .getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
         }
         String[] terms = columnArray1.toArray(new String[columnArray1.size()]);
         String[] definitions = columnArray2.toArray(new String[columnArray2.size()]);
