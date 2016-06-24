@@ -1,7 +1,9 @@
 apply plugin: 'com.android.application'
 
-// Use number of commits as the version code
-// https://plus.google.com/+MarcReichelt/posts/BX2he4vSJaM
+/**
+ * Uses number of commits as the version code.
+ * https://plus.google.com/+MarcReichelt/posts/BX2he4vSJaM
+ */
 def getNumberOfCommits() {
     return 'git rev-list --count HEAD'.execute().text.trim().toInteger()
 }
@@ -13,7 +15,7 @@ android {
         applicationId "com.ericfabreu.wearflashcards"
         minSdkVersion 20
         targetSdkVersion 24
-        versionName '1.0.2'
+        versionName '1.0.3'
         versionCode getNumberOfCommits()
     }
     buildTypes {
