@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Based on sample layout from
-     http://developer.android.com/training/wearables/ui/layouts.html -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +6,14 @@
     android:paddingBottom="75dp"
     android:paddingTop="75dp">
 
-    <FrameLayout
-        android:id="@+id/layout_card_frame"
+    <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layout_card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/window_background"
-        android:padding="5dp">
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
 
         <ScrollView
             android:id="@+id/scroll_term"
@@ -51,5 +51,5 @@
                 android:textColor="@android:color/black"
                 android:textSize="30sp" />
         </ScrollView>
-    </FrameLayout>
+    </android.support.v7.widget.CardView>
 </FrameLayout>

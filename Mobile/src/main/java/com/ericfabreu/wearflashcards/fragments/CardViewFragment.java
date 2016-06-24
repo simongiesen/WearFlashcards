@@ -26,7 +26,7 @@ public class CardViewFragment extends Fragment {
 
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
-        FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_frame);
+        FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_view);
         final ScrollView termScroll = (ScrollView) frame.findViewById(R.id.scroll_term);
         final ScrollView definitionScroll = (ScrollView) frame.findViewById(R.id.scroll_definition);
         TextView termView = (TextView) frame.findViewById(R.id.text_card_term);
