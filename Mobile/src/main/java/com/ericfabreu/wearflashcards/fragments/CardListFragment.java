@@ -31,17 +31,14 @@ import java.util.List;
 
 
 /**
- * Fragment that generates a list of cards to be displayed on screen.
+ * Generates a list of cards to be displayed on screen.
  */
 public class CardListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-    // These are the set names that we will retrieve
-    static final String[] SET_SUMMARY_PROJECTION = new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
-    // This is the Adapter being used to display the list's data
-    SimpleCursorAdapter mAdapter;
-    // Save table name from SetOverviewActivity
+    private static final String[] SET_SUMMARY_PROJECTION =
+            new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
+    private SimpleCursorAdapter mAdapter;
     private String tableName;
-    // Store position of selected items
     private List<Integer> selections = new ArrayList<>();
 
     @Override
@@ -56,8 +53,7 @@ public class CardListFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Contextual action mode code adapted from
-        // http://developer.android.com/guide/topics/ui/menus.html#context-menu
+        // Setup contextual action mode
         ListView listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
@@ -71,7 +67,7 @@ public class CardListFragment extends ListFragment
                     selections.remove(Integer.valueOf(position));
                 }
 
-                // Only show the edit button if there is only one item selected
+                // Show the edit button only if there is exactly one item selected
                 if (selections.size() == 1) {
                     mode.getMenu().findItem(R.id.item_edit).setVisible(true);
                 } else {
@@ -81,11 +77,9 @@ public class CardListFragment extends ListFragment
 
             @Override
             public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-                // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
                     case R.id.item_delete:
                         // Display alert message
-                        // http://stackoverflow.com/a/13511580/3522216
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         if (selections.size() > 1) {
                             builder.setTitle(R.string.delete_cards);
@@ -94,23 +88,32 @@ public class CardListFragment extends ListFragment
                         }
                         builder.setMessage(R.string.cannot_undo);
                         builder.setCancelable(true);
-
                         builder.setPositiveButton(R.string.delete,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
                                             // Get term and definition from the ListView item
-                                            LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(i));
-                                            TextView term = (TextView) card.getChildAt(Constants.TERM_POS);
-                                            TextView definition = (TextView) card.getChildAt(Constants.DEF_POS);
+                                            LinearLayout card = (LinearLayout) getListView()
+                                                    .getChildAt(selections.get(i));
+                                            TextView term = (TextView) card
+                                                    .getChildAt(Constants.TERM_POS);
+                                            TextView definition = (TextView) card
+                                                    .getChildAt(Constants.DEF_POS);
 
                                             // Build delete arguments
-                                            final String selection = CardSet.TERM + "=? AND " + CardSet.DEFINITION + "=?";
-                                            final String[] selectionArgs = {term.getText().toString(), definition.getText().toString()};
+                                            final String selection = CardSet.TERM + "=? AND " +
+                                                    CardSet.DEFINITION + "=?";
+                                            final String[] selectionArgs = {
+                                                    term.getText().toString(),
+                                                    definition.getText().toString()};
 
                                             // Delete card from set
-                                            FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-                                            handle.delete(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), selection, selectionArgs);
+                                            FlashcardProvider handle = new FlashcardProvider(
+                                                    getActivity().getApplicationContext());
+                                            handle.delete(Uri.withAppendedPath
+                                                            (CardSet.CONTENT_URI, tableName),
+                                                    selection,
+                                                    selectionArgs);
                                         }
                                         mode.finish();
                                     }
@@ -122,18 +125,18 @@ public class CardListFragment extends ListFragment
                                         dialog.cancel();
                                     }
                                 });
-
                         AlertDialog alert = builder.create();
                         alert.show();
                         return true;
 
                     case R.id.item_edit:
                         // Get term and definition and send them to EditCardActivity
-                        LinearLayout card = (LinearLayout) getListView().getChildAt(selections.get(0));
-                        TextView tView = (TextView) card.getChildAt(Constants.TERM_POS);
-                        TextView defView = (TextView) card.getChildAt(Constants.DEF_POS);
-                        String term = tView.getText().toString();
-                        String definition = defView.getText().toString();
+                        LinearLayout card = (LinearLayout) getListView()
+                                .getChildAt(selections.get(0));
+                        TextView termView = (TextView) card.getChildAt(Constants.TERM_POS);
+                        TextView definitionView = (TextView) card.getChildAt(Constants.DEF_POS);
+                        String term = termView.getText().toString();
+                        String definition = definitionView.getText().toString();
                         Intent intent = new Intent(getActivity(), EditCardActivity.class);
                         intent.putExtra(Constants.TERM, term);
                         intent.putExtra(Constants.DEFINITION, definition);
@@ -150,7 +153,6 @@ public class CardListFragment extends ListFragment
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                // Inflate the shared for the CAB
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual, menu);
                 return true;
@@ -168,7 +170,7 @@ public class CardListFragment extends ListFragment
             }
         });
 
-        // Create an empty adapter we will use to display the loaded data.
+        // Create an empty adapter to display the list of cards
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 R.layout.fragment_card_list,
                 null,
@@ -180,34 +182,28 @@ public class CardListFragment extends ListFragment
         // Show text if database is empty
         setEmptyText(getString(R.string.empty_stack));
 
-        // Prepare the loader. Either re-connect with an existing one, or start a new one.
+        // Prepare the loader
         getLoaderManager().initLoader(0, null, this);
     }
 
-    // Called when a new Loader needs to be created
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Select criteria for flashcard sets
         final String SET_SELECTION = "((" +
                 CardSet.TERM + " NOTNULL) AND (" +
                 CardSet.TERM + " != '' ))";
-
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed
-        return new CursorLoader(getActivity(), Uri.withAppendedPath(CardSet.CONTENT_URI, tableName), SET_SUMMARY_PROJECTION, SET_SELECTION, null, null);
+        return new CursorLoader(getActivity(),
+                Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
+                SET_SUMMARY_PROJECTION,
+                SET_SELECTION,
+                null,
+                null);
     }
 
-    // Called when a previously created loader has finished loading
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Swap the new cursor in.  (The framework will take care of closing the
-        // old cursor once we return.)
+        // Swap the new cursor in
         mAdapter.swapCursor(data);
     }
 
-    // Called when a previously created loader is reset, making the data unavailable
     public void onLoaderReset(Loader<Cursor> loader) {
-        // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed.  We need to make sure we are no
-        // longer using it.
         mAdapter.swapCursor(null);
     }
 }
