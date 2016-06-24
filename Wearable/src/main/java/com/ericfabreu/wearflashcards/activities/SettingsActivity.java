@@ -11,7 +11,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
 /**
- * Allows user to change the app's activity_settings.
+ * Allows the user to change the app's settings.
  */
 public class SettingsActivity extends Activity {
     private SharedPreferences settings;
@@ -21,7 +21,7 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        // Load and apply activity_settings
+        // Load and apply settings
         settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         if (settings.getBoolean(Constants.SHUFFLE, false)) {
             ((TextView) findViewById(R.id.text_shuffle_status)).setText(getText(R.string.on));

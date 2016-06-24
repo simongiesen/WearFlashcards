@@ -12,14 +12,13 @@ import android.widget.TextView;
 import com.ericfabreu.wearflashcards.R;
 
 /**
- * http://developer.android.com/training/wearables/ui/lists.html
+ * Provides layout for the set list created in MainActivity.
+ * Layout from http://developer.android.com/training/wearables/ui/lists.html
  */
 public class WearableListItemLayout extends LinearLayout
         implements WearableListView.OnCenterProximityListener {
-
     private final float mFadedTextAlpha;
-    private final int mFadedCircleColor;
-    private final int mChosenCircleColor;
+    private final int mFadedCircleColor, mChosenCircleColor;
     private ImageView mCircle;
     private TextView mName;
 
@@ -31,22 +30,19 @@ public class WearableListItemLayout extends LinearLayout
         this(context, attrs, 0);
     }
 
-    public WearableListItemLayout(Context context, AttributeSet attrs,
-                                  int defStyle) {
+    public WearableListItemLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
         mFadedTextAlpha = getResources()
                 .getInteger(R.integer.action_text_faded_alpha) / 100f;
         mFadedCircleColor = ContextCompat.getColor(context, R.color.list_item_unfocused);
         mChosenCircleColor = ContextCompat.getColor(context, R.color.list_item_focused);
     }
 
-    // Get references to the icon and text in the item layout definition
-    @Override
+
     protected void onFinishInflate() {
         super.onFinishInflate();
-        // These are defined in the layout file for list items
-        // (see next section)
+
+        // Get references to the icon and text in the item layout definition
         mCircle = (ImageView) findViewById(R.id.image_circle);
         mName = (TextView) findViewById(R.id.text_name);
     }

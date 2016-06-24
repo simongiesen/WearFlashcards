@@ -4,15 +4,15 @@ package com.ericfabreu.wearflashcards.utils;
  * Constants used throughout the wearable app.
  */
 public class Constants {
-    public static String SET_LIST = "/set_list";
-    public static String TERMS = "/terms";
-    public static String DEFINITIONS = "/definitions";
-    public static String PATH = "/WearFlashcards";
-    public static String TERM = "term";
-    public static String DEFINITION = "definition";
-    public static String TITLE = "title";
-    public static String PREFS_NAME = "settings";
-    public static String SHUFFLE = "shuffle";
-    public static String DEF_FIRST = "definition_first";
-    public static int COLUMN_COUNT = 1;
+    public final static String SET_LIST = "/set_list";
+    public final static String TERMS = "/terms";
+    public final static String DEFINITIONS = "/definitions";
+    public final static String PATH = "/WearFlashcards";
+    public final static String TERM = "term";
+    public final static String DEFINITION = "definition";
+    public final static String TITLE = "title";
+    public final static String PREFS_NAME = "settings";
+    public final static String SHUFFLE = "shuffle";
+    public final static String DEF_FIRST = "definition_first";
+    public final static int COLUMN_COUNT = 1;
 }

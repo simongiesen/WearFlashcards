@@ -45,13 +45,11 @@ public class SetViewActivity extends Activity implements
         title = "/" + bundle.getString(Constants.TITLE);
 
         // Listen for data item events
-        // http://developer.android.com/training/wearables/data-layer/data-items.html
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
         mGoogleApiClient.connect();
 
         // Check if watch is connected
@@ -71,21 +69,6 @@ public class SetViewActivity extends Activity implements
         sendMessage(title);
     }
 
-    // https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
-    // http://developer.android.com/training/wearables/data-layer/messages.html
-    private void sendMessage(final String message) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-                for (Node node : nodes.getNodes()) {
-                    Wearable.MessageApi.sendMessage(
-                            mGoogleApiClient, node.getId(), Constants.PATH, message.getBytes()).await();
-                }
-            }
-        }).start();
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -95,19 +78,17 @@ public class SetViewActivity extends Activity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
-                // DataItem changed
+                // Create the cards upon receiving data from the mobile device
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 terms = dataMap.getStringArray(Constants.TERMS);
@@ -120,33 +101,51 @@ public class SetViewActivity extends Activity implements
         }
     }
 
-    // Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH)
+    /**
+     * Sends a message to the mobile device with the selected set title.
+     * https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
+     */
+    private void sendMessage(final String message) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes =
+                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+                for (Node node : nodes.getNodes()) {
+                    Wearable.MessageApi.sendMessage(mGoogleApiClient,
+                            node.getId(),
+                            Constants.PATH,
+                            message.getBytes()).await();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Uses a GridViewPager to display the flashcards.
+     * Adapted from the GridViewPager sample (https://goo.gl/ZGLbWH).
+     */
     protected void createCards() {
         setContentView(R.layout.activity_set_view);
-        final Resources res = getResources();
+        final Resources resources = getResources();
         final GridViewPager pager = (GridViewPager) findViewById(R.id.pager_set_view);
         pager.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-                // Adjust page margins:
-                //   A little extra horizontal spacing between pages looks a bit
-                //   less crowded on a round display.
+                // Add extra horizontal spacing on round displays
                 final boolean round = insets.isRound();
-                int rowMargin = res.getDimensionPixelOffset(R.dimen.page_row_margin);
-                int colMargin = res.getDimensionPixelOffset(round ?
+                int rowMargin = resources.getDimensionPixelOffset(R.dimen.page_row_margin);
+                int colMargin = resources.getDimensionPixelOffset(round ?
                         R.dimen.page_column_margin_round : R.dimen.page_column_margin);
                 pager.setPageMargins(rowMargin, colMargin);
-
-                // GridViewPager relies on insets to properly handle
-                // layout for round displays. They must be explicitly
-                // applied since this listener has taken them over.
                 pager.onApplyWindowInsets(insets);
                 return insets;
             }
         });
 
-        // Apply activity_settings and open cards
-        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        // Apply settings and open cards
+        SharedPreferences settings =
+                getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         if (settings.getBoolean(Constants.DEF_FIRST, false)) {
             String[] temp = terms;
             terms = definitions;
@@ -158,6 +157,9 @@ public class SetViewActivity extends Activity implements
         pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions));
     }
 
+    /**
+     * Shuffles the terms and definitions together.
+     */
     private void shuffleCards() {
         int size = terms.length;
         int[] shuffleOrder = getShuffledArray(size);
@@ -169,7 +171,6 @@ public class SetViewActivity extends Activity implements
             newTerms[i] = terms[shuffleOrder[i]];
             newDefinitions[i] = definitions[shuffleOrder[i]];
         }
-
         terms = newTerms;
         definitions = newDefinitions;
     }
@@ -203,11 +204,14 @@ public class SetViewActivity extends Activity implements
         return array;
     }
 
+    /**
+     * Displays an offline status message if the watch is not connected to the mobile device.
+     */
     private class CheckConnection implements Runnable {
         @Override
         public void run() {
-            if (Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
-                // Display offline status message
+            if (Wearable.NodeApi
+                    .getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

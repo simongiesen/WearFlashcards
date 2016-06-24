@@ -29,7 +29,6 @@ public class MainActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
     private GoogleApiClient mGoogleApiClient;
     private String[] setList = null;
 
@@ -39,13 +38,11 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.status_empty_database);
 
         // Listen for data item events
-        // http://developer.android.com/training/wearables/data-layer/data-items.html
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
         mGoogleApiClient.connect();
 
         // Check if watch is connected
@@ -53,21 +50,13 @@ public class MainActivity extends Activity implements
         checkThread.start();
     }
 
-    public void openSettings(View view) {
-        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
     protected void createList() {
-        // Get the list component from the layout of the activity
+        // Get the list component from the layout of the activity and assign an adapter to it
         setContentView(R.layout.activity_main);
         WearableListView listView =
                 (WearableListView) findViewById(R.id.layout_list);
-
-        // Assign an adapter to the list
         listView.setAdapter(new Adapter(this, setList));
 
-        // Open SetViewActivity when an item is clicked
         listView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder view) {
@@ -97,21 +86,6 @@ public class MainActivity extends Activity implements
         sendMessage(Constants.SET_LIST);
     }
 
-    // https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
-    // http://developer.android.com/training/wearables/data-layer/messages.html
-    private void sendMessage(final String message) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-                for (Node node : nodes.getNodes()) {
-                    Wearable.MessageApi.sendMessage(
-                            mGoogleApiClient, node.getId(), Constants.PATH, message.getBytes()).await();
-                }
-            }
-        }).start();
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -130,8 +104,8 @@ public class MainActivity extends Activity implements
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent event : dataEvents) {
+            // Create the list of sets upon receiving data from the mobile device
             if (event.getType() == DataEvent.TYPE_CHANGED) {
-                // DataItem changed
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 setList = dataMap.getStringArray(Constants.SET_LIST);
@@ -143,68 +117,87 @@ public class MainActivity extends Activity implements
     }
 
     /**
-     * http://developer.android.com/training/wearables/ui/lists.html
+     * Sends a message to the mobile device with the selected set title.
+     * https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
+     */
+    private void sendMessage(final String message) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes =
+                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+                for (Node node : nodes.getNodes()) {
+                    Wearable.MessageApi.sendMessage(mGoogleApiClient,
+                            node.getId(),
+                            Constants.PATH,
+                            message.getBytes()).await();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Launches SettingsActivity.
+     */
+    public void openSettings(View view) {
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Provides the ListView adapter used to display the list of sets.
      */
     private static final class Adapter extends WearableListView.Adapter {
         private final Context mContext;
         private final LayoutInflater mInflater;
         private String[] mDataSet;
 
-        // Provide a suitable constructor (depends on the kind of data set)
         public Adapter(Context context, String[] dataSet) {
             mContext = context;
             mInflater = LayoutInflater.from(mContext);
             mDataSet = dataSet;
         }
 
-        // Create new views for list items
-        // (invoked by the WearableListView's layout manager)
         @Override
-        public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                              int viewType) {
-            // Inflate our custom layout for list items
+        public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // Inflate custom layout for list items
             return new ItemViewHolder(mInflater.inflate(R.layout.item_set_list, parent, false));
         }
 
         // Replace the contents of a list item
-        // Instead of creating new views, the list tries to recycle existing ones
-        // (invoked by the WearableListView's layout manager)
         @Override
-        public void onBindViewHolder(WearableListView.ViewHolder holder,
-                                     int position) {
-            // Retrieve the text view
+        public void onBindViewHolder(WearableListView.ViewHolder holder, int position) {
+            // Retrieve the text view and replace its contents
             ItemViewHolder itemHolder = (ItemViewHolder) holder;
             TextView view = itemHolder.textView;
-            // Replace text contents
             view.setText(mDataSet[position]);
-            // Replace list item's metadata
             holder.itemView.setTag(position);
         }
 
-        // Return the size of your data set
-        // (invoked by the WearableListView's layout manager)
         @Override
         public int getItemCount() {
             return mDataSet.length;
         }
 
-        // Provide a reference to the type of views you're using
+        // Provide a reference to the views used in the ListView
         public static class ItemViewHolder extends WearableListView.ViewHolder {
             private TextView textView;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
-                // Find the text view within the custom item's layout
                 textView = (TextView) itemView.findViewById(R.id.text_name);
             }
         }
     }
 
+    /**
+     * Displays an offline status message if the watch is not connected to the mobile device.
+     */
     private class CheckConnection implements Runnable {
         @Override
         public void run() {
-            if (Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
-                // Display offline message
+            if (Wearable.NodeApi
+                    .getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
