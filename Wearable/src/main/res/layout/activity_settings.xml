@@ -15,11 +15,12 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/layout_shuffle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:clickable="true"
-            android:onClick="flipShuffle">
+            android:onClick="flipStatus">
 
             <ImageView
                 android:id="@+id/image_shuffle"
@@ -66,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:onClick="flipDefFirst">
+            android:onClick="flipStatus">
 
             <ImageView
                 android:id="@+id/image_definition_first"
