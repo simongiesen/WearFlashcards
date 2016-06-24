@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -33,7 +32,7 @@ public class NewSetActivity extends AppCompatActivity {
         String title = text.getText().toString();
 
         // Check if title is empty
-        if (TextUtils.isEmpty(title)) {
+        if (title.isEmpty() || title.matches("[ ]+")) {
             text.setError(getString(R.string.empty_title));
             return;
         }
