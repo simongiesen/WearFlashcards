@@ -1,8 +1,6 @@
 package com.ericfabreu.wearflashcards.layouts;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
 import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -17,8 +15,7 @@ import com.ericfabreu.wearflashcards.R;
  */
 public class WearableListItemLayout extends LinearLayout
         implements WearableListView.OnCenterProximityListener {
-    private final float mFadedTextAlpha;
-    private final int mFadedCircleColor, mChosenCircleColor;
+    private final float mFadedAlpha, mOpaqueAlpha, mLargeScale, mRegularScale;
     private ImageView mCircle;
     private TextView mName;
 
@@ -32,10 +29,10 @@ public class WearableListItemLayout extends LinearLayout
 
     public WearableListItemLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mFadedTextAlpha = getResources()
+        mFadedAlpha = getResources()
                 .getInteger(R.integer.action_text_faded_alpha) / 100f;
-        mFadedCircleColor = ContextCompat.getColor(context, R.color.list_item_unfocused);
-        mChosenCircleColor = ContextCompat.getColor(context, R.color.list_item_focused);
+        mOpaqueAlpha = mRegularScale = 1f;
+        mLargeScale = 3 / 2f;
     }
 
 
@@ -49,13 +46,17 @@ public class WearableListItemLayout extends LinearLayout
 
     @Override
     public void onCenterPosition(boolean animate) {
-        mName.setAlpha(1f);
-        ((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
+        mName.setAlpha(mOpaqueAlpha);
+        mCircle.setAlpha(mOpaqueAlpha);
+        mCircle.setScaleX(mLargeScale);
+        mCircle.setScaleY(mLargeScale);
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        ((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
-        mName.setAlpha(mFadedTextAlpha);
+        mName.setAlpha(mFadedAlpha);
+        mCircle.setAlpha(mFadedAlpha);
+        mCircle.setScaleX(mRegularScale);
+        mCircle.setScaleY(mRegularScale);
     }
 }
