@@ -13,6 +13,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +26,10 @@
             android:label="@string/app_name"
             android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateVisible">
+
             <intent-filter>
                 <action android:name=".NewSet" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -36,8 +39,10 @@
             android:label="@string/app_name"
             android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateVisible">
+
             <intent-filter>
                 <action android:name=".EditSetTitle" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -47,8 +52,10 @@
             android:label="@string/app_name"
             android:parentActivityName=".activities.SetOverviewActivity"
             android:windowSoftInputMode="stateVisible">
+
             <intent-filter>
                 <action android:name=".NewCard" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -58,8 +65,10 @@
             android:label="@string/app_name"
             android:parentActivityName=".activities.SetOverviewActivity"
             android:windowSoftInputMode="stateVisible">
+
             <intent-filter>
                 <action android:name=".EditCard" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -68,8 +77,10 @@
             android:name=".activities.SetOverviewActivity"
             android:label="@string/app_name"
             android:parentActivityName=".activities.MainActivity">
+
             <intent-filter>
                 <action android:name=".SetOverview" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -78,8 +89,10 @@
             android:name=".activities.StudySetActivity"
             android:label="@string/app_name"
             android:parentActivityName=".activities.SetOverviewActivity">
+
             <intent-filter>
                 <action android:name=".StudySet" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -95,6 +108,7 @@
             <intent-filter>
                 <!-- Listen only for messages -->
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+
                 <data
                     android:host="*"
                     android:pathPrefix="/WearFlashcards"
@@ -102,5 +116,4 @@
             </intent-filter>
         </service>
     </application>
-
 </manifest>
