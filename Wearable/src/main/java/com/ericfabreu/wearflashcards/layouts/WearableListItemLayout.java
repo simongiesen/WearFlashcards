@@ -37,8 +37,8 @@ public class WearableListItemLayout extends LinearLayout
 
         mFadedTextAlpha = getResources()
                 .getInteger(R.integer.action_text_faded_alpha) / 100f;
-        mFadedCircleColor = ContextCompat.getColor(context, R.color.wl_gray);
-        mChosenCircleColor = ContextCompat.getColor(context, R.color.wl_teal);
+        mFadedCircleColor = ContextCompat.getColor(context, R.color.list_item_unfocused);
+        mChosenCircleColor = ContextCompat.getColor(context, R.color.list_item_focused);
     }
 
     // Get references to the icon and text in the item layout definition

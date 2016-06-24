@@ -207,7 +207,7 @@ public class SetViewActivity extends Activity implements
         @Override
         public void run() {
             if (Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await().getNodes().size() == 0) {
-                // Display status_offline message
+                // Display offline status message
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
