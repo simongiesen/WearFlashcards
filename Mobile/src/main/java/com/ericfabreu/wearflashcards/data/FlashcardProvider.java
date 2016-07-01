@@ -351,13 +351,23 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Deletes a stack of flashcards from the database.
      */
-    public void deleteSetTable(String title) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        String tableName = getTableName(title);
+    public void deleteSetTable(long tableRowId) {
+        // Get the table's title
+        Cursor cursor = this.query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TITLE, SetList.SET_TABLE_NAME},
+                SetList._ID + "=?",
+                new String[]{String.valueOf(tableRowId)},
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
+            String tableName = cursor.getString(cursor.getColumnIndex(SetList.SET_TABLE_NAME));
+            SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-        // Remove set from main database
-        db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
-        this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
+            // Remove set from main database
+            db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
+            this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
+            cursor.close();
+        }
     }
 
     /**

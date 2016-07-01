@@ -14,12 +14,9 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.EditCardActivity;
@@ -40,7 +37,7 @@ public class CardListFragment extends ListFragment
             new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
     private SimpleCursorAdapter mAdapter;
     private String tableName;
-    private List<View> selections = new ArrayList<>();
+    private List<Long> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,9 +60,9 @@ public class CardListFragment extends ListFragment
                                                   long id, boolean checked) {
                 // Store position of selected items
                 if (checked) {
-                    selections.add(listView.getChildAt(position));
+                    selections.add(id);
                 } else {
-                    selections.remove(listView.getChildAt(position));
+                    selections.remove(selections.indexOf(id));
                 }
 
                 // Show the edit button only if there is exactly one item selected
@@ -93,27 +90,14 @@ public class CardListFragment extends ListFragment
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
-                                            // Get term and definition from the ListView item
-                                            LinearLayout card = (LinearLayout) selections.get(i);
-                                            TextView term = (TextView) card
-                                                    .getChildAt(Constants.TERM_POS);
-                                            TextView definition = (TextView) card
-                                                    .getChildAt(Constants.DEF_POS);
-
-                                            // Build delete arguments
-                                            final String selection = CardSet.TERM + "=? AND " +
-                                                    CardSet.DEFINITION + "=?";
-                                            final String[] selectionArgs = {
-                                                    term.getText().toString(),
-                                                    definition.getText().toString()};
-
                                             // Delete card from set
                                             FlashcardProvider handle = new FlashcardProvider(
                                                     getActivity().getApplicationContext());
                                             handle.delete(Uri.withAppendedPath
                                                             (CardSet.CONTENT_URI, tableName),
-                                                    selection,
-                                                    selectionArgs);
+                                                    CardSet._ID + "=?",
+                                                    new String[]{String
+                                                            .valueOf(selections.get(i))});
                                         }
                                         mode.finish();
                                     }
@@ -131,17 +115,26 @@ public class CardListFragment extends ListFragment
 
                     case R.id.item_edit:
                         // Get term and definition and send them to EditCardActivity
-                        LinearLayout card = (LinearLayout) selections.get(0);
-                        TextView termView = (TextView) card.getChildAt(Constants.TERM_POS);
-                        TextView definitionView = (TextView) card.getChildAt(Constants.DEF_POS);
-                        String term = termView.getText().toString();
-                        String definition = definitionView.getText().toString();
-                        Intent intent = new Intent(getActivity(), EditCardActivity.class);
-                        intent.putExtra(Constants.TERM, term);
-                        intent.putExtra(Constants.DEFINITION, definition);
-                        intent.putExtra(Constants.TABLE_NAME, tableName);
-                        intent.putExtra(Constants.TITLE, getActivity().getTitle());
-                        startActivity(intent);
+                        FlashcardProvider handle =
+                                new FlashcardProvider(getActivity().getApplicationContext());
+                        Cursor cursor = handle.query(Uri.withAppendedPath(
+                                CardSet.CONTENT_URI, tableName),
+                                new String[]{CardSet.TERM, CardSet.DEFINITION},
+                                CardSet._ID + "=?",
+                                new String[]{String.valueOf(selections.get(0))},
+                                null);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            String term = cursor.getString(cursor.getColumnIndex(CardSet.TERM));
+                            String definition =
+                                    cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION));
+                            Intent intent = new Intent(getActivity(), EditCardActivity.class);
+                            intent.putExtra(Constants.TERM, term);
+                            intent.putExtra(Constants.DEFINITION, definition);
+                            intent.putExtra(Constants.TABLE_NAME, tableName);
+                            intent.putExtra(Constants.TITLE, getActivity().getTitle());
+                            startActivity(intent);
+                            cursor.close();
+                        }
                         mode.finish();
                         return true;
 

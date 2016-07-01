@@ -38,7 +38,7 @@ public class SetListFragment extends ListFragment
     private static final String[] SET_SUMMARY_PROJECTION =
             new String[]{SetList._ID, SetList.SET_TITLE};
     private SimpleCursorAdapter mAdapter;
-    private List<View> selections = new ArrayList<>();
+    private List<Long> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,9 +61,9 @@ public class SetListFragment extends ListFragment
                                                   long id, boolean checked) {
                 // Store position of selected items
                 if (checked) {
-                    selections.add(listView.getChildAt(position));
+                    selections.add(id);
                 } else {
-                    selections.remove(listView.getChildAt(position));
+                    selections.remove(selections.indexOf(id));
                 }
 
                 // Show the edit button only if there is exactly one item selected
@@ -90,11 +90,9 @@ public class SetListFragment extends ListFragment
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
-                                            TextView set = (TextView) selections.get(i);
-                                            String title = set.getText().toString();
                                             FlashcardProvider handle = new FlashcardProvider(
                                                     getActivity().getApplicationContext());
-                                            handle.deleteSetTable(title);
+                                            handle.deleteSetTable(selections.get(i));
                                         }
                                         mode.finish();
                                     }
@@ -112,11 +110,21 @@ public class SetListFragment extends ListFragment
 
                     case R.id.item_edit:
                         // Get set title and send it to EditSetTitleActivity
-                        TextView set = (TextView) selections.get(0);
-                        String title = set.getText().toString();
-                        Intent intent = new Intent(getActivity(), EditSetTitleActivity.class);
-                        intent.putExtra(Constants.TITLE, title);
-                        startActivity(intent);
+                        FlashcardProvider handle = new FlashcardProvider(getActivity()
+                                .getApplicationContext());
+                        Cursor cursor = handle.query(SetList.CONTENT_URI,
+                                new String[]{SetList.SET_TITLE},
+                                SetList._ID + "=?",
+                                new String[]{String.valueOf(selections.get(0))},
+                                null);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            String title = cursor.getString(cursor
+                                    .getColumnIndex(SetList.SET_TITLE));
+                            Intent intent = new Intent(getActivity(), EditSetTitleActivity.class);
+                            intent.putExtra(Constants.TITLE, title);
+                            startActivity(intent);
+                            cursor.close();
+                        }
                         mode.finish();
                         return true;
 
@@ -179,6 +187,7 @@ public class SetListFragment extends ListFragment
                 handle.delete(SetList.CONTENT_URI,
                         SetList.SET_TABLE_NAME + "=?",
                         new String[]{tableName});
+
                 // Update entry in the main table
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SetList.SET_TABLE_NAME, tableName);
