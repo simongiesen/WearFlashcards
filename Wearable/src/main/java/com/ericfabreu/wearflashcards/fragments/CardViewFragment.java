@@ -2,15 +2,15 @@ package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.thinkincode.utils.views.AutoResizeTextView;
 
 /**
  * Fragment used to display cards.
@@ -27,10 +27,14 @@ public class CardViewFragment extends Fragment {
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_frame);
-        final ScrollView termScroll = (ScrollView) frame.findViewById(R.id.scroll_card_term);
-        final ScrollView defScroll = (ScrollView) frame.findViewById(R.id.scroll_definition);
-        TextView termView = (TextView) frame.findViewById(R.id.text_term);
-        TextView definitionView = (TextView) frame.findViewById(R.id.text_card_definition);
+        final AutoResizeTextView termView =
+                (AutoResizeTextView) frame.findViewById(R.id.text_term);
+        final AutoResizeTextView definitionView =
+                (AutoResizeTextView) frame.findViewById(R.id.text_card_definition);
+        termView.setMinTextSize(14f);
+        termView.setEllipsize(TextUtils.TruncateAt.END);
+        definitionView.setMinTextSize(12f);
+        definitionView.setEllipsize(TextUtils.TruncateAt.END);
 
         // Add text and click listeners
         termView.setText(term);
@@ -39,12 +43,12 @@ public class CardViewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Flip term/definition visibility
-                if (termScroll.getVisibility() == View.VISIBLE) {
-                    termScroll.setVisibility(View.INVISIBLE);
-                    defScroll.setVisibility(View.VISIBLE);
+                if (termView.getVisibility() == View.VISIBLE) {
+                    termView.setVisibility(View.INVISIBLE);
+                    definitionView.setVisibility(View.VISIBLE);
                 } else {
-                    termScroll.setVisibility(View.VISIBLE);
-                    defScroll.setVisibility(View.INVISIBLE);
+                    termView.setVisibility(View.VISIBLE);
+                    definitionView.setVisibility(View.INVISIBLE);
                 }
             }
         };
