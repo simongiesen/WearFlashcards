@@ -2,6 +2,7 @@
 <resources>
     <color name="default_background">#E0F2F1</color>
     <color name="set_view_background">#00796B</color>
+    <color name="card_shadow">#7000</color>
     <color name="list_text">#212121</color>
     <color name="list_item_focused">#00796B</color>
     <color name="list_item_unfocused">#B2DFDB</color>
