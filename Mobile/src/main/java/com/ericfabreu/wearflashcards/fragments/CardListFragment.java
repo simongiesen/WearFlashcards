@@ -14,6 +14,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,7 +40,7 @@ public class CardListFragment extends ListFragment
             new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION};
     private SimpleCursorAdapter mAdapter;
     private String tableName;
-    private List<Integer> selections = new ArrayList<>();
+    private List<View> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class CardListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
 
         // Setup contextual action mode
-        ListView listView = getListView();
+        final ListView listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
@@ -62,9 +63,9 @@ public class CardListFragment extends ListFragment
                                                   long id, boolean checked) {
                 // Store position of selected items
                 if (checked) {
-                    selections.add(position);
+                    selections.add(listView.getChildAt(position));
                 } else {
-                    selections.remove(Integer.valueOf(position));
+                    selections.remove(listView.getChildAt(position));
                 }
 
                 // Show the edit button only if there is exactly one item selected
@@ -93,8 +94,7 @@ public class CardListFragment extends ListFragment
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
                                             // Get term and definition from the ListView item
-                                            LinearLayout card = (LinearLayout) getListView()
-                                                    .getChildAt(selections.get(i));
+                                            LinearLayout card = (LinearLayout) selections.get(i);
                                             TextView term = (TextView) card
                                                     .getChildAt(Constants.TERM_POS);
                                             TextView definition = (TextView) card
@@ -131,8 +131,7 @@ public class CardListFragment extends ListFragment
 
                     case R.id.item_edit:
                         // Get term and definition and send them to EditCardActivity
-                        LinearLayout card = (LinearLayout) getListView()
-                                .getChildAt(selections.get(0));
+                        LinearLayout card = (LinearLayout) selections.get(0);
                         TextView termView = (TextView) card.getChildAt(Constants.TERM_POS);
                         TextView definitionView = (TextView) card.getChildAt(Constants.DEF_POS);
                         String term = termView.getText().toString();

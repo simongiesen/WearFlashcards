@@ -30,7 +30,6 @@ import com.ericfabreu.wearflashcards.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Generates a list of sets to be displayed on screen.
  */
@@ -39,7 +38,7 @@ public class SetListFragment extends ListFragment
     private static final String[] SET_SUMMARY_PROJECTION =
             new String[]{SetList._ID, SetList.SET_TITLE};
     private SimpleCursorAdapter mAdapter;
-    private List<Integer> selections = new ArrayList<>();
+    private List<View> selections = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,7 @@ public class SetListFragment extends ListFragment
         setEmptyText(getString(R.string.empty_database));
 
         // Setup contextual action mode
-        ListView listView = getListView();
+        final ListView listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
@@ -62,9 +61,9 @@ public class SetListFragment extends ListFragment
                                                   long id, boolean checked) {
                 // Store position of selected items
                 if (checked) {
-                    selections.add(position);
+                    selections.add(listView.getChildAt(position));
                 } else {
-                    selections.remove(Integer.valueOf(position));
+                    selections.remove(listView.getChildAt(position));
                 }
 
                 // Show the edit button only if there is exactly one item selected
@@ -91,8 +90,7 @@ public class SetListFragment extends ListFragment
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
-                                            TextView set = (TextView) getListView()
-                                                    .getChildAt(selections.get(i));
+                                            TextView set = (TextView) selections.get(i);
                                             String title = set.getText().toString();
                                             FlashcardProvider handle = new FlashcardProvider(
                                                     getActivity().getApplicationContext());
@@ -114,7 +112,7 @@ public class SetListFragment extends ListFragment
 
                     case R.id.item_edit:
                         // Get set title and send it to EditSetTitleActivity
-                        TextView set = (TextView) getListView().getChildAt(selections.get(0));
+                        TextView set = (TextView) selections.get(0);
                         String title = set.getText().toString();
                         Intent intent = new Intent(getActivity(), EditSetTitleActivity.class);
                         intent.putExtra(Constants.TITLE, title);
