@@ -48,5 +48,5 @@ dependencies {
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:cardview-v7:24.0.0'
-    compile 'me.grantland:autofittextview:0.2.1'
+    compile 'com.thinkincode.utils:Android:0.0.4'
 }
