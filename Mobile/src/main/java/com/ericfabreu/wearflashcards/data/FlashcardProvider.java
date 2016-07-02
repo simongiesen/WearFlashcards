@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
@@ -320,7 +319,6 @@ public class FlashcardProvider extends ContentProvider {
         if (cursor != null && cursor.moveToFirst()) {
             tableName = "w" + cursor.getString(cursor.getColumnIndex(SetList._ID)) + "f";
             cursor.close();
-            Log.d("tableName", tableName);
         }
         return tableName;
     }
