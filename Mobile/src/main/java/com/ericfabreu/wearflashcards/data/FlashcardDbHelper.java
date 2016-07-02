@@ -66,8 +66,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                 db.execSQL("CREATE TABLE " + SetList.TABLE_NAME + "(" +
                         SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         SetList.SET_TITLE + " TEXT UNIQUE NOT NULL)");
-                db.execSQL("INSERT INTO " + SetList.TABLE_NAME + " SELECT " + SetList.SET_TITLE +
-                        " FROM sets_backup");
+                db.execSQL("INSERT INTO " + SetList.TABLE_NAME + "(" + SetList.SET_TITLE + ")" +
+                        " SELECT " + SetList.SET_TITLE + " FROM sets_backup");
                 db.execSQL("DROP TABLE sets_backup");
                 db.execSQL("COMMIT");
 
