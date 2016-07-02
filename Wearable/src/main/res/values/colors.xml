@@ -6,4 +6,5 @@
     <color name="background_default">#002622</color>
     <color name="background_heading_default">#004D45</color>
     <color name="background_set_view_default">#004D45</color>
+    <color name="background_card_default">#F5FFFE</color>
 </resources>

@@ -20,7 +20,7 @@
     <!-- Card -->
     <item>
         <shape>
-            <solid android:color="@color/white" />
+            <solid android:color="@color/background_card_default" />
         </shape>
     </item>
 </layer-list>
