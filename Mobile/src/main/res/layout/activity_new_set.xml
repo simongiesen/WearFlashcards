@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_padding"
-    android:paddingLeft="@dimen/activity_horizontal_padding"
-    android:paddingRight="@dimen/activity_horizontal_padding"
-    android:paddingTop="@dimen/activity_vertical_padding"
-    tools:context=".activities.NewSetActivity">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/layout_new_set"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.Base">
+        android:paddingBottom="@dimen/activity_vertical_padding"
+        android:paddingLeft="@dimen/activity_horizontal_padding"
+        android:paddingRight="@dimen/activity_horizontal_padding"
+        android:paddingTop="@dimen/activity_vertical_padding"
+        tools:context=".activities.NewSetActivity">
 
-        <EditText
-            android:id="@+id/edit_new_set_title"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_new_set"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/set_title_hint"
-            android:inputType="textCapWords"
-            android:theme="@style/AppTheme.Base" />
-    </android.support.design.widget.TextInputLayout>
+            android:theme="@style/AppTheme.Base">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/layout_new_set"
-        android:layout_below="@+id/layout_new_set"
-        android:onClick="newSet"
-        android:text="@string/create" />
-</RelativeLayout>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_new_set_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/set_title_hint"
+                android:inputType="textCapWords|textMultiLine"
+                android:isScrollContainer="true"
+                android:theme="@style/AppTheme.Base" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/layout_new_set"
+            android:layout_below="@+id/layout_new_set"
+            android:onClick="newSet"
+            android:text="@string/create" />
+    </RelativeLayout>
+</ScrollView>

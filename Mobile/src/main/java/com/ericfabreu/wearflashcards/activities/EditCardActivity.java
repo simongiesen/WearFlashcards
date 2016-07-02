@@ -3,12 +3,12 @@ package com.ericfabreu.wearflashcards.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract;
@@ -46,8 +46,8 @@ public class EditCardActivity extends AppCompatActivity {
         super.onStart();
 
         // Add term and definition to EditText and move cursor to the end of the term
-        EditText termView = (EditText) findViewById(R.id.edit_term);
-        EditText definitionView = (EditText) findViewById(R.id.edit_definition);
+        TextInputEditText termView = (TextInputEditText) findViewById(R.id.edit_term);
+        TextInputEditText definitionView = (TextInputEditText) findViewById(R.id.edit_definition);
         termView.setText(term);
         termView.setSelection(term.length());
         definitionView.setText(definition);
@@ -57,8 +57,8 @@ public class EditCardActivity extends AppCompatActivity {
      * Edits a card and returns to SetOverviewActivity.
      */
     public void editCard(View view) {
-        EditText termView = (EditText) findViewById(R.id.edit_term);
-        EditText definitionView = (EditText) findViewById(R.id.edit_definition);
+        TextInputEditText termView = (TextInputEditText) findViewById(R.id.edit_term);
+        TextInputEditText definitionView = (TextInputEditText) findViewById(R.id.edit_definition);
         String newTerm = termView.getText().toString();
         String newDefinition = definitionView.getText().toString();
 

@@ -4,11 +4,11 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
@@ -41,8 +41,8 @@ public class NewCardActivity extends AppCompatActivity {
      */
     public void newCard(View view) {
         // Get term and definition from view and trim spaces from start and end
-        EditText text1 = (EditText) findViewById(R.id.edit_new_term);
-        EditText text2 = (EditText) findViewById(R.id.edit_new_definition);
+        TextInputEditText text1 = (TextInputEditText) findViewById(R.id.edit_new_term);
+        TextInputEditText text2 = (TextInputEditText) findViewById(R.id.edit_new_definition);
         String term = text1.getText().toString().replaceAll("^\\s+|\\s+$", "");
         String definition = text2.getText().toString().replaceAll("^\\s+|\\s+$", "");
 

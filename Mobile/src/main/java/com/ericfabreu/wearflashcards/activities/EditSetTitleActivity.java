@@ -2,10 +2,10 @@ package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -39,7 +39,7 @@ public class EditSetTitleActivity extends AppCompatActivity {
         super.onStart();
 
         // Add title to EditText and move cursor to the end
-        EditText text = (EditText) findViewById(R.id.edit_set_title);
+        TextInputEditText text = (TextInputEditText) findViewById(R.id.edit_set_title);
         text.setText(title);
         text.setSelection(title.length());
     }
@@ -48,7 +48,7 @@ public class EditSetTitleActivity extends AppCompatActivity {
      * Edits a set's title and returns to MainActivity.
      */
     public void editSetTitle(View view) {
-        EditText text = (EditText) findViewById(R.id.edit_set_title);
+        TextInputEditText text = (TextInputEditText) findViewById(R.id.edit_set_title);
         String newTitle = text.getText().toString();
 
         // Check if title has changed

@@ -2,10 +2,10 @@ package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -29,7 +29,7 @@ public class NewSetActivity extends AppCompatActivity {
      */
     public void newSet(View view) {
         // Get title and trim spaces from the start and end
-        EditText text = (EditText) findViewById(R.id.edit_new_set_title);
+        TextInputEditText text = (TextInputEditText) findViewById(R.id.edit_new_set_title);
         String title = text.getText().toString().replaceAll("^\\s+|\\s+$", "");
 
         // Check if title is empty
