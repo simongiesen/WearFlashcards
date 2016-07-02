@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/text_settings_heading"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_gravity="top|center_horizontal"
             android:layout_marginBottom="12dp"
             android:background="@color/background_heading_default"
