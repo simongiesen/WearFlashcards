@@ -4,7 +4,6 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
-        <item name="android:windowBackground">@color/window_background</item>
         <item name="android:activatedBackgroundIndicator">@drawable/list_selected</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/color_primary</item>
