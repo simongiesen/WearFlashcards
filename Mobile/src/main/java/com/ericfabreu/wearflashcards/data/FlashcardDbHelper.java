@@ -49,7 +49,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                         null,
                         null,
                         null,
-                        null);
+                        SetList._ID + " ASC");
                 if (cursor != null) {
                     while (cursor.moveToNext()) {
                         tables.add(cursor.getString(cursor.getColumnIndex(SetList.SET_TABLE_NAME)));
