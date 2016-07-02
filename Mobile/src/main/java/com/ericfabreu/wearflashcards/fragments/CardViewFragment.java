@@ -2,7 +2,6 @@ package com.ericfabreu.wearflashcards.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +31,7 @@ public class CardViewFragment extends Fragment {
         final AutoResizeTextView definitionView =
                 (AutoResizeTextView) frame.findViewById(R.id.text_card_definition);
         termView.setMinTextSize(14f);
-        termView.setEllipsize(TextUtils.TruncateAt.END);
         definitionView.setMinTextSize(10f);
-        definitionView.setEllipsize(TextUtils.TruncateAt.END);
 
         // Add term and definition
         termView.setText(term);
