@@ -2,7 +2,7 @@
 <android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/default_background"
+    android:background="@color/background_default"
     android:paddingBottom="40dp"
     android:paddingEnd="8dp"
     android:paddingStart="8dp"
@@ -17,6 +17,6 @@
         android:drawableTop="@drawable/ic_offline"
         android:gravity="center"
         android:text="@string/offline_message"
-        android:textColor="@color/list_text"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 </android.support.wearable.view.BoxInsetLayout>

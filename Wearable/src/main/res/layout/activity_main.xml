@@ -4,29 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@color/default_background"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="@color/background_heading_default"
         android:orientation="horizontal">
 
         <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:id="@+id/image_main_settings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:background="@color/default_background"
+            android:background="@color/background_heading_default"
             android:contentDescription="@string/settings"
             android:onClick="openSettings"
             android:src="@drawable/btn_settings" />
-    </LinearLayout>
+    </FrameLayout>
 
     <android.support.wearable.view.WearableListView
         android:id="@+id/layout_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/default_background"
+        android:background="@color/background_default"
         android:dividerHeight="0dp"
         android:scrollbars="none" />
 </LinearLayout>

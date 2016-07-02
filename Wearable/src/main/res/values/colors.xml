@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="default_background">#E0F2F1</color>
-    <color name="set_view_background">#00796B</color>
     <color name="card_shadow">#7000</color>
-    <color name="list_text">#212121</color>
-    <color name="list_item_focused">#00796B</color>
-    <color name="list_item_unfocused">#B2DFDB</color>
+    <color name="list_item_focused">#00A695</color>
+    <color name="list_item_unfocused">#00665C</color>
     <color name="background_default">#002622</color>
     <color name="background_heading_default">#004D45</color>
+    <color name="background_set_view_default">#004D45</color>
 </resources>
