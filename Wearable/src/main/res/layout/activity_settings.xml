@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/default_background"
-    android:paddingBottom="40dp"
-    android:paddingEnd="8dp"
-    android:paddingStart="8dp"
-    android:paddingTop="40dp">
+    android:background="@color/background_default"
+    tools:context="com.ericfabreu.wearflashcards.activities.MainActivity"
+    tools:deviceIds="wear">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_settings_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginBottom="12dp"
+            android:background="@color/background_heading_default"
+            android:gravity="center"
+            android:padding="@dimen/headings_padding"
+            android:text="@string/settings"
+            android:textColor="@color/white"
+            android:textSize="@dimen/headings_text_size" />
 
         <RelativeLayout
             android:id="@+id/layout_shuffle"
@@ -26,9 +39,12 @@
                 android:id="@+id/image_shuffle"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_margin="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
                 android:contentDescription="@string/list_item_description"
-                android:src="@drawable/ic_list_circle" />
+                android:src="@drawable/ic_settings_shuffle" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,7 +63,7 @@
                     android:fontFamily="sans-serif-condensed-light"
                     android:gravity="center_vertical|start"
                     android:text="@string/shuffle"
-                    android:textColor="@color/list_text"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <TextView
@@ -58,7 +74,7 @@
                     android:fontFamily="sans-serif-condensed-light"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textColor="@color/list_text"
+                    android:textColor="@color/white"
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>
@@ -73,9 +89,12 @@
                 android:id="@+id/image_definition_first"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_margin="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
                 android:contentDescription="@string/list_item_description"
-                android:src="@drawable/ic_list_circle" />
+                android:src="@drawable/ic_settings_switch_terms" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -94,7 +113,7 @@
                     android:fontFamily="sans-serif-condensed-light"
                     android:gravity="center_vertical|start"
                     android:text="@string/def_first"
-                    android:textColor="@color/list_text"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <TextView
@@ -105,7 +124,7 @@
                     android:fontFamily="sans-serif-condensed-light"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textColor="@color/list_text"
+                    android:textColor="@color/white"
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>

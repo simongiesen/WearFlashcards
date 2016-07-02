@@ -6,4 +6,6 @@
     <color name="list_text">#212121</color>
     <color name="list_item_focused">#00796B</color>
     <color name="list_item_unfocused">#B2DFDB</color>
+    <color name="background_default">#002622</color>
+    <color name="background_heading_default">#004D45</color>
 </resources>
