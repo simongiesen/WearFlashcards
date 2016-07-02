@@ -297,20 +297,23 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
-     * Returns a table name based on the given title.
+     * Returns a table name given the table's title.
      */
     public String getTableName(String title) {
-        // Remove all non-alphabetic characters and convert the letters to lower-case
-        String tableName = title.replaceAll("[\\W\\s]", "");
-        tableName = tableName.toLowerCase();
-
-        // Table name must start with a letter
-        if (!Character.isLetter(tableName.charAt(0))) {
-            tableName = "n" + tableName;
+        // Find the table's row ID in the main table
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query(SetList.TABLE_NAME,
+                new String[]{SetList._ID},
+                SetList.SET_TITLE + "=?",
+                new String[]{title},
+                null,
+                null,
+                null);
+        String tableName = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            tableName = "w" + cursor.getString(cursor.getColumnIndex(SetList._ID)) + "f";
+            cursor.close();
         }
-
-        // Add "wf" to the end of the table name to ensure that the name is not an SQLite command
-        tableName += "wf";
         return tableName;
     }
 
