@@ -10,7 +10,6 @@
     <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="title_taken">Title is already taken</string>
-    <string name="invalid_title">Symbols are not allowed in the title</string>
     <string name="empty_title">Please enter a title</string>
     <string name="empty_term">Term cannot be blank</string>
     <string name="empty_definition">Definition cannot be blank</string>

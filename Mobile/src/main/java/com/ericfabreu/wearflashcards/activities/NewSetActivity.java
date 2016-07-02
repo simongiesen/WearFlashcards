@@ -28,18 +28,13 @@ public class NewSetActivity extends AppCompatActivity {
      * Creates a new set and returns to MainActivity
      */
     public void newSet(View view) {
+        // Get title and trim spaces from the start and end
         EditText text = (EditText) findViewById(R.id.edit_new_set_title);
-        String title = text.getText().toString();
+        String title = text.getText().toString().replaceAll("^\\s+|\\s+$", "");
 
         // Check if title is empty
         if (title.isEmpty() || title.matches("[ ]+")) {
             text.setError(getString(R.string.empty_title));
-            return;
-        }
-
-        // Check if title is valid (can only have letters, numbers, and spaces)
-        if (!title.matches("[a-zA-Z0-9 ]+")) {
-            text.setError(getString(R.string.invalid_title));
             return;
         }
 

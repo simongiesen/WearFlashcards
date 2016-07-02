@@ -2,7 +2,6 @@ package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -167,39 +166,11 @@ public class SetListFragment extends ListFragment
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        // Get stack title and use it to generate the table name
+        // Use title to find the table name and pass it to SetOverviewActivity
         TextView textView = (TextView) view.findViewById(R.id.text_set_title);
         String title = textView.getText().toString();
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
         String tableName = handle.getTableName(title);
-
-        // Due to a bug present in 1.0.0,
-        // if the title does not start with a letter, the table will not exist
-        Cursor cursor = handle.query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TITLE},
-                SetList.SET_TITLE + "=?",
-                new String[]{title},
-                null);
-        if (cursor != null && cursor.moveToFirst()) {
-            final String setTitle = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
-            if (!Character.isLetter((setTitle).charAt(0)) && handle.newSetTable(title)) {
-                // Remove additional entry created by newSetTable
-                handle.delete(SetList.CONTENT_URI,
-                        SetList.SET_TABLE_NAME + "=?",
-                        new String[]{tableName});
-
-                // Update entry in the main table
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SetList.SET_TABLE_NAME, tableName);
-                handle.update(SetList.CONTENT_URI,
-                        contentValues,
-                        SetList.SET_TITLE + "=\"" + title + "\"",
-                        null);
-                cursor.close();
-            }
-        }
-
-        // Pass table name to SetOverviewActivity
         Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
         intent.putExtra(Constants.TABLE_NAME, tableName);
         intent.putExtra(Constants.TITLE, title);

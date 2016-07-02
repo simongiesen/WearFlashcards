@@ -318,23 +318,44 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
+     * Checks if the given title is available.
+     */
+    private boolean titleAvailable(String title) {
+        Cursor cursor = query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TITLE},
+                SetList.SET_TITLE + "=?",
+                new String[]{title},
+                null);
+        if (cursor != null && cursor.getCount() == 0) {
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Queries the main table to create a table name from the next row ID.
+     */
+    private String nextTableName() {
+        final String query =
+                "SELECT seq FROM sqlite_sequence WHERE name = '" + SetList.TABLE_NAME + "'";
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        final String nextTableName = cursor.moveToFirst() ?
+                "w" + (cursor.getLong(cursor.getColumnIndex("seq")) + 1) + "f" : null;
+        cursor.close();
+        return nextTableName;
+    }
+
+    /**
      * Creates an empty set of flashcards.
      */
     public Boolean newSetTable(String title) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        String tableName = getTableName(title);
-
-        // Check if the table already exists
-        Cursor cursor = query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TABLE_NAME},
-                SetList.SET_TABLE_NAME + "=?",
-                new String[]{tableName},
-                null);
-
-        // Table does not exist
-        if (cursor != null && cursor.getCount() == 0) {
+        if (titleAvailable(title)) {
+            // Get the next available table name
             final String CARDSET_TABLE_CREATE;
-            CARDSET_TABLE_CREATE = "CREATE TABLE '" + tableName + "' (" +
+            CARDSET_TABLE_CREATE = "CREATE TABLE '" + nextTableName() + "' (" +
                     CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CardSet.TERM + " TEXT NOT NULL," +
                     CardSet.DEFINITION + " TEXT NOT NULL);";
@@ -343,9 +364,7 @@ public class FlashcardProvider extends ContentProvider {
             // Link new set to main database
             ContentValues values = new ContentValues();
             values.put(SetList.SET_TITLE, title);
-            values.put(SetList.SET_TABLE_NAME, tableName);
             db.insert(SetList.TABLE_NAME, null, values);
-            cursor.close();
             return true;
         }
         return false;
@@ -357,18 +376,17 @@ public class FlashcardProvider extends ContentProvider {
     public void deleteSetTable(long tableRowId) {
         // Get the table's title
         Cursor cursor = this.query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TITLE, SetList.SET_TABLE_NAME},
+                new String[]{SetList.SET_TITLE},
                 SetList._ID + "=?",
                 new String[]{String.valueOf(tableRowId)},
                 null);
         if (cursor != null && cursor.moveToFirst()) {
-            String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
-            String tableName = cursor.getString(cursor.getColumnIndex(SetList.SET_TABLE_NAME));
             SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+            final String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
 
             // Remove set from main database
-            db.execSQL("DROP TABLE IF EXISTS '" + tableName + "'");
-            this.delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
+            db.execSQL("DROP TABLE IF EXISTS '" + getTableName(title) + "'");
+            delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
             cursor.close();
         }
     }
@@ -378,39 +396,12 @@ public class FlashcardProvider extends ContentProvider {
      */
     public boolean renameSet(String oldTitle, String newTitle) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        String oldName = getTableName(oldTitle);
-        String newName = getTableName(newTitle);
 
-        // Check if the new title is taken
-        Cursor cursor = query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TABLE_NAME},
-                SetList.SET_TABLE_NAME + "=?",
-                new String[]{newName},
-                null);
-
-        // New title is not taken
-        if (cursor != null && cursor.getCount() == 0) {
-            // Rename flashcard table
-            db.execSQL("ALTER TABLE '" + oldName + "' RENAME TO '" + newName + "'");
-
-            // Get row id in main table
-            Cursor oldCursor = query(SetList.CONTENT_URI,
-                    new String[]{SetList.SET_TABLE_NAME, SetList._ID},
-                    SetList.SET_TABLE_NAME + "=?",
-                    new String[]{oldName},
-                    null);
-            if (oldCursor != null && oldCursor.moveToFirst()) {
-                String rowId = String.valueOf(oldCursor.getLong(oldCursor
-                        .getColumnIndex(SetList._ID)));
-                oldCursor.close();
-
-                // Update set name in main table
-                ContentValues values = new ContentValues();
-                values.put(SetList.SET_TITLE, newTitle);
-                values.put(SetList.SET_TABLE_NAME, newName);
-                db.update(SetList.TABLE_NAME, values, SetList._ID + "=?", new String[]{rowId});
-            }
-            cursor.close();
+        // Update set name in main table
+        if (titleAvailable(newTitle)) {
+            ContentValues values = new ContentValues();
+            values.put(SetList.SET_TITLE, newTitle);
+            db.update(SetList.TABLE_NAME, values, SetList.SET_TITLE + "=?", new String[]{oldTitle});
             return true;
         }
         return false;
@@ -419,7 +410,7 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Check if a term already exists in a stack.
      */
-    public boolean termExists(String term, Uri uri) {
+    public boolean termAvailable(String term, Uri uri) {
         Cursor cursor = query(uri,
                 new String[]{CardSet.TERM},
                 CardSet.TERM + "=?",
@@ -429,9 +420,9 @@ public class FlashcardProvider extends ContentProvider {
         // Term does not exist yet
         if (cursor != null && cursor.getCount() == 0) {
             cursor.close();
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -439,7 +430,7 @@ public class FlashcardProvider extends ContentProvider {
      */
     public boolean editCard(Uri uri, String oldTerm, String newTerm, String newDef) {
         // Check if new term already exists
-        if (!oldTerm.equals(newTerm) && termExists(newTerm, uri)) {
+        if (!oldTerm.equals(newTerm) && !termAvailable(newTerm, uri)) {
             return false;
         }
 

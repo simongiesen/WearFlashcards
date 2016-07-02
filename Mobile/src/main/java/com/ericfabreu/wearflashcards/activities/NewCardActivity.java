@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -41,29 +40,28 @@ public class NewCardActivity extends AppCompatActivity {
      * Creates a card and either resets the view or return to SetOverviewActivity
      */
     public void newCard(View view) {
+        // Get term and definition from view and trim spaces from start and end
         EditText text1 = (EditText) findViewById(R.id.edit_new_term);
         EditText text2 = (EditText) findViewById(R.id.edit_new_definition);
-        String term = text1.getText().toString();
-        String definition = text2.getText().toString();
+        String term = text1.getText().toString().replaceAll("^\\s+|\\s+$", "");
+        String definition = text2.getText().toString().replaceAll("^\\s+|\\s+$", "");
 
         // Return to SetOverviewActivity if the view is empty and 'DONE' was selected
-        if (view.getId() == R.id.button_done &&
-                TextUtils.isEmpty(term) &&
-                TextUtils.isEmpty(definition)) {
+        if (view.getId() == R.id.button_done && term.isEmpty() && definition.isEmpty()) {
             onBackPressed();
             finish();
             return;
         }
 
         // Check if term is blank
-        if (TextUtils.isEmpty(term)) {
+        if (term.isEmpty() || term.matches("[ ]+")) {
             text1.setError(getString(R.string.empty_term));
             text1.requestFocus();
             return;
         }
 
         // Check if definition is blank
-        if (TextUtils.isEmpty(definition)) {
+        if (definition.isEmpty() || definition.matches("[ ]+")) {
             text2.setError(getString(R.string.empty_definition));
             text2.requestFocus();
             return;
@@ -72,7 +70,7 @@ public class NewCardActivity extends AppCompatActivity {
         // Check if the term already exists in the stack
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-        if (handle.termExists(term, tableUri)) {
+        if (!handle.termAvailable(term, tableUri)) {
             text1.setError(getString(R.string.term_taken));
             text1.requestFocus();
             return;

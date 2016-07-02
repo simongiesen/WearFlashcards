@@ -63,12 +63,6 @@ public class EditSetTitleActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if title is valid (can only have letters, numbers, and spaces)
-        if (!newTitle.matches("[a-zA-Z0-9 ]+")) {
-            text.setError(getString(R.string.invalid_title));
-            return;
-        }
-
         // Check if new title is available
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         if (!handle.renameSet(title, newTitle)) {

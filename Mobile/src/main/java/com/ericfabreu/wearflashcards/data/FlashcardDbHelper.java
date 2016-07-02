@@ -76,6 +76,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                     db.execSQL("ALTER TABLE '" + tables.get(i) + "' RENAME TO 'w" + (i + 1) + "f'");
                 }
             }
+
             default:
                 break;
         }
