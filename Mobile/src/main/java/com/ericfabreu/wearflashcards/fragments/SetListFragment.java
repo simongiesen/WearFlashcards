@@ -34,8 +34,6 @@ import java.util.List;
  */
 public class SetListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String[] SET_SUMMARY_PROJECTION =
-            new String[]{SetList._ID, SetList.SET_TITLE};
     private SimpleCursorAdapter mAdapter;
     private List<Long> selections = new ArrayList<>();
 
@@ -183,10 +181,10 @@ public class SetListFragment extends ListFragment
                 SetList.SET_TITLE + " != '' ))";
         return new CursorLoader(getActivity(),
                 SetList.CONTENT_URI,
-                SET_SUMMARY_PROJECTION,
+                new String[]{SetList._ID, SetList.SET_TITLE},
                 SET_SELECTION,
                 null,
-                null);
+                SetList.SET_TITLE + " ASC");
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

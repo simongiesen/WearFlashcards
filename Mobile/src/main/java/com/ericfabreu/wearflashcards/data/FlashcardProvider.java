@@ -113,7 +113,7 @@ public class FlashcardProvider extends ContentProvider {
                 new String[]{SetList.SET_TITLE},
                 null,
                 null,
-                null);
+                SetList.SET_TITLE + " ASC");
     }
 
     /**
