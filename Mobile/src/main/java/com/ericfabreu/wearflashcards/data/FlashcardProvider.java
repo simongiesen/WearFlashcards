@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
@@ -105,6 +106,9 @@ public class FlashcardProvider extends ContentProvider {
         return cursor;
     }
 
+    /**
+     * Queries the database for all the titles in the main table.
+     */
     public Cursor fetchAllTitles() {
         return query(SetList.CONTENT_URI,
                 new String[]{SetList.SET_TITLE},
@@ -113,6 +117,9 @@ public class FlashcardProvider extends ContentProvider {
                 null);
     }
 
+    /**
+     * Queries the database for all the terms and definitions in a given table.
+     */
     public Cursor fetchAllCards(String tableName) {
         return query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
                 new String[]{CardSet.TERM, CardSet.DEFINITION},
@@ -313,6 +320,7 @@ public class FlashcardProvider extends ContentProvider {
         if (cursor != null && cursor.moveToFirst()) {
             tableName = "w" + cursor.getString(cursor.getColumnIndex(SetList._ID)) + "f";
             cursor.close();
+            Log.d("tableName", tableName);
         }
         return tableName;
     }

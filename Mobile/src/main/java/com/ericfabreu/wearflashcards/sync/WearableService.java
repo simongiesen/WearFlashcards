@@ -3,6 +3,7 @@ package com.ericfabreu.wearflashcards.sync;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -68,6 +69,7 @@ public class WearableService extends WearableListenerService {
      */
     private void sendSet(String title) {
         // Get terms and definitions from the database
+        Log.d("title", title);
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         String tableName = handle.getTableName(title);
         Cursor cursor = handle.fetchAllCards(tableName);

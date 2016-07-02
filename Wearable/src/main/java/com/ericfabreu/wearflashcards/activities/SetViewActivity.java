@@ -42,7 +42,7 @@ public class SetViewActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.status_empty_database);
         Bundle bundle = getIntent().getExtras();
-        title = "/" + bundle.getString(Constants.TITLE);
+        title = bundle.getString(Constants.TITLE);
 
         // Listen for data item events
         mGoogleApiClient = new GoogleApiClient.Builder(this)
