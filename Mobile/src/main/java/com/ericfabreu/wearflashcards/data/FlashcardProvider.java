@@ -127,7 +127,8 @@ public class FlashcardProvider extends ContentProvider {
                 new String[]{CardSet.TERM, CardSet.DEFINITION},
                 null,
                 null,
-                null);
+                PreferencesHelper.getOrder(context, CardSet.TERM,
+                        Constants.PREF_KEY_CARD_ORDER));
     }
 
     @Override
