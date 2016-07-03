@@ -14,6 +14,8 @@ import android.text.TextUtils;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
+import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 import java.util.List;
 
@@ -113,7 +115,8 @@ public class FlashcardProvider extends ContentProvider {
                 new String[]{SetList.SET_TITLE},
                 null,
                 null,
-                SetList.SET_TITLE + " ASC");
+                PreferencesHelper.getOrder(context, SetList.SET_TITLE,
+                        Constants.PREF_KEY_SET_ORDER));
     }
 
     /**
