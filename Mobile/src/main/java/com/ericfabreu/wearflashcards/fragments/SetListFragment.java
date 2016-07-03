@@ -25,6 +25,7 @@ import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +185,8 @@ public class SetListFragment extends ListFragment
                 new String[]{SetList._ID, SetList.SET_TITLE},
                 SET_SELECTION,
                 null,
-                SetList.SET_TITLE + " ASC");
+                PreferencesHelper.getOrder(getActivity().getApplicationContext(),
+                        SetList.SET_TITLE, Constants.PREF_KEY_SET_ORDER));
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

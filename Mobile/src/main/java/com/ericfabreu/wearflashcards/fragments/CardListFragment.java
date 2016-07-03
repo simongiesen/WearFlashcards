@@ -23,6 +23,7 @@ import com.ericfabreu.wearflashcards.activities.EditCardActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,7 +188,8 @@ public class CardListFragment extends ListFragment
                 SET_SUMMARY_PROJECTION,
                 SET_SELECTION,
                 null,
-                null);
+                PreferencesHelper.getOrder(getActivity().getApplicationContext(),
+                        CardSet.TERM, Constants.PREF_KEY_CARD_ORDER));
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

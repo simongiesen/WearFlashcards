@@ -91,8 +91,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.item_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, Constants.REQUEST_CODE_SETTINGS);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Refresh activity with the proper sort order when SettingsActivity is closed
+        if (requestCode == Constants.REQUEST_CODE_SETTINGS) {
+            Intent refresh = new Intent(this, MainActivity.class);
+            startActivity(refresh);
+            this.finish();
+        }
     }
 }
