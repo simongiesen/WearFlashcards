@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Refresh activity with the proper sort order when SettingsActivity is closed
         if (requestCode == Constants.REQUEST_CODE_SETTINGS) {
-            Intent refresh = new Intent(this, MainActivity.class);
+            Intent refresh = new Intent(this, getClass());
             startActivity(refresh);
             this.finish();
         }

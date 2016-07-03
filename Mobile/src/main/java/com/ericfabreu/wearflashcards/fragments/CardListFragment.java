@@ -14,7 +14,9 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -115,27 +117,7 @@ public class CardListFragment extends ListFragment
                         return true;
 
                     case R.id.item_edit:
-                        // Get term and definition and send them to EditCardActivity
-                        FlashcardProvider handle =
-                                new FlashcardProvider(getActivity().getApplicationContext());
-                        Cursor cursor = handle.query(Uri.withAppendedPath(
-                                CardSet.CONTENT_URI, tableName),
-                                new String[]{CardSet.TERM, CardSet.DEFINITION},
-                                CardSet._ID + "=?",
-                                new String[]{String.valueOf(selections.get(0))},
-                                null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            String term = cursor.getString(cursor.getColumnIndex(CardSet.TERM));
-                            String definition =
-                                    cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION));
-                            Intent intent = new Intent(getActivity(), EditCardActivity.class);
-                            intent.putExtra(Constants.TERM, term);
-                            intent.putExtra(Constants.DEFINITION, definition);
-                            intent.putExtra(Constants.TABLE_NAME, tableName);
-                            intent.putExtra(Constants.TITLE, getActivity().getTitle());
-                            startActivity(intent);
-                            cursor.close();
-                        }
+                        cardEditListener(selections.get(0));
                         mode.finish();
                         return true;
 
@@ -160,6 +142,13 @@ public class CardListFragment extends ListFragment
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                 return false;
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                cardEditListener(l);
             }
         });
 
@@ -199,5 +188,28 @@ public class CardListFragment extends ListFragment
 
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    /**
+     * Finds the card's term and definition and send it to EditCardActivity.
+     */
+    private void cardEditListener(long id) {
+        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
+        Cursor cursor = handle.query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
+                new String[]{CardSet.TERM, CardSet.DEFINITION},
+                CardSet._ID + "=?",
+                new String[]{String.valueOf(id)},
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            String term = cursor.getString(cursor.getColumnIndex(CardSet.TERM));
+            String definition = cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION));
+            Intent intent = new Intent(getActivity(), EditCardActivity.class);
+            intent.putExtra(Constants.TERM, term);
+            intent.putExtra(Constants.DEFINITION, definition);
+            intent.putExtra(Constants.TABLE_NAME, tableName);
+            intent.putExtra(Constants.TITLE, getActivity().getTitle());
+            startActivity(intent);
+            cursor.close();
+        }
     }
 }

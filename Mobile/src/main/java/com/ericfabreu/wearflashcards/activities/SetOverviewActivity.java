@@ -158,7 +158,9 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Refresh activity with the proper sort order when SettingsActivity is closed
         if (requestCode == Constants.REQUEST_CODE_SETTINGS) {
-            Intent refresh = new Intent(this, SettingsActivity.class);
+            Intent refresh = new Intent(this, getClass());
+            refresh.putExtra(Constants.TABLE_NAME, tableName);
+            refresh.putExtra(Constants.TITLE, title);
             startActivity(refresh);
             this.finish();
         }
