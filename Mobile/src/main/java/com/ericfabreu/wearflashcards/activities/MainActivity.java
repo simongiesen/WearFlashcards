@@ -1,9 +1,9 @@
 package com.ericfabreu.wearflashcards.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Load settings
-        settings = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
         fab.setOnClickListener(new View.OnClickListener() {
