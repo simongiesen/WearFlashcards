@@ -138,6 +138,9 @@ public class SetOverviewActivity extends AppCompatActivity {
             intent.putExtra(Constants.TABLE_NAME, tableName);
             startActivity(intent);
             return true;
+        } else if (id == R.id.item_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
