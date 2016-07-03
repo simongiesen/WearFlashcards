@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
  * http://developer.android.com/training/basics/data-storage/databases.html
  */
 public class FlashcardDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "flashcards";
 
     public FlashcardDbHelper(Context context) {
@@ -40,6 +41,7 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         switch (oldVersion) {
+            // Use row IDs as table names
             case 1: {
                 // Get current table names from the main table
                 List<String> tables = new ArrayList<>();
@@ -74,6 +76,47 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                 // Rename all tables to use the row IDs from the new main table
                 for (int i = 0; i < tables.size(); i++) {
                     db.execSQL("ALTER TABLE '" + tables.get(i) + "' RENAME TO 'w" + (i + 1) + "f'");
+                }
+            }
+
+            // Add a star column to the set tables
+            case 2: {
+                // Get all table names
+                List<String> tables = new ArrayList<>();
+                Cursor cursor = db.query(SetList.TABLE_NAME,
+                        new String[]{SetList._ID},
+                        null,
+                        null,
+                        null,
+                        null,
+                        SetList._ID + " ASC");
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        final String tableName = "w" + cursor.getString(cursor
+                                .getColumnIndex(SetList._ID)) + "f";
+                        tables.add(tableName);
+                    }
+                    cursor.close();
+                }
+
+                // Recreate tables with a star column
+                for (final String table : tables) {
+                    db.execSQL("BEGIN TRANSACTION");
+                    db.execSQL("CREATE TEMPORARY TABLE set_backup(" +
+                            CardSet.TERM + "," + CardSet.DEFINITION + ")");
+                    db.execSQL("INSERT INTO set_backup SELECT " +
+                            CardSet.TERM + "," + CardSet.DEFINITION + " FROM " + table);
+                    db.execSQL("DROP TABLE " + table + "");
+                    db.execSQL("CREATE TABLE " + table + "(" +
+                            CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            CardSet.TERM + " TEXT NOT NULL," +
+                            CardSet.DEFINITION + " TEXT NOT NULL," +
+                            CardSet.STAR + " INTEGER DEFAULT 0)");
+                    db.execSQL("INSERT INTO " + table + "(" + CardSet.TERM + "," +
+                            CardSet.DEFINITION + ")" + " SELECT " +
+                            CardSet.TERM + "," + CardSet.DEFINITION + " FROM set_backup");
+                    db.execSQL("DROP TABLE set_backup");
+                    db.execSQL("COMMIT");
                 }
             }
 

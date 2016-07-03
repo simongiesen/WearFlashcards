@@ -368,7 +368,8 @@ public class FlashcardProvider extends ContentProvider {
             CARDSET_TABLE_CREATE = "CREATE TABLE '" + nextTableName() + "' (" +
                     CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CardSet.TERM + " TEXT NOT NULL," +
-                    CardSet.DEFINITION + " TEXT NOT NULL);";
+                    CardSet.DEFINITION + " TEXT NOT NULL," +
+                    CardSet.STAR + " INTEGER DEFAULT 0)";
             db.execSQL(CARDSET_TABLE_CREATE);
 
             // Link new set to main database

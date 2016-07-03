@@ -29,8 +29,10 @@ public final class FlashcardContract {
 
         // Columns
         public static final String TABLE_NAME = "sets";
-        public static final String SET_TABLE_NAME = "set_table_name";
         public static final String SET_TITLE = "set_title";
+
+        // Deprecated columns
+        public static final String SET_TABLE_NAME = "set_table_name";
 
         // Default sort order
         public static final String SORT_ORDER_DEFAULT = "_ID ASC";
@@ -52,6 +54,7 @@ public final class FlashcardContract {
         // Columns
         public static final String TERM = "term";
         public static final String DEFINITION = "definition";
+        public static final String STAR = "star";
 
         // Default sort order
         public static final String SORT_ORDER_DEFAULT = "_ID ASC";
