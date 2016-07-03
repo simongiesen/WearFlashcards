@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="card_shadow">#7000</color>
+    <color name="shadow_card">#7000</color>
     <color name="list_item_focused">#00A695</color>
     <color name="list_item_unfocused">#00665C</color>
     <color name="background_default">#002622</color>

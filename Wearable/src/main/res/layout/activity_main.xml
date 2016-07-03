@@ -26,7 +26,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:background="@color/background_heading_default"
-            android:contentDescription="@string/settings"
+            android:contentDescription="@string/title_activity_settings"
             android:onClick="openSettings"
             android:src="@drawable/btn_settings" />
     </FrameLayout>

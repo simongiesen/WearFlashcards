@@ -27,14 +27,14 @@ public class SettingsActivity extends Activity {
         textShuffle = (TextView) findViewById(R.id.text_shuffle_status);
         textDefinitionFirst = (TextView) findViewById(R.id.text_definition_first_status);
         if (settings.getBoolean(Constants.SHUFFLE, false)) {
-            textShuffle.setText(getText(R.string.on));
+            textShuffle.setText(getText(R.string.preference_on));
         } else {
-            textShuffle.setText(getText(R.string.off));
+            textShuffle.setText(getText(R.string.preference_off));
         }
         if (settings.getBoolean(Constants.DEF_FIRST, false)) {
-            textDefinitionFirst.setText(getText(R.string.on));
+            textDefinitionFirst.setText(getText(R.string.preference_on));
         } else {
-            textDefinitionFirst.setText(getText(R.string.off));
+            textDefinitionFirst.setText(getText(R.string.preference_off));
         }
     }
 
@@ -55,9 +55,9 @@ public class SettingsActivity extends Activity {
 
         // Update screen
         if (settings.getBoolean(settingField, false)) {
-            textView.setText(getText(R.string.on));
+            textView.setText(getText(R.string.preference_on));
         } else {
-            textView.setText(getText(R.string.off));
+            textView.setText(getText(R.string.preference_off));
         }
     }
 }

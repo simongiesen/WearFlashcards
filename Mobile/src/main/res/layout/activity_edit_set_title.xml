@@ -23,7 +23,7 @@
                 android:id="@+id/edit_set_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/set_title_hint"
+                android:hint="@string/hint_set_title"
                 android:inputType="textCapWords|textMultiLine"
                 android:isScrollContainer="true"
                 android:theme="@style/AppTheme.Base" />
@@ -35,6 +35,6 @@
             android:layout_alignEnd="@+id/layout_edit_set"
             android:layout_below="@+id/layout_edit_set"
             android:onClick="editSetTitle"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </RelativeLayout>
 </ScrollView>

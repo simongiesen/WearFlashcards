@@ -47,7 +47,7 @@ public class SetListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
 
         // Show text if database is empty
-        setEmptyText(getString(R.string.empty_database));
+        setEmptyText(getString(R.string.message_empty_database));
 
         // Setup contextual action mode
         final ListView listView = getListView();
@@ -77,13 +77,13 @@ public class SetListFragment extends ListFragment
                     case R.id.item_delete:
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         if (selections.size() > 1) {
-                            builder.setTitle(R.string.delete_sets);
+                            builder.setTitle(R.string.dialog_delete_sets);
                         } else {
-                            builder.setTitle(R.string.delete_set);
+                            builder.setTitle(R.string.dialog_delete_set);
                         }
-                        builder.setMessage(R.string.cannot_undo);
+                        builder.setMessage(R.string.dialog_cannot_undo);
                         builder.setCancelable(true);
-                        builder.setPositiveButton(R.string.delete,
+                        builder.setPositiveButton(R.string.button_delete,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
@@ -95,7 +95,7 @@ public class SetListFragment extends ListFragment
                                     }
                                 });
 
-                        builder.setNegativeButton(R.string.cancel,
+                        builder.setNegativeButton(R.string.button_cancel,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();

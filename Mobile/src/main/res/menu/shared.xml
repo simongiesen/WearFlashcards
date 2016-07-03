@@ -6,16 +6,16 @@
 
         <item
             android:id="@+id/item_shuffle"
-            android:title="@string/shuffle" />
+            android:title="@string/pref_shuffle" />
 
         <item
             android:id="@+id/item_definition_first"
-            android:title="@string/definition_first" />
+            android:title="@string/pref_definition_first" />
     </group>
 
     <item
         android:id="@+id/item_study_set"
         android:icon="@drawable/ic_menu_card"
-        android:title="@string/set_view_button"
+        android:title="@string/button_set_view"
         app:showAsAction="always" />
 </menu>

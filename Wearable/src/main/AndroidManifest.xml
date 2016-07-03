@@ -11,9 +11,7 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
 
-        <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/app_name">
+        <activity android:name=".activities.MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +20,8 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activities.SetViewActivity"
-            android:label="@string/title_activity_set_view" />
+        <activity android:name=".activities.SetViewActivity" />
 
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/settings" />
+        <activity android:name=".activities.SettingsActivity" />
     </application>
 </manifest>

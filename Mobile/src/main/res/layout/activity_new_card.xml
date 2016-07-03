@@ -24,7 +24,7 @@
                 android:id="@+id/edit_new_term"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/new_term_hint"
+                android:hint="@string/hint_term"
                 android:inputType="textCapSentences|textMultiLine"
                 android:isScrollContainer="true"
                 android:theme="@style/AppTheme.Base" />
@@ -41,7 +41,7 @@
                 android:id="@+id/edit_new_definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/new_definition_hint"
+                android:hint="@string/hint_definition"
                 android:inputType="textCapSentences|textMultiLine"
                 android:isScrollContainer="true"
                 android:theme="@style/AppTheme.Base" />
@@ -54,7 +54,7 @@
             android:layout_alignEnd="@+id/layout_new_definition"
             android:layout_below="@+id/layout_new_definition"
             android:onClick="newCard"
-            android:text="@string/done" />
+            android:text="@string/button_done" />
 
         <Button
             android:id="@+id/button_next"
@@ -63,6 +63,6 @@
             android:layout_below="@+id/layout_new_definition"
             android:layout_toStartOf="@+id/button_done"
             android:onClick="newCard"
-            android:text="@string/next" />
+            android:text="@string/button_next" />
     </RelativeLayout>
 </ScrollView>

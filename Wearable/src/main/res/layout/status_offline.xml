@@ -16,7 +16,7 @@
         android:drawablePadding="8dp"
         android:drawableTop="@drawable/ic_offline"
         android:gravity="center"
-        android:text="@string/offline_message"
+        android:text="@string/message_offline"
         android:textColor="@color/white"
         android:textSize="16sp" />
 </android.support.wearable.view.BoxInsetLayout>

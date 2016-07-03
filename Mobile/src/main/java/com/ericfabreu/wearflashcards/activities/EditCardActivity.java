@@ -38,7 +38,6 @@ public class EditCardActivity extends AppCompatActivity {
         if (actionBar != null) {
             getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
         }
-        setTitle(getString(R.string.edit_card));
     }
 
     @Override
@@ -70,13 +69,13 @@ public class EditCardActivity extends AppCompatActivity {
 
         // Check if term is blank
         if (TextUtils.isEmpty(newTerm)) {
-            termView.setError(getString(R.string.empty_term));
+            termView.setError(getString(R.string.error_empty_term));
             return;
         }
 
         // Check if definition is blank
         if (TextUtils.isEmpty(newDefinition)) {
-            definitionView.setError(getString(R.string.empty_definition));
+            definitionView.setError(getString(R.string.error_empty_definition));
             return;
         }
 
@@ -84,7 +83,7 @@ public class EditCardActivity extends AppCompatActivity {
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Uri tableUri = Uri.withAppendedPath(FlashcardContract.CardSet.CONTENT_URI, tableName);
         if (!handle.editCard(tableUri, term, newTerm, newDefinition)) {
-            termView.setError(getString(R.string.term_taken));
+            termView.setError(getString(R.string.error_term_taken));
             return;
         }
         onBackPressed();

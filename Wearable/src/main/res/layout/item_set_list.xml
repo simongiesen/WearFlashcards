@@ -9,7 +9,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_margin="16dp"
-        android:contentDescription="@string/list_item_description"
+        android:contentDescription="@string/description_list_item"
         android:src="@drawable/ic_list_circle" />
 
     <TextView

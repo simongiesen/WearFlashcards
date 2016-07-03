@@ -23,7 +23,7 @@
             android:background="@color/background_heading_default"
             android:gravity="center"
             android:padding="@dimen/headings_padding"
-            android:text="@string/settings"
+            android:text="@string/title_activity_settings"
             android:textColor="@color/white"
             android:textSize="@dimen/headings_text_size" />
 
@@ -43,7 +43,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:contentDescription="@string/list_item_description"
+                android:contentDescription="@string/preference_shuffle"
                 android:src="@drawable/ic_settings_shuffle" />
 
             <LinearLayout
@@ -62,7 +62,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-condensed-light"
                     android:gravity="center_vertical|start"
-                    android:text="@string/shuffle"
+                    android:text="@string/preference_shuffle"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
@@ -93,7 +93,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:contentDescription="@string/list_item_description"
+                android:contentDescription="@string/preference_definition_first"
                 android:src="@drawable/ic_settings_switch_terms" />
 
             <LinearLayout
@@ -112,7 +112,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-condensed-light"
                     android:gravity="center_vertical|start"
-                    android:text="@string/def_first"
+                    android:text="@string/preference_definition_first"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 

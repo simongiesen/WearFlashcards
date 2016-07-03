@@ -23,7 +23,7 @@
                 android:id="@+id/edit_term"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/new_term_hint"
+                android:hint="@string/hint_term"
                 android:inputType="textCapSentences|textMultiLine"
                 android:isScrollContainer="true"
                 android:theme="@style/AppTheme.Base" />
@@ -40,7 +40,7 @@
                 android:id="@+id/edit_definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/new_definition_hint"
+                android:hint="@string/hint_definition"
                 android:inputType="textCapSentences|textMultiLine"
                 android:isScrollContainer="true"
                 android:theme="@style/AppTheme.Base" />
@@ -53,6 +53,6 @@
             android:layout_alignEnd="@+id/layout_edit_definition"
             android:layout_below="@+id/layout_edit_definition"
             android:onClick="editCard"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </RelativeLayout>
 </ScrollView>

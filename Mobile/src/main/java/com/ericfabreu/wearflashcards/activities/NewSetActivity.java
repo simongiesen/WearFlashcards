@@ -21,7 +21,6 @@ public class NewSetActivity extends AppCompatActivity {
         if (actionBar != null) {
             getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
         }
-        setTitle(getString(R.string.create_set));
     }
 
     /**
@@ -34,14 +33,14 @@ public class NewSetActivity extends AppCompatActivity {
 
         // Check if title is empty
         if (title.isEmpty() || title.matches("[ ]+")) {
-            text.setError(getString(R.string.empty_title));
+            text.setError(getString(R.string.error_empty_title));
             return;
         }
 
         // Check if title is available
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         if (!handle.newSetTable(title)) {
-            text.setError(getString(R.string.title_taken));
+            text.setError(getString(R.string.error_title_taken));
             return;
         }
 

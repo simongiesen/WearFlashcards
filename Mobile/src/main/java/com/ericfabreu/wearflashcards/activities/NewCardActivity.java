@@ -31,9 +31,6 @@ public class NewCardActivity extends AppCompatActivity {
         if (actionBar != null) {
             getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
         }
-
-        // Put the set title in the toolbar
-        setTitle(getString(R.string.create_card));
     }
 
     /**
@@ -55,14 +52,14 @@ public class NewCardActivity extends AppCompatActivity {
 
         // Check if term is blank
         if (term.isEmpty() || term.matches("[ ]+")) {
-            text1.setError(getString(R.string.empty_term));
+            text1.setError(getString(R.string.error_empty_term));
             text1.requestFocus();
             return;
         }
 
         // Check if definition is blank
         if (definition.isEmpty() || definition.matches("[ ]+")) {
-            text2.setError(getString(R.string.empty_definition));
+            text2.setError(getString(R.string.error_empty_definition));
             text2.requestFocus();
             return;
         }
@@ -71,7 +68,7 @@ public class NewCardActivity extends AppCompatActivity {
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
         if (!handle.termAvailable(term, tableUri)) {
-            text1.setError(getString(R.string.term_taken));
+            text1.setError(getString(R.string.error_term_taken));
             text1.requestFocus();
             return;
         }

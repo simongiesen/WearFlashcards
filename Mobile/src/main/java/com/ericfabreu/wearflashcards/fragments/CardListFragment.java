@@ -80,13 +80,13 @@ public class CardListFragment extends ListFragment
                         // Display alert message
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         if (selections.size() > 1) {
-                            builder.setTitle(R.string.delete_cards);
+                            builder.setTitle(R.string.dialog_delete_cards);
                         } else {
-                            builder.setTitle(R.string.delete_card);
+                            builder.setTitle(R.string.dialog_delete_card);
                         }
-                        builder.setMessage(R.string.cannot_undo);
+                        builder.setMessage(R.string.dialog_cannot_undo);
                         builder.setCancelable(true);
-                        builder.setPositiveButton(R.string.delete,
+                        builder.setPositiveButton(R.string.button_delete,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
@@ -103,7 +103,7 @@ public class CardListFragment extends ListFragment
                                     }
                                 });
 
-                        builder.setNegativeButton(R.string.cancel,
+                        builder.setNegativeButton(R.string.button_cancel,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
@@ -172,7 +172,7 @@ public class CardListFragment extends ListFragment
         setListAdapter(mAdapter);
 
         // Show text if database is empty
-        setEmptyText(getString(R.string.empty_stack));
+        setEmptyText(getString(R.string.message_empty_stack));
 
         // Prepare the loader
         getLoaderManager().initLoader(0, null, this);
