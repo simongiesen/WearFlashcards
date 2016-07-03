@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Load settings
-        settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        settings = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
 
         // Restore settings
-        shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
-        termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
+        shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
+        termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
 
         // Set study button is unnecessary in MainActivity
         menu.removeItem(R.id.item_study_set);
@@ -80,15 +80,18 @@ public class MainActivity extends AppCompatActivity {
         // Flip the item's checked state and save settings
         if (id == R.id.item_shuffle) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.SHUFFLE, !item.isChecked());
+            editor.putBoolean(Constants.PREF_KEY_SHUFFLE, !item.isChecked());
             editor.apply();
             item.setChecked(!item.isChecked());
             return true;
         } else if (id == R.id.item_definition_first) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.DEF_FIRST, !item.isChecked());
+            editor.putBoolean(Constants.PREF_KEY_DEFINITION_FIRST, !item.isChecked());
             editor.apply();
             return true;
+        } else if (id == R.id.item_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -36,7 +36,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         }
 
         // Load settings
-        settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        settings = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
         // Get table name from the caller activity and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
@@ -91,8 +91,8 @@ public class SetOverviewActivity extends AppCompatActivity {
         // Load settings
         MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
         MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
-        shuffle.setChecked(settings.getBoolean(Constants.SHUFFLE, false));
-        termFirst.setChecked(settings.getBoolean(Constants.DEF_FIRST, false));
+        shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
+        termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
 
         // Hide set study button if there are no cards
         if (terms.length == 0) {
@@ -108,25 +108,25 @@ public class SetOverviewActivity extends AppCompatActivity {
         // Flip the item's checked state and save settings
         if (id == R.id.item_shuffle) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.SHUFFLE, !item.isChecked());
+            editor.putBoolean(Constants.PREF_KEY_SHUFFLE, !item.isChecked());
             editor.apply();
             item.setChecked(!item.isChecked());
             return true;
         } else if (id == R.id.item_definition_first) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.DEF_FIRST, !item.isChecked());
+            editor.putBoolean(Constants.PREF_KEY_DEFINITION_FIRST, !item.isChecked());
             editor.apply();
             return true;
         }
 
         // Load set study settings
         else if (id == R.id.item_study_set) {
-            if (settings.getBoolean(Constants.DEF_FIRST, false)) {
+            if (settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false)) {
                 String[] temp = terms;
                 terms = definitions;
                 definitions = temp;
             }
-            if (settings.getBoolean(Constants.SHUFFLE, false)) {
+            if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
                 shuffleCards();
             }
 

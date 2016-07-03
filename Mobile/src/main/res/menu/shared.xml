@@ -6,16 +6,22 @@
 
         <item
             android:id="@+id/item_shuffle"
-            android:title="@string/pref_shuffle" />
+            android:title="@string/pref_title_shuffle" />
 
         <item
             android:id="@+id/item_definition_first"
-            android:title="@string/pref_definition_first" />
+            android:title="@string/pref_title_flip" />
     </group>
 
     <item
         android:id="@+id/item_study_set"
         android:icon="@drawable/ic_menu_card"
         android:title="@string/button_set_view"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/item_settings"
+        android:orderInCategory="100"
+        android:title="@string/title_activity_settings"
+        app:showAsAction="never" />
 </menu>

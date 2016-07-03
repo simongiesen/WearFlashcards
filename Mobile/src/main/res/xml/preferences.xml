@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_header_sorting">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_sorting_choices"
+            android:entryValues="@array/pref_sorting_choices_values"
+            android:key="setOrder"
+            android:title="@string/pref_title_sort_sets" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_sorting_choices"
+            android:entryValues="@array/pref_sorting_choices_values"
+            android:key="cardOrder"
+            android:title="@string/pref_title_sort_cards" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_studying">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="shuffle"
+            android:summary="@string/pref_description_shuffle"
+            android:title="@string/pref_title_shuffle" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="definitionFirst"
+            android:summary="@string/pref_description_flip"
+            android:title="@string/pref_title_flip" />
+    </PreferenceCategory>
+</PreferenceScreen>
