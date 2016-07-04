@@ -26,6 +26,9 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_set_view">Show cards</string>
 
+    <!-- Image descriptions -->
+    <string name="description_star">Star</string>
+
     <!-- Error messages -->
     <string name="error_title_taken">Title is already taken</string>
     <string name="error_empty_title">Please enter a title</string>

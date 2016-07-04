@@ -38,4 +38,12 @@
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
         android:paddingTop="@dimen/list_vertical_padding"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+    <ImageView
+        android:id="@+id/image_star"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/description_star" />
 </LinearLayout>
