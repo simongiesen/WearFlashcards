@@ -5,5 +5,5 @@
     <color name="color_accent">#009688</color>
     <color name="color_edit">#009688</color>
     <color name="color_fab_accent">#F44336</color>
-    <color name="list_activated">#B0BEC5</color>
+    <color name="list_activated">#BDBDBD</color>
 </resources>
