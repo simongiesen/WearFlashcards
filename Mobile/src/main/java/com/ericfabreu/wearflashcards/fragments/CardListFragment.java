@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.EditCardActivity;
@@ -39,7 +38,7 @@ public class CardListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String[] SET_SUMMARY_PROJECTION =
             new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION, CardSet.STAR};
-    private SimpleCursorAdapter mAdapter;
+    private CardListAdapter mAdapter;
     private String tableName;
     private List<Long> selections = new ArrayList<>();
 
@@ -153,13 +152,12 @@ public class CardListFragment extends ListFragment
             }
         });
 
-        // Create an empty adapter to display the list of cards
+        // Use the CardListAdapter to display the list of cards
+        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
         mAdapter = new CardListAdapter(getActivity(),
-                R.layout.fragment_card_list,
-                null,
-                new String[]{CardSet.TERM, CardSet.DEFINITION, CardSet.STAR},
-                new int[]{R.id.text_term, R.id.text_definition, R.id.image_star},
-                1);
+                tableName,
+                handle.fetchAllCards(tableName),
+                0);
         setListAdapter(mAdapter);
 
         // Show text if database is empty

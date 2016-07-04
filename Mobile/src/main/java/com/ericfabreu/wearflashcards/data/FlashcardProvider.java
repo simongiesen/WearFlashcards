@@ -124,7 +124,7 @@ public class FlashcardProvider extends ContentProvider {
      */
     public Cursor fetchAllCards(String tableName) {
         return query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
-                new String[]{CardSet.TERM, CardSet.DEFINITION},
+                new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION, CardSet.STAR},
                 null,
                 null,
                 PreferencesHelper.getOrder(context, CardSet.TERM,
@@ -464,5 +464,26 @@ public class FlashcardProvider extends ContentProvider {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Flips a card's star flag.
+     */
+    public void flipStar(Uri uri, long id) {
+        // Get the current flag value
+        Cursor cursor = query(uri,
+                new String[]{CardSet._ID, CardSet.STAR},
+                CardSet._ID + "=?",
+                new String[]{String.valueOf(id)},
+                null);
+
+        // Update the star flag
+        if (cursor != null && cursor.moveToFirst()) {
+            final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)) - 1);
+            ContentValues values = new ContentValues();
+            values.put(CardSet.STAR, flippedValue);
+            update(uri, values, CardSet._ID + "=?", new String[]{String.valueOf(id)});
+            cursor.close();
+        }
     }
 }
