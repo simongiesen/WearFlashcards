@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.ericfabreu.wearflashcards.R;
@@ -145,13 +144,6 @@ public class CardListFragment extends ListFragment
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                cardEditListener(l);
-            }
-        });
-
         // Use the CardListAdapter to display the list of cards
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
         mAdapter = new CardListAdapter(getActivity(),
@@ -165,6 +157,11 @@ public class CardListFragment extends ListFragment
 
         // Prepare the loader
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        cardEditListener(id);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

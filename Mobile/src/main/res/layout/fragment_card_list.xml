@@ -39,11 +39,18 @@
         android:paddingTop="@dimen/list_vertical_padding"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
-    <ImageView
-        android:id="@+id/image_star"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="center"
-        android:layout_margin="8dp"
-        android:contentDescription="@string/description_star" />
+    <FrameLayout
+        android:id="@+id/layout_frame_star"
+        android:layout_width="48dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_star"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/description_star" />
+    </FrameLayout>
 </LinearLayout>

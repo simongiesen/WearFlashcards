@@ -34,7 +34,7 @@ public class CardListAdapter extends CursorAdapter {
 
         // Override the click listener on the star
         if (view != null) {
-            view.findViewById(R.id.image_star).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.layout_frame_star).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     FlashcardProvider handle = new FlashcardProvider(mContext);
