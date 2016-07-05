@@ -32,23 +32,29 @@ import java.util.List;
  */
 public class StudySetAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> cards = new ArrayList<>();
+    private String mTableName;
 
-    public StudySetAdapter(FragmentManager fm, String[] terms, String[] definitions) {
+    public StudySetAdapter(FragmentManager fm, String tableName, List<String> terms,
+                           List<String> definitions, List<Boolean> stars, List<Long> ids) {
         super(fm);
+        mTableName = tableName;
 
         // Create all cards
-        for (int i = 0, n = terms.length; i < n; i++) {
-            cards.add(newCard(terms[i], definitions[i]));
+        for (int i = 0, n = terms.size(); i < n; i++) {
+            cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i)));
         }
     }
 
     /**
      * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private Fragment newCard(String term, String definition) {
+    private Fragment newCard(String term, String definition, boolean star, long id) {
         Bundle bundle = new Bundle();
+        bundle.putString(Constants.TABLE_NAME, mTableName);
         bundle.putString(Constants.TERM, term);
         bundle.putString(Constants.DEFINITION, definition);
+        bundle.putBoolean(Constants.STAR, star);
+        bundle.putLong(Constants.ID, id);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         return card;

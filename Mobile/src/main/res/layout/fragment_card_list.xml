@@ -40,12 +40,12 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
     <FrameLayout
-        android:id="@+id/layout_frame_star"
+        android:id="@+id/layout_star_list"
         android:layout_width="48dp"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/image_star"
+            android:id="@+id/image_star_list"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"

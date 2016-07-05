@@ -34,11 +34,12 @@ public class CardListAdapter extends CursorAdapter {
 
         // Override the click listener on the star
         if (view != null) {
-            view.findViewById(R.id.layout_frame_star).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.layout_star_list).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     FlashcardProvider handle = new FlashcardProvider(mContext);
-                    handle.flipStar(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName), getItemId(position));
+                    handle.flipStar(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
+                            getItemId(position));
                 }
             });
         }
@@ -56,7 +57,7 @@ public class CardListAdapter extends CursorAdapter {
         term.setText(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
         TextView definition = (TextView) view.findViewById(R.id.text_definition);
         definition.setText(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
-        ImageView star = (ImageView) view.findViewById(R.id.image_star);
+        ImageView star = (ImageView) view.findViewById(R.id.image_star_list);
         final boolean starFlag = cursor.getInt(cursor.getColumnIndex(CardSet.STAR)) == 1;
         final int starId = starFlag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
         star.setImageDrawable(ContextCompat.getDrawable(context, starId));
