@@ -122,11 +122,13 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Queries the database for all the terms and definitions in a given table.
      */
-    public Cursor fetchAllCards(String tableName) {
+    public Cursor fetchAllCards(String tableName, boolean starredOnly) {
+        final String selection = starredOnly ? CardSet.STAR + "=?" : null;
+        final String[] selectionArgs = starredOnly ? new String[]{"1"} : null;
         return query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
                 new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION, CardSet.STAR},
-                null,
-                null,
+                selection,
+                selectionArgs,
                 PreferencesHelper.getOrder(context, CardSet.TERM,
                         Constants.PREF_KEY_CARD_ORDER));
     }
@@ -307,10 +309,9 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
-     * Returns a table name given the table's title.
+     * Returns the table's row id in the main table.
      */
-    public String getTableName(String title) {
-        // Find the table's row ID in the main table
+    public long getTableId(String title) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         Cursor cursor = db.query(SetList.TABLE_NAME,
                 new String[]{SetList._ID},
@@ -319,12 +320,20 @@ public class FlashcardProvider extends ContentProvider {
                 null,
                 null,
                 null);
-        String tableName = null;
         if (cursor != null && cursor.moveToFirst()) {
-            tableName = "w" + cursor.getString(cursor.getColumnIndex(SetList._ID)) + "f";
+            final long tableId = cursor.getLong(cursor.getColumnIndex(SetList._ID));
             cursor.close();
+            return tableId;
         }
-        return tableName;
+        return 0;
+    }
+
+    /**
+     * Returns a table name given the table's title.
+     */
+    public String getTableName(String title) {
+        final long id = getTableId(title);
+        return id == 0 ? null : "w" + id + "f";
     }
 
     /**
@@ -469,11 +478,11 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Flips an integer flag in a given table.
      */
-    public void flipFlag(Uri uri, long id, String idColumn, String flagColumn) {
+    public void flipFlag(Uri uri, long id, String flagColumn) {
         // Get the current flag value
         Cursor cursor = query(uri,
-                new String[]{idColumn, flagColumn},
-                idColumn + "=?",
+                new String[]{Constants.ID, flagColumn},
+                Constants.ID + "=?",
                 new String[]{String.valueOf(id)},
                 null);
 
@@ -482,8 +491,25 @@ public class FlashcardProvider extends ContentProvider {
             final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(flagColumn)) - 1);
             ContentValues values = new ContentValues();
             values.put(flagColumn, flippedValue);
-            update(uri, values, idColumn + "=?", new String[]{String.valueOf(id)});
+            update(uri, values, Constants.ID + "=?", new String[]{String.valueOf(id)});
             cursor.close();
         }
+    }
+
+    /**
+     * Returns the current value of a flag.
+     */
+    public boolean getFlag(Uri uri, long id, String flagColumn) {
+        Cursor cursor = query(uri,
+                new String[]{Constants.ID, flagColumn},
+                Constants.ID + "=?",
+                new String[]{String.valueOf(id)},
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            final boolean value = cursor.getInt(cursor.getColumnIndex(flagColumn)) == 1;
+            cursor.close();
+            return value;
+        }
+        return false;
     }
 }

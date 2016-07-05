@@ -173,6 +173,7 @@ public class SetListFragment extends ListFragment
         Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
         intent.putExtra(Constants.TABLE_NAME, tableName);
         intent.putExtra(Constants.TITLE, title);
+        intent.putExtra(Constants.ID, id);
         startActivity(intent);
     }
 

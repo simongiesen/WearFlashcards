@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.StudySetAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.views.VerticalViewPager;
@@ -22,6 +23,7 @@ import java.util.Random;
 
 public class StudySetActivity extends AppCompatActivity {
     private String title, tableName;
+    private long tableId;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
     private List<Boolean> stars = new ArrayList<>();
     private List<Long> ids = new ArrayList<>();
@@ -39,6 +41,7 @@ public class StudySetActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         title = bundle.getString(Constants.TITLE);
         tableName = bundle.getString(Constants.TABLE_NAME);
+        tableId = bundle.getLong(Constants.ID);
         setTitle(title);
 
         createCards();
@@ -50,7 +53,9 @@ public class StudySetActivity extends AppCompatActivity {
     protected void createCards() {
         // Get information from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        Cursor cursor = handle.fetchAllCards(tableName);
+        final boolean starredOnly = handle
+                .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
             definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
@@ -70,7 +75,8 @@ public class StudySetActivity extends AppCompatActivity {
         }
 
         final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
-        pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), tableName, terms, definitions, stars, ids));
+        pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(),
+                tableName, terms, definitions, stars, ids));
     }
 
     @Override

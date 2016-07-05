@@ -72,7 +72,7 @@ public class CardViewFragment extends Fragment {
             public void onClick(View view) {
                 FlashcardProvider handle = new FlashcardProvider(getContext());
                 Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-                handle.flipFlag(uri, id, CardSet._ID, CardSet.STAR);
+                handle.flipFlag(uri, id, CardSet.STAR);
 
                 // Get new star value
                 Cursor cursor = handle.query(uri,

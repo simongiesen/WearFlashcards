@@ -12,15 +12,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
 public class SetOverviewActivity extends AppCompatActivity {
     private String tableName, title;
+    private long tableId;
     private SharedPreferences settings;
 
     @Override
@@ -39,8 +42,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         tableName = bundle.getString(Constants.TABLE_NAME);
         title = bundle.getString(Constants.TITLE);
-        CardListFragment cardListFragment = new CardListFragment();
-        cardListFragment.setArguments(bundle);
+        tableId = bundle.getLong(Constants.ID);
 
         setTitle(title);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_set_overview);
@@ -56,10 +58,18 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Load flashcard sets
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.layout_set_overview, cardListFragment)
-                    .commit();
+            startCardListFragment(null);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Load the starred only setting
+        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+        final Switch starredOnly = (Switch) findViewById(R.id.switch_starred_only);
+        starredOnly.setChecked(handle.getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY));
     }
 
     @Override
@@ -71,8 +81,8 @@ public class SetOverviewActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Load settings
-        MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
-        MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
+        final MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
+        final MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
 
@@ -145,5 +155,25 @@ public class SetOverviewActivity extends AppCompatActivity {
             startActivity(refresh);
             this.finish();
         }
+    }
+
+    /**
+     * Refreshes the CardListFragment when the starred only setting changes.
+     */
+    public void startCardListFragment(View view) {
+        // Check if the flag needs to be flipped
+        if (view != null) {
+            FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+            handle.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.TABLE_NAME, tableName);
+        bundle.putLong(Constants.ID, tableId);
+        CardListFragment cardListFragment = new CardListFragment();
+        cardListFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.layout_set_overview, cardListFragment, Constants.FRAG_TAG_CARD_LIST)
+                .commit();
     }
 }

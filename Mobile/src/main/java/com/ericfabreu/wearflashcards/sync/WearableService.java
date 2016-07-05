@@ -4,7 +4,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.ericfabreu.wearflashcards.data.FlashcardContract;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,7 +51,7 @@ public class WearableService extends WearableListenerService {
         ArrayList<String> columnArray = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             columnArray.add(cursor.getString(cursor
-                    .getColumnIndex(FlashcardContract.SetList.SET_TITLE)));
+                    .getColumnIndex(SetList.SET_TITLE)));
         }
         String[] setList = columnArray.toArray(new String[columnArray.size()]);
 
@@ -69,17 +70,19 @@ public class WearableService extends WearableListenerService {
     private void sendSet(String title) {
         // Get terms and definitions from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        String tableName = handle.getTableName(title);
-        Cursor cursor = handle.fetchAllCards(tableName);
+        final String tableName = handle.getTableName(title);
+        final long tableId = handle.getTableId(title);
+        final boolean starredOnly = handle.getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
 
         // Put terms and definitions into string arrays
         ArrayList<String> columnArray1 = new ArrayList<>();
         ArrayList<String> columnArray2 = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             columnArray1.add(cursor.getString(cursor
-                    .getColumnIndex(FlashcardContract.CardSet.TERM)));
+                    .getColumnIndex(CardSet.TERM)));
             columnArray2.add(cursor.getString(cursor
-                    .getColumnIndex(FlashcardContract.CardSet.DEFINITION)));
+                    .getColumnIndex(CardSet.DEFINITION)));
         }
         String[] terms = columnArray1.toArray(new String[columnArray1.size()]);
         String[] definitions = columnArray2.toArray(new String[columnArray2.size()]);

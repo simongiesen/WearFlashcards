@@ -28,14 +28,15 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:text="@string/button_starred_only"
-                android:textSize="18sp"
-                android:textColor="@color/text_starred_only"/>
+                android:textColor="@color/text_starred_only"
+                android:textSize="18sp" />
 
             <Switch
                 android:id="@+id/switch_starred_only"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
+                android:onClick="startCardListFragment"
                 android:paddingEnd="4dp"
                 android:paddingStart="0dp" />
         </RelativeLayout>
@@ -55,9 +56,9 @@
         android:id="@+id/fab_set_overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_fab_plus"
         app:backgroundTint="@color/color_fab_accent" />
 </RelativeLayout>

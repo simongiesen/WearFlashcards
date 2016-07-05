@@ -22,6 +22,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.EditCardActivity;
 import com.ericfabreu.wearflashcards.adapters.CardListAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
@@ -39,6 +40,7 @@ public class CardListFragment extends ListFragment
             new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION, CardSet.STAR};
     private CardListAdapter mAdapter;
     private String tableName;
+    private long tableId;
     private List<Long> selections = new ArrayList<>();
 
     @Override
@@ -46,6 +48,7 @@ public class CardListFragment extends ListFragment
         // Get table name from SetOverviewActivity
         Bundle bundle = getArguments();
         tableName = bundle.getString(Constants.TABLE_NAME);
+        tableId = bundle.getLong(Constants.ID);
         super.onCreate(savedInstanceState);
     }
 
@@ -146,9 +149,11 @@ public class CardListFragment extends ListFragment
 
         // Use the CardListAdapter to display the list of cards
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
+        final boolean starredOnly = handle
+                .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
         mAdapter = new CardListAdapter(getActivity(),
                 tableName,
-                handle.fetchAllCards(tableName),
+                handle.fetchAllCards(tableName, starredOnly),
                 0);
         setListAdapter(mAdapter);
 
@@ -165,14 +170,16 @@ public class CardListFragment extends ListFragment
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final String SET_SELECTION = "((" +
-                CardSet.TERM + " NOTNULL) AND (" +
-                CardSet.TERM + " != '' ))";
+        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
+        final boolean starredOnly = handle
+                .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        final String selection = starredOnly ? CardSet.STAR + "=?" : null;
+        final String[] selectionArgs = starredOnly ? new String[]{"1"} : null;
         return new CursorLoader(getActivity(),
                 Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
                 SET_SUMMARY_PROJECTION,
-                SET_SELECTION,
-                null,
+                selection,
+                selectionArgs,
                 PreferencesHelper.getOrder(getActivity().getApplicationContext(),
                         CardSet.TERM, Constants.PREF_KEY_CARD_ORDER));
     }

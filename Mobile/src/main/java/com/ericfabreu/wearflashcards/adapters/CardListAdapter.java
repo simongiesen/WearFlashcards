@@ -39,7 +39,7 @@ public class CardListAdapter extends CursorAdapter {
                 public void onClick(View view) {
                     FlashcardProvider handle = new FlashcardProvider(mContext);
                     handle.flipFlag(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
-                            getItemId(position), CardSet._ID, CardSet.STAR);
+                            getItemId(position), CardSet.STAR);
                 }
             });
         }
