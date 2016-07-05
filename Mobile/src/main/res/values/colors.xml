@@ -6,4 +6,5 @@
     <color name="color_edit">#009688</color>
     <color name="color_fab_accent">#F44336</color>
     <color name="list_activated">#BDBDBD</color>
+    <color name="window_background">#FFFFFF</color>
 </resources>
