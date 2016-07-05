@@ -6,5 +6,8 @@
     <color name="color_edit">#009688</color>
     <color name="color_fab_accent">#F44336</color>
     <color name="list_activated">#BDBDBD</color>
-    <color name="window_background">#FFFFFF</color>
+    <color name="background_default">#FFFFFF</color>
+    <color name="background_starred_only">#D5E3E2</color>
+    <color name="text_default">#000000</color>
+    <color name="text_starred_only">#404040</color>
 </resources>

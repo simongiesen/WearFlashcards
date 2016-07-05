@@ -76,7 +76,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
 
-        // Hide set study button if there are no cards
+        // Hide set study button and the starred only bar if there are no cards
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
         Cursor cursor = handle.query(tableUri,
@@ -86,7 +86,9 @@ public class SetOverviewActivity extends AppCompatActivity {
                 null);
         if (cursor == null || cursor.getCount() == 0) {
             menu.removeItem(R.id.item_study_set);
+            (findViewById(R.id.layout_starred_only)).setVisibility(View.GONE);
         } else {
+            (findViewById(R.id.layout_starred_only)).setVisibility(View.VISIBLE);
             cursor.close();
         }
         return true;
