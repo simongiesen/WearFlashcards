@@ -7,7 +7,7 @@
     <color name="color_fab_accent">#F44336</color>
     <color name="list_activated">#BDBDBD</color>
     <color name="background_default">#FFFFFF</color>
-    <color name="background_starred_only">#D5E3E2</color>
+    <color name="background_starred_only">#E0F2F1</color>
     <color name="text_default">#000000</color>
     <color name="text_starred_only">#404040</color>
 </resources>
