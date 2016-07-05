@@ -16,7 +16,7 @@ import java.util.List;
  * http://developer.android.com/training/basics/data-storage/databases.html
  */
 public class FlashcardDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "flashcards";
 
     public FlashcardDbHelper(Context context) {
@@ -29,7 +29,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         final String SETLIST_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS " + SetList.TABLE_NAME + " (" +
                         SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        SetList.SET_TITLE + " TEXT UNIQUE NOT NULL)";
+                        SetList.SET_TITLE + " TEXT UNIQUE NOT NULL," +
+                        SetList.STARRED_ONLY + " INTEGER DEFAULT 0)";
 
         // Create main table
         db.execSQL(SETLIST_TABLE_CREATE);
@@ -118,6 +119,23 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                     db.execSQL("DROP TABLE set_backup");
                     db.execSQL("COMMIT");
                 }
+            }
+
+            // Add a starred only column to the main table
+            case 3: {
+                db.execSQL("BEGIN TRANSACTION");
+                db.execSQL("CREATE TEMPORARY TABLE sets_backup(" + SetList.SET_TITLE + ")");
+                db.execSQL("INSERT INTO sets_backup SELECT " + SetList.SET_TITLE +
+                        " FROM " + SetList.TABLE_NAME);
+                db.execSQL("DROP TABLE " + SetList.TABLE_NAME + "");
+                db.execSQL("CREATE TABLE " + SetList.TABLE_NAME + "(" +
+                        SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        SetList.SET_TITLE + " TEXT UNIQUE NOT NULL," +
+                        SetList.STARRED_ONLY + " INTEGER DEFAULT 0)");
+                db.execSQL("INSERT INTO " + SetList.TABLE_NAME + "(" + SetList.SET_TITLE + ")" +
+                        " SELECT " + SetList.SET_TITLE + " FROM sets_backup");
+                db.execSQL("DROP TABLE sets_backup");
+                db.execSQL("COMMIT");
             }
 
             default:

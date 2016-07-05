@@ -467,22 +467,22 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
-     * Flips a card's star flag.
+     * Flips an integer flag in a given table.
      */
-    public void flipStar(Uri uri, long id) {
+    public void flipFlag(Uri uri, long id, String idColumn, String flagColumn) {
         // Get the current flag value
         Cursor cursor = query(uri,
-                new String[]{CardSet._ID, CardSet.STAR},
-                CardSet._ID + "=?",
+                new String[]{idColumn, flagColumn},
+                idColumn + "=?",
                 new String[]{String.valueOf(id)},
                 null);
 
         // Update the star flag
         if (cursor != null && cursor.moveToFirst()) {
-            final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)) - 1);
+            final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(flagColumn)) - 1);
             ContentValues values = new ContentValues();
-            values.put(CardSet.STAR, flippedValue);
-            update(uri, values, CardSet._ID + "=?", new String[]{String.valueOf(id)});
+            values.put(flagColumn, flippedValue);
+            update(uri, values, idColumn + "=?", new String[]{String.valueOf(id)});
             cursor.close();
         }
     }

@@ -30,6 +30,7 @@ public final class FlashcardContract {
         // Columns
         public static final String TABLE_NAME = "sets";
         public static final String SET_TITLE = "set_title";
+        public static final String STARRED_ONLY = "starred_only";
 
         // Deprecated columns
         public static final String SET_TABLE_NAME = "set_table_name";

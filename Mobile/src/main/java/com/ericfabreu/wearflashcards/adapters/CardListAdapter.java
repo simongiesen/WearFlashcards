@@ -38,8 +38,8 @@ public class CardListAdapter extends CursorAdapter {
                 @Override
                 public void onClick(View view) {
                     FlashcardProvider handle = new FlashcardProvider(mContext);
-                    handle.flipStar(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
-                            getItemId(position));
+                    handle.flipFlag(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
+                            getItemId(position), CardSet._ID, CardSet.STAR);
                 }
             });
         }
