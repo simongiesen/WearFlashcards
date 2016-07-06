@@ -15,7 +15,7 @@
         <RelativeLayout
             android:id="@+id/layout_starred_only"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="?android:attr/listPreferredItemHeightSmall"
             android:background="@color/background_starred_only"
             android:visibility="gone">
 
@@ -28,8 +28,8 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:text="@string/button_starred_only"
-                android:textColor="@color/text_starred_only"
-                android:textSize="18sp" />
+                android:textColor="@color/text_default"
+                android:textSize="16sp" />
 
             <Switch
                 android:id="@+id/switch_starred_only"
