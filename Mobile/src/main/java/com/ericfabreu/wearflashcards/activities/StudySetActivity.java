@@ -1,6 +1,5 @@
 package com.ericfabreu.wearflashcards.activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -89,15 +88,6 @@ public class StudySetActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Pass table name back to SetOverviewActivity
-        Intent intent = new Intent(this, SetOverviewActivity.class);
-        intent.putExtra(Constants.TABLE_NAME, tableName);
-        intent.putExtra(Constants.TITLE, title);
-        startActivity(intent);
     }
 
     /**

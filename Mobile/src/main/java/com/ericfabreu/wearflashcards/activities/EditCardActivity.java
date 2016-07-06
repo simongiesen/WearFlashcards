@@ -1,6 +1,5 @@
 package com.ericfabreu.wearflashcards.activities;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -19,7 +18,7 @@ import com.ericfabreu.wearflashcards.utils.Constants;
  * Edits a card.
  */
 public class EditCardActivity extends AppCompatActivity {
-    private String term, definition, tableName, setTitle;
+    private String term, definition, tableName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +29,6 @@ public class EditCardActivity extends AppCompatActivity {
         term = bundle.getString(Constants.TERM);
         definition = bundle.getString(Constants.DEFINITION);
         tableName = bundle.getString(Constants.TABLE_NAME);
-        setTitle = bundle.getString(Constants.TITLE);
 
         // Create view
         setContentView(R.layout.activity_edit_card);
@@ -61,53 +59,35 @@ public class EditCardActivity extends AppCompatActivity {
         String newTerm = termView.getText().toString();
         String newDefinition = definitionView.getText().toString();
 
-        // Check if term and definition have changed
+        // Validate input
         if (term.equals(newTerm) && definition.equals(newDefinition)) {
-            onBackPressed();
-            return;
-        }
-
-        // Check if term is blank
-        if (TextUtils.isEmpty(newTerm)) {
+            finish();
+        } else if (TextUtils.isEmpty(newTerm)) {
             termView.setError(getString(R.string.error_empty_term));
-            return;
-        }
-
-        // Check if definition is blank
-        if (TextUtils.isEmpty(newDefinition)) {
+        } else if (TextUtils.isEmpty(newDefinition)) {
             definitionView.setError(getString(R.string.error_empty_definition));
-            return;
         }
 
         // Edit card
-        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        Uri tableUri = Uri.withAppendedPath(FlashcardContract.CardSet.CONTENT_URI, tableName);
-        if (!handle.editCard(tableUri, term, newTerm, newDefinition)) {
-            termView.setError(getString(R.string.error_term_taken));
-            return;
+        else {
+            FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+            Uri tableUri = Uri.withAppendedPath(FlashcardContract.CardSet.CONTENT_URI, tableName);
+            if (!handle.editCard(tableUri, term, newTerm, newDefinition)) {
+                termView.setError(getString(R.string.error_term_taken));
+            }
         }
-        onBackPressed();
         finish();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverviewActivity if the toolbar back button is clicked
+            // Quit activity
             case android.R.id.home:
                 onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Pass set title and table name back to SetOverviewActivity
-        Intent intent = new Intent(this, SetOverviewActivity.class);
-        intent.putExtra(Constants.TABLE_NAME, tableName);
-        intent.putExtra(Constants.TITLE, setTitle);
-        startActivity(intent);
     }
 }

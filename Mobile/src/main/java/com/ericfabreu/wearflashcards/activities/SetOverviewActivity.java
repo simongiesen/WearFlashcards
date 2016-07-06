@@ -52,7 +52,7 @@ public class SetOverviewActivity extends AppCompatActivity {
                 Intent intent = new Intent(SetOverviewActivity.this, NewCardActivity.class);
                 intent.putExtra(Constants.TABLE_NAME, tableName);
                 intent.putExtra(Constants.TITLE, title);
-                startActivity(intent);
+                startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             }
         });
 
@@ -124,10 +124,11 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Launch StudySetActivity
         else if (id == R.id.item_study_set) {
-            Intent intent = new Intent(SetOverviewActivity.this, StudySetActivity.class);
+            Intent intent = new Intent(this, StudySetActivity.class);
             intent.putExtra(Constants.TITLE, title);
             intent.putExtra(Constants.TABLE_NAME, tableName);
-            startActivity(intent);
+            intent.putExtra(Constants.ID, tableId);
+            startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
             return true;
         } else if (id == R.id.item_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
@@ -148,10 +149,14 @@ public class SetOverviewActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Refresh activity with the proper sort order when SettingsActivity is closed
-        if (requestCode == Constants.REQUEST_CODE_SETTINGS) {
+        if (requestCode == Constants.REQUEST_CODE_SETTINGS ||
+                requestCode == Constants.REQUEST_CODE_EDIT ||
+                requestCode == Constants.REQUEST_CODE_STUDY ||
+                requestCode == Constants.REQUEST_CODE_CREATE) {
             Intent refresh = new Intent(this, getClass());
             refresh.putExtra(Constants.TABLE_NAME, tableName);
             refresh.putExtra(Constants.TITLE, title);
+            refresh.putExtra(Constants.ID, tableId);
             startActivity(refresh);
             this.finish();
         }

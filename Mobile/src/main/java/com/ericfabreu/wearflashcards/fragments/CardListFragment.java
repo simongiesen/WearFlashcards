@@ -148,12 +148,9 @@ public class CardListFragment extends ListFragment
         });
 
         // Use the CardListAdapter to display the list of cards
-        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-        final boolean starredOnly = handle
-                .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
         mAdapter = new CardListAdapter(getActivity(),
                 tableName,
-                handle.fetchAllCards(tableName, starredOnly),
+                null,
                 0);
         setListAdapter(mAdapter);
 
@@ -211,7 +208,7 @@ public class CardListFragment extends ListFragment
             intent.putExtra(Constants.DEFINITION, definition);
             intent.putExtra(Constants.TABLE_NAME, tableName);
             intent.putExtra(Constants.TITLE, getActivity().getTitle());
-            startActivity(intent);
+            startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
             cursor.close();
         }
     }
