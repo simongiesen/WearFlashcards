@@ -80,6 +80,11 @@ public class StudySetActivity extends AppCompatActivity {
             ids.add(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
         }
 
+        // Return to SetOverviewActivity if all cards have been hidden
+        if (terms.isEmpty()) {
+            finish();
+        }
+
         // Load set study settings
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         if (settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false)) {
