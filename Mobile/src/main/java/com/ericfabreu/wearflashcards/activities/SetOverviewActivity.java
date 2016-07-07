@@ -114,35 +114,39 @@ public class SetOverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        // Flip the item's checked state and save settings
-        if (id == R.id.item_shuffle) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.PREF_KEY_SHUFFLE, !item.isChecked());
-            editor.apply();
-            item.setChecked(!item.isChecked());
-            return true;
-        } else if (id == R.id.item_definition_first) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.PREF_KEY_DEFINITION_FIRST, !item.isChecked());
-            editor.apply();
-            return true;
+        switch (item.getItemId()) {
+            // Flip the item's checked state and save settings
+            case R.id.item_shuffle: {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(Constants.PREF_KEY_SHUFFLE, !item.isChecked());
+                editor.apply();
+                item.setChecked(!item.isChecked());
+                return true;
+            }
+            case R.id.item_definition_first: {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(Constants.PREF_KEY_DEFINITION_FIRST, !item.isChecked());
+                editor.apply();
+                return true;
+            }
+            // Launch StudySetActivity
+            case R.id.item_study_set: {
+                Intent intent = new Intent(this, StudySetActivity.class);
+                intent.putExtra(Constants.TITLE, title);
+                intent.putExtra(Constants.TABLE_NAME, tableName);
+                intent.putExtra(Constants.ID, tableId);
+                startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
+                return true;
+            }
+            case R.id.item_settings: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, Constants.REQUEST_CODE_SETTINGS);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-
-        // Launch StudySetActivity
-        else if (id == R.id.item_study_set) {
-            Intent intent = new Intent(this, StudySetActivity.class);
-            intent.putExtra(Constants.TITLE, title);
-            intent.putExtra(Constants.TABLE_NAME, tableName);
-            intent.putExtra(Constants.ID, tableId);
-            startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
-            return true;
-        } else if (id == R.id.item_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent, Constants.REQUEST_CODE_SETTINGS);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

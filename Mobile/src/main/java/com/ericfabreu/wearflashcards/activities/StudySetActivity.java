@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ericfabreu.wearflashcards.R;
@@ -21,11 +22,12 @@ import java.util.List;
 import java.util.Random;
 
 public class StudySetActivity extends AppCompatActivity {
-    private String title, tableName;
+    private String tableName;
     private long tableId;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
     private List<Boolean> stars = new ArrayList<>();
     private List<Long> ids = new ArrayList<>();
+    private FlashcardProvider mProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +37,32 @@ public class StudySetActivity extends AppCompatActivity {
         if (actionBar != null) {
             getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
         }
+        mProvider = new FlashcardProvider(getApplicationContext());
 
-        // Get title and table name from SetOverviewActivity
+        // Get set information from SetOverviewActivity
         Bundle bundle = getIntent().getExtras();
-        title = bundle.getString(Constants.TITLE);
         tableName = bundle.getString(Constants.TABLE_NAME);
         tableId = bundle.getLong(Constants.ID);
-        setTitle(title);
+        setTitle(bundle.getString(Constants.TITLE));
 
         createCards();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.studying, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
+                tableId, SetList.STARRED_ONLY);
+        if (starredOnly) {
+            MenuItem star = menu.getItem(Constants.POS_STUDY_STAR);
+            star.setIcon(R.drawable.ic_star_selected);
+        }
+        return true;
     }
 
     /**
@@ -51,10 +70,9 @@ public class StudySetActivity extends AppCompatActivity {
      */
     protected void createCards() {
         // Get information from the database
-        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        final boolean starredOnly = handle
+        final boolean starredOnly = mProvider
                 .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
-        Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
+        Cursor cursor = mProvider.fetchAllCards(tableName, starredOnly);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
             definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
@@ -81,12 +99,31 @@ public class StudySetActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Pass table name back to SetOverviewActivity if the main back button is clicked
-            case android.R.id.home:
+            case android.R.id.home: {
                 onBackPressed();
                 return true;
-            default:
+            }
+            case R.id.item_study_reload: {
+                createCards();
+                return true;
+            }
+            // Flip starred only flag and reload cards
+            case R.id.item_starred_only: {
+                final boolean flag = mProvider.getFlag(SetList.CONTENT_URI,
+                        tableId, SetList.STARRED_ONLY);
+                final int icon = flag ? R.drawable.ic_star_unselected : R.drawable.ic_star_selected;
+                item.setIcon(icon);
+                mProvider.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                terms.clear();
+                definitions.clear();
+                stars.clear();
+                ids.clear();
+                createCards();
+                return true;
+            }
+            default: {
                 return super.onOptionsItemSelected(item);
+            }
         }
     }
 

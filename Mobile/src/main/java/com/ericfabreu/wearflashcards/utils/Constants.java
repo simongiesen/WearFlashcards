@@ -25,5 +25,6 @@ public class Constants {
     public final static int REQUEST_CODE_CREATE = 4;
     public final static int SHUFFLE_POS = 0;
     public final static int DEF_FIRST_POS = 1;
+    public final static int POS_STUDY_STAR = 1;
     public final static float TOOLBAR_ELEVATION = 10;
 }

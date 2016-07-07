@@ -27,6 +27,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_set_view">Show cards</string>
     <string name="button_starred_only">Only show starred cards</string>
+    <string name="button_reload_cards">Reload</string>
 
     <!-- Image descriptions -->
     <string name="description_star">Star</string>
