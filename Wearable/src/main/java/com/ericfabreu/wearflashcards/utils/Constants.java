@@ -14,5 +14,7 @@ public class Constants {
     public final static String PREFS_NAME = "settings";
     public final static String SHUFFLE = "shuffle";
     public final static String DEF_FIRST = "definition_first";
+    public final static String STAR = "star";
+    public final static String ID = "_ID";
     public final static int COLUMN_COUNT = 1;
 }

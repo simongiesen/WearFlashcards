@@ -33,22 +33,25 @@ import java.util.List;
 public class SetViewAdapter extends FragmentGridPagerAdapter {
     private List<Fragment> cards = new ArrayList<>();
 
-    public SetViewAdapter(FragmentManager fm, String[] terms, String[] definitions) {
+    public SetViewAdapter(FragmentManager fm, ArrayList<String> terms,
+                          ArrayList<String> definitions, long[] ids, ArrayList<Integer> stars) {
         super(fm);
 
         // Create all cards
-        for (int i = 0, n = terms.length; i < n; i++) {
-            cards.add(newCard(terms[i], definitions[i]));
+        for (int i = 0, n = terms.size(); i < n; i++) {
+            cards.add(newCard(terms.get(i), definitions.get(i), ids[i], stars.get(i) == 1));
         }
     }
 
     /**
      * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private CardViewFragment newCard(String term, String definition) {
+    private CardViewFragment newCard(String term, String definition, long id, boolean star) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TERM, term);
         bundle.putString(Constants.DEFINITION, definition);
+        bundle.putLong(Constants.ID, id);
+        bundle.putBoolean(Constants.STAR, star);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         return card;

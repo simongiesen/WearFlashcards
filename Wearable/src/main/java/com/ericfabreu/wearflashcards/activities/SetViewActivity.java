@@ -25,6 +25,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class SetViewActivity extends Activity implements
@@ -34,8 +35,9 @@ public class SetViewActivity extends Activity implements
 
     private GoogleApiClient mGoogleApiClient;
     private String title = null;
-    private String[] terms = null;
-    private String[] definitions = null;
+    private ArrayList<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
+    private long[] ids = null;
+    private ArrayList<Integer> stars = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +93,11 @@ public class SetViewActivity extends Activity implements
                 // Create the cards upon receiving data from the mobile device
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                terms = dataMap.getStringArray(Constants.TERMS);
-                definitions = dataMap.getStringArray(Constants.DEFINITIONS);
-                if (terms != null && definitions != null &&
-                        terms.length > 0 && definitions.length > 0) {
+                terms = dataMap.getStringArrayList(Constants.TERMS);
+                definitions = dataMap.getStringArrayList(Constants.DEFINITIONS);
+                stars = dataMap.getIntegerArrayList(Constants.STAR);
+                ids = dataMap.getLongArray(Constants.ID);
+                if (!terms.isEmpty() && !definitions.isEmpty()) {
                     createCards();
                 }
             }
@@ -147,32 +150,37 @@ public class SetViewActivity extends Activity implements
         SharedPreferences settings =
                 getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         if (settings.getBoolean(Constants.DEF_FIRST, false)) {
-            String[] temp = terms;
+            ArrayList<String> temp = terms;
             terms = definitions;
             definitions = temp;
         }
         if (settings.getBoolean(Constants.SHUFFLE, false)) {
             shuffleCards();
         }
-        pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions));
+        pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions, ids, stars));
     }
 
     /**
      * Shuffles the terms and definitions together.
      */
     private void shuffleCards() {
-        int size = terms.length;
+        int size = terms.size();
         int[] shuffleOrder = getShuffledArray(size);
-        String[] newTerms = new String[size];
-        String[] newDefinitions = new String[size];
+        ArrayList<String> newTerms = new ArrayList<>(), newDefinitions = new ArrayList<>();
+        long[] newIds = new long[size];
+        ArrayList<Integer> newStars = new ArrayList<>();
 
         // Use shuffled int array to ensure that the new terms and definitions match
         for (int i = 0; i < size; i++) {
-            newTerms[i] = terms[shuffleOrder[i]];
-            newDefinitions[i] = definitions[shuffleOrder[i]];
+            newTerms.add(i, terms.get(shuffleOrder[i]));
+            newDefinitions.add(i, definitions.get(shuffleOrder[i]));
+            newIds[i] = ids[shuffleOrder[i]];
+            newStars.add(i, stars.get(shuffleOrder[i]));
         }
         terms = newTerms;
         definitions = newDefinitions;
+        ids = newIds;
+        stars = newStars;
     }
 
     /**

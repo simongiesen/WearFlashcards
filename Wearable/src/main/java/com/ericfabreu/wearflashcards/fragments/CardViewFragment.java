@@ -3,6 +3,7 @@ package com.ericfabreu.wearflashcards.fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,11 @@ public class CardViewFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Get term and definition
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         final String term = bundle.getString(Constants.TERM);
         final String definition = bundle.getString(Constants.DEFINITION);
+        final long id = bundle.getLong(Constants.ID);
+        final boolean star = bundle.getBoolean(Constants.STAR);
 
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
@@ -35,8 +38,9 @@ public class CardViewFragment extends Fragment {
         termView.setMinTextSize(14f);
         definitionView.setMinTextSize(12f);
         final ImageView starView = (ImageView) frame.findViewById(R.id.image_star_card);
+        final int starDrawable = star ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
         starView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),
-                R.drawable.ic_star_selected));
+                starDrawable));
 
         // Add text and click listeners
         termView.setText(term);
@@ -62,8 +66,12 @@ public class CardViewFragment extends Fragment {
         starFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final int starDrawable = !star ? R.drawable.ic_star_selected
+                        : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
-                        .getApplicationContext(), R.drawable.ic_star_unselected));
+                        .getApplicationContext(), starDrawable));
+                bundle.putBoolean(Constants.STAR, !star);
+                Log.d("id", String.valueOf(id));
                 onCreateView(inflater, container, savedInstanceState);
             }
         });

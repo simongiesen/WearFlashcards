@@ -72,27 +72,36 @@ public class WearableService extends WearableListenerService {
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         final String tableName = handle.getTableName(title);
         final long tableId = handle.getTableId(title);
-        final boolean starredOnly = handle.getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly = handle.getFlag(SetList.CONTENT_URI,
+                tableId, SetList.STARRED_ONLY);
         Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
 
         // Put terms and definitions into string arrays
-        ArrayList<String> columnArray1 = new ArrayList<>();
-        ArrayList<String> columnArray2 = new ArrayList<>();
+        ArrayList<Long> tempIds = new ArrayList<>();
+        ArrayList<String> terms = new ArrayList<>();
+        ArrayList<String> definitions = new ArrayList<>();
+        ArrayList<Integer> stars = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            columnArray1.add(cursor.getString(cursor
-                    .getColumnIndex(CardSet.TERM)));
-            columnArray2.add(cursor.getString(cursor
-                    .getColumnIndex(CardSet.DEFINITION)));
+            tempIds.add(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
+            terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
+            definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
+            stars.add(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)));
         }
-        String[] terms = columnArray1.toArray(new String[columnArray1.size()]);
-        String[] definitions = columnArray2.toArray(new String[columnArray2.size()]);
+
+        // For some reason it is not possible to send long array lists to wearable devices
+        long[] ids = new long[tempIds.size()];
+        for (int i = 0; i < tempIds.size(); i++) {
+            ids[i] = tempIds.get(i);
+        }
 
         // Send data to the wearable
         GoogleApiClient mGoogleApiClient = wearConnect();
         final PutDataMapRequest putRequest = PutDataMapRequest.create("/" + tableName);
         final DataMap map = putRequest.getDataMap();
-        map.putStringArray(Constants.TERMS, terms);
-        map.putStringArray(Constants.DEFINITIONS, definitions);
+        map.putLongArray(Constants.ID, ids);
+        map.putStringArrayList(Constants.TERMS, terms);
+        map.putStringArrayList(Constants.DEFINITIONS, definitions);
+        map.putIntegerArrayList(Constants.STAR, stars);
         map.putLong(Constants.TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
     }
