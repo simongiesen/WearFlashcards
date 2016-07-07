@@ -18,8 +18,8 @@ import com.thinkincode.utils.views.AutoResizeTextView;
  */
 public class CardViewFragment extends Fragment {
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
         // Get term and definition
         Bundle bundle = getArguments();
         final String term = bundle.getString(Constants.TERM);
@@ -64,6 +64,7 @@ public class CardViewFragment extends Fragment {
             public void onClick(View view) {
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
                         .getApplicationContext(), R.drawable.ic_star_unselected));
+                onCreateView(inflater, container, savedInstanceState);
             }
         });
         return card;
