@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -56,16 +55,18 @@ public class EditCardActivity extends AppCompatActivity {
     public void editCard(View view) {
         TextInputEditText termView = (TextInputEditText) findViewById(R.id.edit_term);
         TextInputEditText definitionView = (TextInputEditText) findViewById(R.id.edit_definition);
-        String newTerm = termView.getText().toString();
-        String newDefinition = definitionView.getText().toString();
+        String newTerm = termView.getText().toString().replaceAll("^\\s+|\\s+$", "");
+        String newDefinition = definitionView.getText().toString().replaceAll("^\\s+|\\s+$", "");
 
         // Validate input
         if (term.equals(newTerm) && definition.equals(newDefinition)) {
             finish();
-        } else if (TextUtils.isEmpty(newTerm)) {
+        } else if (newTerm.isEmpty() || newTerm.matches("[ ]+")) {
             termView.setError(getString(R.string.error_empty_term));
-        } else if (TextUtils.isEmpty(newDefinition)) {
+            return;
+        } else if (newDefinition.isEmpty() || definition.matches("[ ]+")) {
             definitionView.setError(getString(R.string.error_empty_definition));
+            return;
         }
 
         // Edit card
@@ -74,6 +75,7 @@ public class EditCardActivity extends AppCompatActivity {
             Uri tableUri = Uri.withAppendedPath(FlashcardContract.CardSet.CONTENT_URI, tableName);
             if (!handle.editCard(tableUri, term, newTerm, newDefinition)) {
                 termView.setError(getString(R.string.error_term_taken));
+                return;
             }
         }
         finish();

@@ -81,8 +81,8 @@ public class NewCardActivity extends AppCompatActivity {
                 text1.requestFocus();
                 return;
             }
+            finish();
         }
-        finish();
     }
 
     @Override
