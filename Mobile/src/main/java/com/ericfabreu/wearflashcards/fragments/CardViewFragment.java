@@ -1,6 +1,5 @@
 package com.ericfabreu.wearflashcards.fragments;
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,7 @@ import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.thinkincode.utils.views.AutoResizeTextView;
@@ -73,21 +73,9 @@ public class CardViewFragment extends Fragment {
                 FlashcardProvider handle = new FlashcardProvider(getContext());
                 Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
                 handle.flipFlag(uri, id, CardSet.STAR);
-
-                // Get new star value
-                Cursor cursor = handle.query(uri,
-                        new String[]{CardSet._ID, CardSet.STAR},
-                        CardSet._ID + "=?",
-                        new String[]{String.valueOf(id)},
-                        null);
-
-                // Update the star drawable
-                if (cursor != null && cursor.moveToFirst()) {
-                    final boolean flag = cursor.getInt(cursor.getColumnIndex(CardSet.STAR)) == 1;
-                    final int newStarDrawable = flag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
-                    starView.setImageDrawable(ContextCompat.getDrawable(getContext(), newStarDrawable));
-                    cursor.close();
-                }
+                final boolean flag = handle.getFlag(SetList.CONTENT_URI, id, SetList.STARRED_ONLY);
+                final int star = flag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
+                starView.setImageDrawable(ContextCompat.getDrawable(getContext(), star));
             }
         });
         return card;
