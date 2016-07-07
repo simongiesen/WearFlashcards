@@ -12,7 +12,6 @@ import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
-import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.thinkincode.utils.views.AutoResizeTextView;
@@ -22,10 +21,10 @@ import com.thinkincode.utils.views.AutoResizeTextView;
  */
 public class CardViewFragment extends Fragment {
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
         // Get term and definition
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         final String tableName = bundle.getString(Constants.TABLE_NAME);
         final String term = bundle.getString(Constants.TERM);
         final String definition = bundle.getString(Constants.DEFINITION);
@@ -71,11 +70,13 @@ public class CardViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FlashcardProvider handle = new FlashcardProvider(getContext());
-                Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
+                final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
                 handle.flipFlag(uri, id, CardSet.STAR);
-                final boolean flag = handle.getFlag(SetList.CONTENT_URI, id, SetList.STARRED_ONLY);
+                final boolean flag = handle.getFlag(uri, id, CardSet.STAR);
                 final int star = flag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getContext(), star));
+                bundle.putBoolean(Constants.STAR, flag);
+                onCreateView(inflater, container, savedInstanceState);
             }
         });
         return card;
