@@ -23,18 +23,4 @@
             android:summary="@string/pref_description_creating_star"
             android:title="@string/pref_title_creating_star" />
     </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/pref_header_studying">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="shuffle"
-            android:summary="@string/pref_description_shuffle"
-            android:title="@string/pref_title_shuffle" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="definitionFirst"
-            android:summary="@string/pref_description_flip"
-            android:title="@string/pref_title_flip" />
-    </PreferenceCategory>
 </PreferenceScreen>
