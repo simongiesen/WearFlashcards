@@ -25,6 +25,7 @@ public class SetOverviewActivity extends AppCompatActivity {
     private String tableName, title;
     private long tableId;
     private SharedPreferences settings;
+    private FlashcardProvider mProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class SetOverviewActivity extends AppCompatActivity {
             }
         });
 
+        mProvider = new FlashcardProvider(getApplicationContext());
+
         // Load flashcard sets
         if (savedInstanceState == null) {
             startCardListFragment(null);
@@ -67,9 +70,9 @@ public class SetOverviewActivity extends AppCompatActivity {
         super.onStart();
 
         // Load the starred only setting
-        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         final Switch starredOnly = (Switch) findViewById(R.id.switch_starred_only);
-        starredOnly.setChecked(handle.getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY));
+        starredOnly.setChecked(mProvider.getFlag(SetList.CONTENT_URI,
+                tableId, SetList.STARRED_ONLY));
     }
 
     @Override
@@ -86,19 +89,24 @@ public class SetOverviewActivity extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
 
-        // Hide set study button and the starred only bar if there are no cards
-        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+        // Hide set study button and the starred only bar if there are no cards to display
         final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-        Cursor cursor = handle.query(tableUri,
+        Cursor cursor = mProvider.query(tableUri,
                 new String[]{CardSet._ID},
                 null,
                 null,
                 null);
         if (cursor == null || cursor.getCount() == 0) {
             menu.removeItem(R.id.item_study_set);
-            (findViewById(R.id.layout_starred_only)).setVisibility(View.GONE);
+            findViewById(R.id.layout_starred_only).setVisibility(View.GONE);
         } else {
-            (findViewById(R.id.layout_starred_only)).setVisibility(View.VISIBLE);
+            final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
+                    tableId, SetList.STARRED_ONLY);
+            final int starredCount = mProvider.getStarredCount(tableUri);
+            if (starredOnly && starredCount == 0) {
+                menu.removeItem(R.id.item_study_set);
+            }
+            findViewById(R.id.layout_starred_only).setVisibility(View.VISIBLE);
             cursor.close();
         }
         return true;
@@ -148,7 +156,7 @@ public class SetOverviewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Refresh activity with the proper sort order when SettingsActivity is closed
+        // Refresh activity with the proper sort order when a child activity is closed
         if (requestCode == Constants.REQUEST_CODE_SETTINGS ||
                 requestCode == Constants.REQUEST_CODE_EDIT ||
                 requestCode == Constants.REQUEST_CODE_STUDY ||
@@ -168,8 +176,8 @@ public class SetOverviewActivity extends AppCompatActivity {
     public void startCardListFragment(View view) {
         // Check if the flag needs to be flipped
         if (view != null) {
-            FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-            handle.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            mProvider.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            invalidateOptionsMenu();
         }
 
         Bundle bundle = new Bundle();

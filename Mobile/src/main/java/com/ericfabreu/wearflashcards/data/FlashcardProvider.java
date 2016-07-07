@@ -512,4 +512,21 @@ public class FlashcardProvider extends ContentProvider {
         }
         return false;
     }
+
+    /**
+     * Returns the number of starred cards.
+     */
+    public int getStarredCount(Uri uri) {
+        Cursor cursor = query(uri,
+                new String[]{CardSet.STAR},
+                CardSet.STAR + "=?",
+                new String[]{"1"},
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            final int size = cursor.getCount();
+            cursor.close();
+            return size;
+        }
+        return 0;
+    }
 }

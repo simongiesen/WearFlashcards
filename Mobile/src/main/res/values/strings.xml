@@ -10,6 +10,7 @@
     <!-- Messages -->
     <string name="message_empty_database">Tap the + button to create a flashcard set</string>
     <string name="message_empty_stack">Tap the + button to create a flashcard</string>
+    <string name="message_all_cards_hidden">All cards are hidden</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>

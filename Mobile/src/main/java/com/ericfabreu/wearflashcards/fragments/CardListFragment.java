@@ -39,6 +39,7 @@ public class CardListFragment extends ListFragment
     private static final String[] SET_SUMMARY_PROJECTION =
             new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION, CardSet.STAR};
     private CardListAdapter mAdapter;
+    private FlashcardProvider mProvider;
     private String tableName;
     private long tableId;
     private List<Long> selections = new ArrayList<>();
@@ -49,6 +50,7 @@ public class CardListFragment extends ListFragment
         Bundle bundle = getArguments();
         tableName = bundle.getString(Constants.TABLE_NAME);
         tableId = bundle.getLong(Constants.ID);
+        mProvider = new FlashcardProvider(getActivity().getApplicationContext());
         super.onCreate(savedInstanceState);
     }
 
@@ -96,15 +98,14 @@ public class CardListFragment extends ListFragment
                                     public void onClick(DialogInterface dialog, int id) {
                                         for (int i = 0, n = selections.size(); i < n; i++) {
                                             // Delete card from set
-                                            FlashcardProvider handle = new FlashcardProvider(
-                                                    getActivity().getApplicationContext());
-                                            handle.delete(Uri.withAppendedPath
+                                            mProvider.delete(Uri.withAppendedPath
                                                             (CardSet.CONTENT_URI, tableName),
                                                     CardSet._ID + "=?",
                                                     new String[]{String
                                                             .valueOf(selections.get(i))});
                                         }
                                         mode.finish();
+                                        getActivity().invalidateOptionsMenu();
                                     }
                                 });
 
@@ -149,6 +150,7 @@ public class CardListFragment extends ListFragment
 
         // Use the CardListAdapter to display the list of cards
         mAdapter = new CardListAdapter(getActivity(),
+                this,
                 tableName,
                 null,
                 0);
@@ -166,10 +168,21 @@ public class CardListFragment extends ListFragment
         cardEditListener(id);
     }
 
+    @Override
+    public void setEmptyText(CharSequence text) {
+        final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
+                tableId, SetList.STARRED_ONLY);
+        final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
+        if (starredOnly && mProvider.getStarredCount(tableUri) == 0) {
+            super.setEmptyText(getText(R.string.message_all_cards_hidden));
+        } else {
+            super.setEmptyText(text);
+        }
+    }
+
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-        final boolean starredOnly = handle
-                .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
+                tableId, SetList.STARRED_ONLY);
         final String selection = starredOnly ? CardSet.STAR + "=?" : null;
         final String[] selectionArgs = starredOnly ? new String[]{"1"} : null;
         return new CursorLoader(getActivity(),
@@ -194,8 +207,7 @@ public class CardListFragment extends ListFragment
      * Finds the card's term and definition and send it to EditCardActivity.
      */
     private void cardEditListener(long id) {
-        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-        Cursor cursor = handle.query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
+        Cursor cursor = mProvider.query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
                 new String[]{CardSet.TERM, CardSet.DEFINITION},
                 CardSet._ID + "=?",
                 new String[]{String.valueOf(id)},

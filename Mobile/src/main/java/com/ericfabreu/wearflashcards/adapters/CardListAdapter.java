@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
+import com.ericfabreu.wearflashcards.fragments.CardListFragment;
 
 /**
  * Simple adapter for CardListFragment.
@@ -21,15 +23,20 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 public class CardListAdapter extends CursorAdapter {
     private Context mContext;
     private String mTableName;
+    private AppCompatActivity mActivity;
+    private CardListFragment mFragment;
 
-    public CardListAdapter(Context context, String tableName, Cursor cursor, int flags) {
+    public CardListAdapter(Context context, CardListFragment fragment,
+                           String tableName, Cursor cursor, int flags) {
         super(context, cursor, flags);
         mContext = context;
         mTableName = tableName;
+        mActivity = (AppCompatActivity) context;
+        mFragment = fragment;
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
 
         // Override the click listener on the star
@@ -40,6 +47,10 @@ public class CardListAdapter extends CursorAdapter {
                     FlashcardProvider handle = new FlashcardProvider(mContext);
                     handle.flipFlag(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
                             getItemId(position), CardSet.STAR);
+
+                    // Hide the study set and refresh the empty text if necessary
+                    mActivity.invalidateOptionsMenu();
+                    mFragment.setEmptyText(mContext.getText(R.string.message_empty_stack));
                 }
             });
         }
