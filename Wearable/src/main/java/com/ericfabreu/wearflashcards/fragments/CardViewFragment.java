@@ -66,11 +66,12 @@ public class CardViewFragment extends Fragment {
         starFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final int starDrawable = !star ? R.drawable.ic_star_selected
+                final boolean star = !bundle.getBoolean(Constants.STAR);
+                final int starDrawable = star ? R.drawable.ic_star_selected
                         : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
                         .getApplicationContext(), starDrawable));
-                bundle.putBoolean(Constants.STAR, !star);
+                bundle.putBoolean(Constants.STAR, star);
                 Log.d("id", String.valueOf(id));
                 onCreateView(inflater, container, savedInstanceState);
             }
