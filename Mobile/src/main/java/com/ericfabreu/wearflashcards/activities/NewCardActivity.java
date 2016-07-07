@@ -14,6 +14,8 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
+import static com.ericfabreu.wearflashcards.utils.PreferencesHelper.getStarMode;
+
 public class NewCardActivity extends AppCompatActivity {
     private String tableName;
 
@@ -67,6 +69,9 @@ public class NewCardActivity extends AppCompatActivity {
             ContentValues contentValues = new ContentValues();
             contentValues.put(CardSet.TERM, term);
             contentValues.put(CardSet.DEFINITION, definition);
+            if (getStarMode(getApplicationContext())) {
+                contentValues.put(CardSet.STAR, "1");
+            }
             handle.insert(tableUri, contentValues);
 
             // Check if it should reset view

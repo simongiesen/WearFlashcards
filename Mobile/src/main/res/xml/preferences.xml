@@ -16,6 +16,14 @@
             android:title="@string/pref_title_sort_cards" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_header_creating">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="createCardStarred"
+            android:summary="@string/pref_description_creating_star"
+            android:title="@string/pref_title_creating_star" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_header_studying">
         <CheckBoxPreference
             android:defaultValue="false"

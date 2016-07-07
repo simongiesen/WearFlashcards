@@ -49,6 +49,7 @@
     <!-- Preferences -->
     <string name="pref_header_sorting">Sorting</string>
     <string name="pref_header_studying">Studying</string>
+    <string name="pref_header_creating">Creating</string>
     <string-array name="pref_sorting_choices">
         <item>Alphabetical (default)</item>
         <item>Reverse alphabetical</item>
@@ -63,6 +64,8 @@
     <string name="pref_title_sort_cards">Cards</string>
     <string name="pref_title_shuffle">Shuffle</string>
     <string name="pref_title_flip">Definitions first</string>
+    <string name="pref_title_creating_star">Create starred cards</string>
     <string name="pref_description_shuffle">Study cards in random order</string>
     <string name="pref_description_flip">Show the back side of the cards first</string>
+    <string name="pref_description_creating_star">Automatically star new cards</string>
 </resources>

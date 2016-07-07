@@ -12,8 +12,8 @@ public class PreferencesHelper {
      * Returns the order in which the content in `column` should be displayed.
      */
     public static String getOrder(Context context, String column, String prefKey) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        int order = Integer.valueOf(settings.getString(prefKey, "0"));
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        final int order = Integer.valueOf(settings.getString(prefKey, "0"));
         switch (order) {
             case 0:
                 return column + " ASC";
@@ -22,5 +22,13 @@ public class PreferencesHelper {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Returns the default star value for new cards
+     */
+    public static boolean getStarMode(Context context) {
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(Constants.PREF_KEY_CREATE_STARRED, false);
     }
 }

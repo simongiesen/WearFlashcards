@@ -8,6 +8,7 @@ public class Constants {
     public final static String PREF_KEY_DEFINITION_FIRST = "definitionFirst";
     public final static String PREF_KEY_SET_ORDER = "setOrder";
     public final static String PREF_KEY_CARD_ORDER = "cardOrder";
+    public final static String PREF_KEY_CREATE_STARRED = "createCardStarred";
     public final static String SET_LIST = "/set_list";
     public final static String TERMS = "/terms";
     public final static String DEFINITIONS = "/definitions";
