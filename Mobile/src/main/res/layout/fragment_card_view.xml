@@ -46,7 +46,6 @@
             android:visibility="invisible" />
 
         <FrameLayout
-            android:id="@+id/layout_star_card"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end">

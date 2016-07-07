@@ -2,10 +2,12 @@ package com.ericfabreu.wearflashcards.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -32,6 +34,9 @@ public class CardViewFragment extends Fragment {
                 (AutoResizeTextView) frame.findViewById(R.id.text_card_definition);
         termView.setMinTextSize(14f);
         definitionView.setMinTextSize(12f);
+        final ImageView starView = (ImageView) frame.findViewById(R.id.image_star_card);
+        starView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),
+                R.drawable.ic_star_selected));
 
         // Add text and click listeners
         termView.setText(term);
@@ -52,6 +57,15 @@ public class CardViewFragment extends Fragment {
         termView.setOnClickListener(cardListener);
         definitionView.setOnClickListener(cardListener);
         frame.setOnClickListener(cardListener);
+
+        final FrameLayout starFrame = (FrameLayout) frame.findViewById(R.id.layout_star_card);
+        starFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
+                        .getApplicationContext(), R.drawable.ic_star_unselected));
+            }
+        });
         return card;
     }
 }

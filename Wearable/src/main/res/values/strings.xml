@@ -7,8 +7,9 @@
     <string name="message_empty">Open the app on your phone to create flashcards</string>
     <string name="message_offline">Cannot sync flashcards offline</string>
 
-    <!-- ImageView descriptions -->
+    <!-- Image descriptions -->
     <string name="description_list_item">Flashcard set name</string>
+    <string name="description_star">Star</string>
 
     <!-- Preferences -->
     <string name="preference_shuffle">Shuffle</string>
