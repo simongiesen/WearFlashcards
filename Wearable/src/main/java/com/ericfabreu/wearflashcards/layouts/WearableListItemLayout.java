@@ -40,8 +40,8 @@ public class WearableListItemLayout extends LinearLayout
         super.onFinishInflate();
 
         // Get references to the icon and text in the item layout definition
-        mCircle = (ImageView) findViewById(R.id.image_circle);
-        mName = (TextView) findViewById(R.id.text_name);
+        mCircle = (ImageView) findViewById(R.id.image_list_drawable);
+        mName = (TextView) findViewById(R.id.text_list_item);
     }
 
     @Override

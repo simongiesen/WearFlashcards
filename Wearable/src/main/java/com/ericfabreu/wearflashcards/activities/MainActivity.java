@@ -1,17 +1,15 @@
 package com.ericfabreu.wearflashcards.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.wearable.view.WearableListView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.adapters.ListViewAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -55,14 +53,14 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
         WearableListView listView =
                 (WearableListView) findViewById(R.id.layout_list);
-        listView.setAdapter(new Adapter(this, setList));
+        listView.setAdapter(new ListViewAdapter(this, R.layout.item_set_list, setList));
 
         listView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder view) {
                 // Get set title from list item and send it to SetViewActivity
-                Adapter.ItemViewHolder itemHolder = (Adapter.ItemViewHolder) view;
-                TextView tv = itemHolder.textView;
+                ListViewAdapter.ItemViewHolder itemHolder = (ListViewAdapter.ItemViewHolder) view;
+                TextView tv = itemHolder.getTextView();
                 Intent intent = new Intent(MainActivity.this, SetViewActivity.class);
                 intent.putExtra(Constants.TITLE, tv.getText().toString());
                 startActivity(intent);
@@ -142,52 +140,6 @@ public class MainActivity extends Activity implements
     public void openSettings(View view) {
         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    /**
-     * Provides the ListView adapter used to display the list of sets.
-     */
-    private static final class Adapter extends WearableListView.Adapter {
-        private final Context mContext;
-        private final LayoutInflater mInflater;
-        private String[] mDataSet;
-
-        public Adapter(Context context, String[] dataSet) {
-            mContext = context;
-            mInflater = LayoutInflater.from(mContext);
-            mDataSet = dataSet;
-        }
-
-        @Override
-        public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            // Inflate custom layout for list items
-            return new ItemViewHolder(mInflater.inflate(R.layout.item_set_list, parent, false));
-        }
-
-        // Replace the contents of a list item
-        @Override
-        public void onBindViewHolder(WearableListView.ViewHolder holder, int position) {
-            // Retrieve the text view and replace its contents
-            ItemViewHolder itemHolder = (ItemViewHolder) holder;
-            TextView view = itemHolder.textView;
-            view.setText(mDataSet[position]);
-            holder.itemView.setTag(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mDataSet.length;
-        }
-
-        // Provide a reference to the views used in the ListView
-        public static class ItemViewHolder extends WearableListView.ViewHolder {
-            private TextView textView;
-
-            public ItemViewHolder(View itemView) {
-                super(itemView);
-                textView = (TextView) itemView.findViewById(R.id.text_name);
-            }
-        }
     }
 
     /**
