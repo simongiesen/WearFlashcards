@@ -11,7 +11,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.adapters.StudySetAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.thinkincode.utils.views.AutoResizeTextView;
@@ -20,6 +22,21 @@ import com.thinkincode.utils.views.AutoResizeTextView;
  * Displays cards on the screen.
  */
 public class CardViewFragment extends Fragment {
+    private StudySetAdapter mAdapter;
+    private int mPosition;
+
+    public CardViewFragment() {
+        super();
+    }
+
+    public void setPosition(int position) {
+        mPosition = position;
+    }
+
+    public void setAdapter(StudySetAdapter adapter) {
+        mAdapter = adapter;
+    }
+
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -72,6 +89,20 @@ public class CardViewFragment extends Fragment {
                 FlashcardProvider handle = new FlashcardProvider(getContext());
                 final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
                 handle.flipFlag(uri, id, CardSet.STAR);
+
+                // Reload StudySetActivity if a star is removed when starred only mode is on
+                if (tableName != null) {
+                    final long tableId = Long.valueOf(tableName
+                            .substring(1, tableName.length() - 1));
+                    final boolean starredOnly = handle.getFlag(SetList.CONTENT_URI,
+                            tableId, SetList.STARRED_ONLY);
+                    if (starredOnly) {
+                        mAdapter.deleteItem(mPosition);
+                        return;
+                    }
+                }
+
+                // Switch star drawable
                 final boolean flag = handle.getFlag(uri, id, CardSet.STAR);
                 final int star = flag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getContext(), star));

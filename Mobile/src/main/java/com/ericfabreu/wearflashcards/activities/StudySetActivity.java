@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 public class StudySetActivity extends AppCompatActivity {
-    private String tableName;
+    private String tableName, title;
     private long tableId;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
     private List<Boolean> stars = new ArrayList<>();
@@ -43,7 +43,8 @@ public class StudySetActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         tableName = bundle.getString(Constants.TABLE_NAME);
         tableId = bundle.getLong(Constants.ID);
-        setTitle(bundle.getString(Constants.TITLE));
+        title = bundle.getString(Constants.TITLE);
+        setTitle(title);
 
         createCards();
     }
@@ -97,8 +98,8 @@ public class StudySetActivity extends AppCompatActivity {
         }
 
         final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
-        pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(),
-                tableName, terms, definitions, stars, ids));
+        pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), pager, tableName,
+                terms, definitions, stars, ids, getApplicationContext(), tableId, title));
     }
 
     @Override

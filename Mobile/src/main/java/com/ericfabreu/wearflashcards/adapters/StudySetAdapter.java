@@ -16,11 +16,15 @@
 
 package com.ericfabreu.wearflashcards.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 
+import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
@@ -31,24 +35,33 @@ import java.util.List;
  * Generates CardViews for SetView.
  */
 public class StudySetAdapter extends FragmentStatePagerAdapter {
-    private List<Fragment> cards = new ArrayList<>();
-    private String mTableName;
+    private List<CardViewFragment> cards = new ArrayList<>();
+    private String mTableName, mTitle;
+    private long mTableId;
+    private ViewPager mPager;
+    private Context mContext;
 
-    public StudySetAdapter(FragmentManager fm, String tableName, List<String> terms,
-                           List<String> definitions, List<Boolean> stars, List<Long> ids) {
-        super(fm);
+    public StudySetAdapter(FragmentManager fragmentManager, ViewPager viewPager, String tableName,
+                           List<String> terms, List<String> definitions, List<Boolean> stars,
+                           List<Long> ids, Context context, long tableId, String title) {
+        super(fragmentManager);
         mTableName = tableName;
+        mTitle = title;
+        mTableId = tableId;
+        mPager = viewPager;
+        mContext = context;
 
         // Create all cards
         for (int i = 0, n = terms.size(); i < n; i++) {
-            cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i)));
+            cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i), i));
         }
     }
 
     /**
      * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private Fragment newCard(String term, String definition, boolean star, long id) {
+    private CardViewFragment newCard(String term, String definition, boolean star,
+                                     long id, int position) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TABLE_NAME, mTableName);
         bundle.putString(Constants.TERM, term);
@@ -57,6 +70,8 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
         bundle.putLong(Constants.ID, id);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
+        card.setPosition(position);
+        card.setAdapter(this);
         return card;
     }
 
@@ -68,5 +83,28 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return cards.size();
+    }
+
+    public void deleteItem(int position) {
+        // Go back to SetOverviewActivity if this is the last starred card
+        if (cards.size() <= 1) {
+            Intent intent = new Intent(mContext, SetOverviewActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Constants.TABLE_NAME, mTableName);
+            intent.putExtra(Constants.TITLE, mTitle);
+            intent.putExtra(Constants.ID, mTableId);
+            mContext.startActivity(intent);
+        }
+        mPager.setAdapter(null);
+        cards.remove(position);
+
+        // Update the position in the cards after the one being removed
+        for (int i = position; i < cards.size(); i++) {
+            cards.get(i).setPosition(i);
+        }
+
+        // Reset the adapter and go to the next card
+        mPager.setAdapter(this);
+        mPager.setCurrentItem(position);
     }
 }
