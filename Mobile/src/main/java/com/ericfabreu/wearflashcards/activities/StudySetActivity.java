@@ -104,7 +104,7 @@ public class StudySetActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.item_study_reload: {
-                createCards();
+                recreateCards();
                 return true;
             }
             // Flip starred only flag and reload cards
@@ -114,11 +114,7 @@ public class StudySetActivity extends AppCompatActivity {
                 final int icon = flag ? R.drawable.ic_star_unselected : R.drawable.ic_star_selected;
                 item.setIcon(icon);
                 mProvider.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
-                terms.clear();
-                definitions.clear();
-                stars.clear();
-                ids.clear();
-                createCards();
+                recreateCards();
                 return true;
             }
             default: {
@@ -177,5 +173,16 @@ public class StudySetActivity extends AppCompatActivity {
             }
         }
         return array;
+    }
+
+    /**
+     * Discards all current set information and recreates all cards.
+     */
+    private void recreateCards() {
+        terms.clear();
+        definitions.clear();
+        stars.clear();
+        ids.clear();
+        createCards();
     }
 }
