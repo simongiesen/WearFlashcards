@@ -88,7 +88,7 @@ public class StudySetActivity extends AppCompatActivity {
 
         // Load set study settings
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        if (settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false)) {
+        if (settings.getBoolean(Constants.PREF_KEY_DEFINITION, false)) {
             List<String> temp = terms;
             terms = definitions;
             definitions = temp;

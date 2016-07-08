@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements
             public void onClick(WearableListView.ViewHolder view) {
                 // Get set title from list item and send it to SetViewActivity
                 ListViewAdapter.ItemViewHolder itemHolder = (ListViewAdapter.ItemViewHolder) view;
-                TextView tv = itemHolder.getTextView();
+                TextView tv = (TextView) itemHolder.getView();
                 Intent intent = new Intent(MainActivity.this, SetViewActivity.class);
                 intent.putExtra(Constants.TITLE, tv.getText().toString());
                 startActivity(intent);

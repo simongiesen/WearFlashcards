@@ -149,12 +149,12 @@ public class SetViewActivity extends Activity implements
         // Apply settings and open cards
         SharedPreferences settings =
                 getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
-        if (settings.getBoolean(Constants.DEF_FIRST, false)) {
+        if (settings.getBoolean(Constants.PREF_KEY_DEFINITION, false)) {
             ArrayList<String> temp = terms;
             terms = definitions;
             definitions = temp;
         }
-        if (settings.getBoolean(Constants.SHUFFLE, false)) {
+        if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
             shuffleCards();
         }
         pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions, ids, stars));

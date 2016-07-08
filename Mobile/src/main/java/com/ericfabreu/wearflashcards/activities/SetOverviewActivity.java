@@ -87,7 +87,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         final MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
         final MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
-        termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
+        termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION, false));
 
         // Hide set study button and the starred only bar if there are no cards to display
         final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
@@ -125,7 +125,7 @@ public class SetOverviewActivity extends AppCompatActivity {
             }
             case R.id.item_definition_first: {
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(Constants.PREF_KEY_DEFINITION_FIRST, !item.isChecked());
+                editor.putBoolean(Constants.PREF_KEY_DEFINITION, !item.isChecked());
                 editor.apply();
                 return true;
             }

@@ -5,7 +5,7 @@ package com.ericfabreu.wearflashcards.utils;
  */
 public class Constants {
     public final static String PREF_KEY_SHUFFLE = "shuffle";
-    public final static String PREF_KEY_DEFINITION_FIRST = "definitionFirst";
+    public final static String PREF_KEY_DEFINITION = "definitionFirst";
     public final static String PREF_KEY_SET_ORDER = "setOrder";
     public final static String PREF_KEY_CARD_ORDER = "cardOrder";
     public final static String PREF_KEY_CREATE_STARRED = "createCardStarred";

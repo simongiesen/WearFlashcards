@@ -9,11 +9,18 @@
 
     <!-- Image descriptions -->
     <string name="description_list_item">Flashcard set name</string>
+    <string name="description_list_item_settings">Settings item</string>
     <string name="description_star">Star</string>
 
     <!-- Preferences -->
-    <string name="preference_shuffle">Shuffle</string>
-    <string name="preference_definition_first">Definitions first</string>
-    <string name="preference_on">On</string>
-    <string name="preference_off">Off</string>
+    <string name="pref_title_shuffle">Shuffle</string>
+    <string name="pref_title_definition_first">Definitions first</string>
+    <string name="pref_title_starred_only">Starred only</string>
+    <string name="pref_description_on">On</string>
+    <string name="pref_description_off">Off</string>
+    <string-array name="pref_description_starred">
+        <item>Match phone setting</item>
+        <item>Off</item>
+        <item>On for all sets</item>
+    </string-array>
 </resources>

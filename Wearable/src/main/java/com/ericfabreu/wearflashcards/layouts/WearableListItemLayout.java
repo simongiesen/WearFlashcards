@@ -17,7 +17,8 @@ public class WearableListItemLayout extends LinearLayout
         implements WearableListView.OnCenterProximityListener {
     private final float mFadedAlpha, mOpaqueAlpha, mLargeScale, mRegularScale;
     private ImageView mCircle;
-    private TextView mName;
+    private TextView mName, mTitle, mDescription;
+    private boolean mSettings = false;
 
     public WearableListItemLayout(Context context) {
         this(context, null);
@@ -41,22 +42,41 @@ public class WearableListItemLayout extends LinearLayout
 
         // Get references to the icon and text in the item layout definition
         mCircle = (ImageView) findViewById(R.id.image_list_drawable);
-        mName = (TextView) findViewById(R.id.text_list_item);
+        if (mCircle == null) {
+            mSettings = true;
+            mCircle = (ImageView) findViewById(R.id.image_list_settings);
+            mTitle = (TextView) findViewById(R.id.text_list_title_settings);
+            mDescription = (TextView) findViewById(R.id.text_list_description_settings);
+        } else {
+            mName = (TextView) findViewById(R.id.text_list_item);
+        }
     }
 
     @Override
     public void onCenterPosition(boolean animate) {
-        mName.setAlpha(mOpaqueAlpha);
         mCircle.setAlpha(mOpaqueAlpha);
         mCircle.setScaleX(mLargeScale);
         mCircle.setScaleY(mLargeScale);
+
+        if (mSettings) {
+            mTitle.setAlpha(mOpaqueAlpha);
+            mDescription.setAlpha(mOpaqueAlpha);
+        } else {
+            mName.setAlpha(mOpaqueAlpha);
+        }
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        mName.setAlpha(mFadedAlpha);
         mCircle.setAlpha(mFadedAlpha);
         mCircle.setScaleX(mRegularScale);
         mCircle.setScaleY(mRegularScale);
+
+        if (mSettings) {
+            mTitle.setAlpha(mFadedAlpha);
+            mDescription.setAlpha(mFadedAlpha);
+        } else {
+            mName.setAlpha(mFadedAlpha);
+        }
     }
 }

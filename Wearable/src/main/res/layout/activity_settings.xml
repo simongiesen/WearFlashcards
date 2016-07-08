@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_settings"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_default"
-    tools:context="com.ericfabreu.wearflashcards.activities.MainActivity"
-    tools:deviceIds="wear">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.wearable.view.WearableListView
+        android:id="@+id/layout_list_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:orientation="vertical">
+        android:layout_alignTop="@+id/layout_frame_settings"
+        android:background="@color/background_default"
+        android:paddingEnd="0dp"
+        android:paddingStart="8dp"
+        android:scrollbars="none" />
+
+    <FrameLayout
+        android:id="@+id/layout_frame_settings"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/background_heading_default">
 
         <TextView
             android:id="@+id/text_settings_heading"
@@ -26,107 +31,5 @@
             android:text="@string/title_activity_settings"
             android:textColor="@color/white"
             android:textSize="@dimen/headings_text_size" />
-
-        <RelativeLayout
-            android:id="@+id/layout_shuffle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:clickable="true"
-            android:onClick="flipStatus">
-
-            <ImageView
-                android:id="@+id/image_shuffle"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:contentDescription="@string/preference_shuffle"
-                android:src="@drawable/ic_settings_shuffle" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_toEndOf="@+id/image_shuffle"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_shuffle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif-condensed-light"
-                    android:gravity="center_vertical|start"
-                    android:text="@string/preference_shuffle"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/text_shuffle_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-condensed-light"
-                    android:gravity="center_vertical|start"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="flipStatus">
-
-            <ImageView
-                android:id="@+id/image_definition_first"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:contentDescription="@string/preference_definition_first"
-                android:src="@drawable/ic_settings_switch_terms" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_toEndOf="@+id/image_definition_first"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_definition_first"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif-condensed-light"
-                    android:gravity="center_vertical|start"
-                    android:text="@string/preference_definition_first"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/text_definition_first_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-condensed-light"
-                    android:gravity="center_vertical|start"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
+    </FrameLayout>
 </android.support.wearable.view.BoxInsetLayout>

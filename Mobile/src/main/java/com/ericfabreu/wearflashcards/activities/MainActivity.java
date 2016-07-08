@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Restore settings
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
-        termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION_FIRST, false));
+        termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION, false));
 
         // Set study button is unnecessary in MainActivity
         menu.removeItem(R.id.item_study_set);
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.item_definition_first) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(Constants.PREF_KEY_DEFINITION_FIRST, !item.isChecked());
+            editor.putBoolean(Constants.PREF_KEY_DEFINITION, !item.isChecked());
             editor.apply();
             return true;
         } else if (id == R.id.item_settings) {
