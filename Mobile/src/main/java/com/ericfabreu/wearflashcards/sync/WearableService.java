@@ -3,7 +3,6 @@ package com.ericfabreu.wearflashcards.sync;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
@@ -82,13 +81,27 @@ public class WearableService extends WearableListenerService {
      * Sends all the cards in a set to the wearable device.
      */
     private void sendSet(String title, String starredOption) {
-        Log.d("star", starredOption);
         // Get terms and definitions from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         final String tableName = handle.getTableName(title);
         final long tableId = handle.getTableId(title);
-        final boolean starredOnly = handle.getFlag(SetList.CONTENT_URI,
-                tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly;
+
+        // Respect the wearable's starred only setting
+        switch (starredOption) {
+            case "0": {
+                starredOnly = handle.getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                break;
+            }
+            case "1": {
+                starredOnly = false;
+                break;
+            }
+            default: {
+                starredOnly = true;
+                break;
+            }
+        }
         Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
 
         // Put terms and definitions into string arrays

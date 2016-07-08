@@ -6,6 +6,7 @@
     <!-- Messages -->
     <string name="message_empty">Open the app on your phone to create flashcards</string>
     <string name="message_offline">Cannot sync flashcards offline</string>
+    <string name="message_all_cards_hidden">All cards are hidden</string>
 
     <!-- Image descriptions -->
     <string name="description_list_item">Flashcard set name</string>

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.wearable.view.GridViewPager;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.SetViewAdapter;
@@ -100,7 +101,12 @@ public class SetViewActivity extends Activity implements
                 definitions = dataMap.getStringArrayList(Constants.DEFINITIONS);
                 stars = dataMap.getIntegerArrayList(Constants.STAR);
                 if (terms != null && definitions != null && stars != null && ids != null) {
-                    createCards();
+                    if (terms.size() == 0) {
+                        final TextView empty = (TextView) findViewById(R.id.text_empty_status);
+                        empty.setText(R.string.message_all_cards_hidden);
+                    } else {
+                        createCards();
+                    }
                 }
             }
         }
