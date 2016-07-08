@@ -3,6 +3,7 @@ package com.ericfabreu.wearflashcards.sync;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
@@ -10,8 +11,11 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
@@ -24,15 +28,25 @@ import java.util.Date;
  */
 public class WearableService extends WearableListenerService {
     @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        super.onMessageReceived(messageEvent);
-        String message = new String(messageEvent.getData());
-
-        // Determine if the wearable is asking for the set list or for the list of cards in a set
-        if (message.equals(Constants.SET_LIST)) {
-            sendSetList();
-        } else {
-            sendSet(message);
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        for (DataEvent event : dataEvents) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
+                DataItem item = event.getDataItem();
+                DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                final String main = dataMap.getString(Constants.MAIN);
+                // The wearable is asking for the list of sets
+                if (main != null && main.equals(Constants.SET_LIST)) {
+                    sendSetList();
+                }
+                // The wearable needs cards from a specific set
+                else {
+                    final String title = dataMap.getString(Constants.TITLE);
+                    final String starredOption = dataMap.getString(Constants.STARRED_OPTION);
+                    if (title != null && starredOption != null) {
+                        sendSet(title, starredOption);
+                    }
+                }
+            }
         }
     }
 
@@ -67,7 +81,8 @@ public class WearableService extends WearableListenerService {
     /**
      * Sends all the cards in a set to the wearable device.
      */
-    private void sendSet(String title) {
+    private void sendSet(String title, String starredOption) {
+        Log.d("star", starredOption);
         // Get terms and definitions from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
         final String tableName = handle.getTableName(title);

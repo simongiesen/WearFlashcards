@@ -29,7 +29,8 @@ public final class ListViewAdapter extends WearableListView.Adapter {
         mSettings = false;
     }
 
-    public ListViewAdapter(Context context, int layout, String[] dataSet, String[] options, Drawable[] icons) {
+    public ListViewAdapter(Context context, int layout, String[] dataSet,
+                           String[] options, Drawable[] icons) {
         mInflater = LayoutInflater.from(context);
         mLayout = layout;
         mDataSet = dataSet;

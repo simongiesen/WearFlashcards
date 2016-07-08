@@ -1,10 +1,10 @@
 package com.ericfabreu.wearflashcards.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.wearable.view.WearableListView;
 import android.widget.TextView;
@@ -23,7 +23,7 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        settings = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         final String[] titles = getTitles();
         final String[] options = getOptions();

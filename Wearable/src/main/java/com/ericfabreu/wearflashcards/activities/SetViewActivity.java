@@ -1,10 +1,10 @@
 package com.ericfabreu.wearflashcards.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.wearable.view.GridViewPager;
 import android.view.View;
@@ -13,6 +13,7 @@ import android.view.WindowInsets;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.SetViewAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
@@ -21,11 +22,11 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class SetViewActivity extends Activity implements
@@ -34,10 +35,10 @@ public class SetViewActivity extends Activity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private String title = null;
+    private String title, starValue;
     private ArrayList<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
-    private long[] ids = null;
-    private ArrayList<Integer> stars = null;
+    private long[] ids;
+    private ArrayList<Integer> stars = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class SetViewActivity extends Activity implements
         setContentView(R.layout.status_empty_database);
         Bundle bundle = getIntent().getExtras();
         title = bundle.getString(Constants.TITLE);
+        starValue = PreferencesHelper.getStarredOption(getApplicationContext());
 
         // Listen for data item events
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -68,7 +70,7 @@ public class SetViewActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        sendMessage(title);
+        sendMessage(title, starValue);
     }
 
     @Override
@@ -93,11 +95,11 @@ public class SetViewActivity extends Activity implements
                 // Create the cards upon receiving data from the mobile device
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                ids = dataMap.getLongArray(Constants.ID);
                 terms = dataMap.getStringArrayList(Constants.TERMS);
                 definitions = dataMap.getStringArrayList(Constants.DEFINITIONS);
                 stars = dataMap.getIntegerArrayList(Constants.STAR);
-                ids = dataMap.getLongArray(Constants.ID);
-                if (!terms.isEmpty() && !definitions.isEmpty()) {
+                if (terms != null && definitions != null && stars != null && ids != null) {
                     createCards();
                 }
             }
@@ -105,23 +107,15 @@ public class SetViewActivity extends Activity implements
     }
 
     /**
-     * Sends a message to the mobile device with the selected set title.
-     * https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
+     * Sends a data request to the mobile device asking for the cards in a given set.
      */
-    private void sendMessage(final String message) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NodeApi.GetConnectedNodesResult nodes =
-                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-                for (Node node : nodes.getNodes()) {
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient,
-                            node.getId(),
-                            Constants.PATH,
-                            message.getBytes()).await();
-                }
-            }
-        }).start();
+    private void sendMessage(final String tableName, final String starredOption) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
+        final DataMap dataMap = putDataMapReq.getDataMap();
+        dataMap.putString(Constants.TITLE, tableName);
+        dataMap.putString(Constants.STARRED_OPTION, starredOption);
+        dataMap.putLong(Constants.TIME, new Date().getTime());
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
     }
 
     /**
@@ -148,7 +142,7 @@ public class SetViewActivity extends Activity implements
 
         // Apply settings and open cards
         SharedPreferences settings =
-                getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (settings.getBoolean(Constants.PREF_KEY_DEFINITION, false)) {
             ArrayList<String> temp = terms;
             terms = definitions;

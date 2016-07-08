@@ -19,9 +19,10 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.Date;
 
 public class MainActivity extends Activity implements
         DataApi.DataListener,
@@ -79,7 +80,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        sendMessage(Constants.SET_LIST);
+        sendMessage();
     }
 
     @Override
@@ -105,7 +106,7 @@ public class MainActivity extends Activity implements
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 setList = dataMap.getStringArray(Constants.SET_LIST);
-                if (setList.length > 0) {
+                if (setList != null && setList.length > 0) {
                     createList();
                 }
             }
@@ -113,23 +114,14 @@ public class MainActivity extends Activity implements
     }
 
     /**
-     * Sends a message to the mobile device with the selected set title.
-     * https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
+     * Sends a data request to the mobile device asking for the list of sets.
      */
-    private void sendMessage(final String message) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NodeApi.GetConnectedNodesResult nodes =
-                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-                for (Node node : nodes.getNodes()) {
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient,
-                            node.getId(),
-                            Constants.PATH,
-                            message.getBytes()).await();
-                }
-            }
-        }).start();
+    private void sendMessage() {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
+        final DataMap dataMap = putDataMapReq.getDataMap();
+        dataMap.putString(Constants.MAIN, Constants.SET_LIST);
+        dataMap.putLong(Constants.TIME, new Date().getTime());
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
     }
 
     /**
