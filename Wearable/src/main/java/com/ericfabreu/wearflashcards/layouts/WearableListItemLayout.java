@@ -15,7 +15,7 @@ import com.ericfabreu.wearflashcards.R;
  */
 public class WearableListItemLayout extends LinearLayout
         implements WearableListView.OnCenterProximityListener {
-    private final float mFadedAlpha, mOpaqueAlpha, mLargeScale, mRegularScale;
+    private float mFadedAlpha, mOpaqueAlpha, mLargeScale, mRegularScale;
     private ImageView mCircle;
     private TextView mName, mTitle, mDescription;
     private boolean mSettings = false;
@@ -47,6 +47,8 @@ public class WearableListItemLayout extends LinearLayout
             mCircle = (ImageView) findViewById(R.id.image_list_settings);
             mTitle = (TextView) findViewById(R.id.text_list_title_settings);
             mDescription = (TextView) findViewById(R.id.text_list_description_settings);
+            mRegularScale = 3 / 4f;
+            mLargeScale = 5 / 4f;
         } else {
             mName = (TextView) findViewById(R.id.text_list_item);
         }
