@@ -19,8 +19,8 @@
     <string name="pref_description_on">On</string>
     <string name="pref_description_off">Off</string>
     <string-array name="pref_description_starred">
-        <item>Match phone setting</item>
+        <item>Match phone</item>
         <item>Off</item>
-        <item>On for all sets</item>
+        <item>Always on</item>
     </string-array>
 </resources>

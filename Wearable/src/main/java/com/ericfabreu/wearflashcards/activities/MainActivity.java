@@ -51,10 +51,8 @@ public class MainActivity extends Activity implements
     protected void createList() {
         // Get the list component from the layout of the activity and assign an adapter to it
         setContentView(R.layout.activity_main);
-        WearableListView listView =
-                (WearableListView) findViewById(R.id.layout_list);
+        WearableListView listView = (WearableListView) findViewById(R.id.layout_list);
         listView.setAdapter(new ListViewAdapter(this, R.layout.item_set_list, setList));
-
         listView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder view) {
