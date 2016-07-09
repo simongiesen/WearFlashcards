@@ -10,6 +10,7 @@ public class Constants {
     public final static String DEFINITIONS = "/definitions";
     public final static String PATH = "/WearFlashcards";
     public final static String ID = "_ID";
+    public final static String CARD_ID = "card_id";
     public final static String TITLE = "title";
     public final static String TERM = "term";
     public final static String DEFINITION = "definition";

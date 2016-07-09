@@ -3,7 +3,6 @@ package com.ericfabreu.wearflashcards.fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +11,33 @@ import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.Wearable;
 import com.thinkincode.utils.views.AutoResizeTextView;
+
+import java.util.Date;
 
 /**
  * Fragment used to display cards.
  */
 public class CardViewFragment extends Fragment {
+    private GoogleApiClient mGoogleApiClient;
+
+    /**
+     * Allows SetViewAdapter to send its Google API Client to the fragment.
+     */
+    public void setGoogleApiClient(GoogleApiClient googleApiClient) {
+        mGoogleApiClient = googleApiClient;
+    }
+
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Get term and definition
         final Bundle bundle = getArguments();
+        final String title = bundle.getString(Constants.TITLE);
         final String term = bundle.getString(Constants.TERM);
         final String definition = bundle.getString(Constants.DEFINITION);
         final long id = bundle.getLong(Constants.ID);
@@ -72,10 +87,19 @@ public class CardViewFragment extends Fragment {
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
                         .getApplicationContext(), starDrawable));
                 bundle.putBoolean(Constants.STAR, star);
-                Log.d("id", String.valueOf(id));
+                flipStar(title, id);
                 onCreateView(inflater, container, savedInstanceState);
             }
         });
         return card;
+    }
+
+    private void flipStar(final String title, final long id) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
+        final DataMap dataMap = putDataMapReq.getDataMap();
+        dataMap.putString(Constants.TITLE, title);
+        dataMap.putLong(Constants.CARD_ID, id);
+        dataMap.putLong(Constants.TIME, new Date().getTime());
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
     }
 }

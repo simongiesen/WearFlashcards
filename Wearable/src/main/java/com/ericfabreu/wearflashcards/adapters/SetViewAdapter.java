@@ -23,6 +23,7 @@ import android.support.wearable.view.FragmentGridPagerAdapter;
 
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,28 +33,34 @@ import java.util.List;
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
     private List<Fragment> cards = new ArrayList<>();
+    private GoogleApiClient mGoogleApiClient;
 
-    public SetViewAdapter(FragmentManager fm, ArrayList<String> terms,
-                          ArrayList<String> definitions, long[] ids, ArrayList<Integer> stars) {
-        super(fm);
+    public SetViewAdapter(FragmentManager fragmentManager, GoogleApiClient googleApiClient,
+                          String title, ArrayList<String> terms, ArrayList<String> definitions,
+                          long[] ids, ArrayList<Integer> stars) {
+        super(fragmentManager);
+        mGoogleApiClient = googleApiClient;
 
         // Create all cards
         for (int i = 0, n = terms.size(); i < n; i++) {
-            cards.add(newCard(terms.get(i), definitions.get(i), ids[i], stars.get(i) == 1));
+            cards.add(newCard(title, terms.get(i), definitions.get(i), ids[i], stars.get(i) == 1));
         }
     }
 
     /**
      * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private CardViewFragment newCard(String term, String definition, long id, boolean star) {
+    private CardViewFragment newCard(String title, String term, String definition,
+                                     long id, boolean star) {
         Bundle bundle = new Bundle();
+        bundle.putString(Constants.TITLE, title);
         bundle.putString(Constants.TERM, term);
         bundle.putString(Constants.DEFINITION, definition);
         bundle.putLong(Constants.ID, id);
         bundle.putBoolean(Constants.STAR, star);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
+        card.setGoogleApiClient(mGoogleApiClient);
         return card;
     }
 

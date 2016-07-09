@@ -157,7 +157,8 @@ public class SetViewActivity extends Activity implements
         if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
             shuffleCards();
         }
-        pager.setAdapter(new SetViewAdapter(getFragmentManager(), terms, definitions, ids, stars));
+        pager.setAdapter(new SetViewAdapter(getFragmentManager(), mGoogleApiClient, title,
+                terms, definitions, ids, stars));
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.ericfabreu.wearflashcards.sync;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -43,6 +44,16 @@ public class WearableService extends WearableListenerService {
                     final String starredOption = dataMap.getString(Constants.STARRED_OPTION);
                     if (title != null && starredOption != null) {
                         sendSet(title, starredOption);
+                    } else {
+                        final long cardId = dataMap.getLong(Constants.CARD_ID);
+                        // The wearable needs to flip a card's star value
+                        if (title != null && cardId > 0) {
+                            FlashcardProvider handle = new
+                                    FlashcardProvider(getApplicationContext());
+                            final String tableName = handle.getTableName(title);
+                            final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
+                            handle.flipFlag(uri, cardId, CardSet.STAR);
+                        }
                     }
                 }
             }

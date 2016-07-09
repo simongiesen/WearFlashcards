@@ -29,7 +29,7 @@ public class MainActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private GoogleApiClient mGoogleApiClient;
-    private String[] setList = null;
+    private String[] setList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        sendMessage();
+        getSets();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements
     /**
      * Sends a data request to the mobile device asking for the list of sets.
      */
-    private void sendMessage() {
+    private void getSets() {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
         dataMap.putString(Constants.MAIN, Constants.SET_LIST);
