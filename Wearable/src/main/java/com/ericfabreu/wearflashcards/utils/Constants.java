@@ -16,6 +16,7 @@ public class Constants {
     public final static String DEFINITION = "definition";
     public final static String STAR = "star";
     public final static String STARRED_OPTION = "starred_option";
+    public final static String STARRED_ONLY = "starred_only";
     public final static String TIME = "time";
     public final static String PREF_KEY_SHUFFLE = "shuffle";
     public final static String PREF_KEY_DEFINITION = "definitionFirst";

@@ -82,7 +82,6 @@ public class CardViewFragment extends Fragment {
         definitionView.setOnClickListener(cardListener);
         frame.setOnClickListener(cardListener);
 
-        // Add click listener on the star
         starView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +89,7 @@ public class CardViewFragment extends Fragment {
                 final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
                 handle.flipFlag(uri, id, CardSet.STAR);
 
-                // Reload StudySetActivity if a star is removed when starred only mode is on
+                // Delete card if star is removed and starred only mode is on
                 if (tableName != null) {
                     final long tableId = Long.valueOf(tableName
                             .substring(1, tableName.length() - 1));

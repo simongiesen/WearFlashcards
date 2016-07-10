@@ -20,7 +20,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.wearable.view.FragmentGridPagerAdapter;
+import android.support.wearable.view.GridViewPager;
+import android.widget.TextView;
 
+import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.activities.SetViewActivity;
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,18 +36,24 @@ import java.util.List;
  * Generates CardViews for SetViewActivity.
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
-    private List<Fragment> cards = new ArrayList<>();
+    private List<CardViewFragment> cards = new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
+    private SetViewActivity mActivity;
+    private GridViewPager mPager;
 
-    public SetViewAdapter(FragmentManager fragmentManager, GoogleApiClient googleApiClient,
+    public SetViewAdapter(FragmentManager fragmentManager, SetViewActivity activity,
+                          GridViewPager pager, GoogleApiClient googleApiClient, boolean starredOnly,
                           String title, ArrayList<String> terms, ArrayList<String> definitions,
                           long[] ids, ArrayList<Integer> stars) {
         super(fragmentManager);
         mGoogleApiClient = googleApiClient;
+        mActivity = activity;
+        mPager = pager;
 
         // Create all cards
         for (int i = 0, n = terms.size(); i < n; i++) {
-            cards.add(newCard(title, terms.get(i), definitions.get(i), ids[i], stars.get(i) == 1));
+            cards.add(newCard(title, terms.get(i), definitions.get(i),
+                    ids[i], i, starredOnly, stars.get(i) == 1));
         }
     }
 
@@ -51,16 +61,19 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
      * Sends term and definition to CardViewFragment and creates a new card.
      */
     private CardViewFragment newCard(String title, String term, String definition,
-                                     long id, boolean star) {
+                                     long id, int position, boolean starredOnly, boolean star) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TITLE, title);
         bundle.putString(Constants.TERM, term);
         bundle.putString(Constants.DEFINITION, definition);
         bundle.putLong(Constants.ID, id);
+        bundle.putBoolean(Constants.STARRED_ONLY, starredOnly);
         bundle.putBoolean(Constants.STAR, star);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         card.setGoogleApiClient(mGoogleApiClient);
+        card.setPosition(position);
+        card.setAdapter(this);
         return card;
     }
 
@@ -77,5 +90,24 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
     @Override
     public int getColumnCount(int rowNum) {
         return Constants.COLUMN_COUNT;
+    }
+
+    public void deleteItem(int position) {
+        // Display the all cards hidden message if this is the last card
+        if (cards.size() <= 1) {
+            mPager.removeAllViews();
+            mPager.setAdapter(null);
+            mActivity.setContentView(R.layout.status_empty_database);
+            final TextView empty = (TextView) mActivity.findViewById(R.id.text_empty_status);
+            empty.setText(R.string.message_all_cards_hidden);
+        }
+
+        cards.remove(position);
+        notifyDataSetChanged();
+
+        // Update the position in the cards after the one being removed
+        for (int i = position; i < cards.size(); i++) {
+            cards.get(i).setPosition(i);
+        }
     }
 }

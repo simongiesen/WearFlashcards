@@ -37,9 +37,10 @@ public class SetViewActivity extends Activity implements
 
     private GoogleApiClient mGoogleApiClient;
     private String title, starValue;
-    private ArrayList<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
+    private boolean starredOnly;
+    private ArrayList<String> terms, definitions;
     private long[] ids;
-    private ArrayList<Integer> stars = new ArrayList<>();
+    private ArrayList<Integer> stars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class SetViewActivity extends Activity implements
                 terms = dataMap.getStringArrayList(Constants.TERMS);
                 definitions = dataMap.getStringArrayList(Constants.DEFINITIONS);
                 stars = dataMap.getIntegerArrayList(Constants.STAR);
+                starredOnly = dataMap.getBoolean(Constants.STARRED_ONLY);
                 if (terms != null && definitions != null && stars != null && ids != null) {
                     if (terms.size() == 0) {
                         final TextView empty = (TextView) findViewById(R.id.text_empty_status);
@@ -157,8 +159,8 @@ public class SetViewActivity extends Activity implements
         if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
             shuffleCards();
         }
-        pager.setAdapter(new SetViewAdapter(getFragmentManager(), mGoogleApiClient, title,
-                terms, definitions, ids, stars));
+        pager.setAdapter(new SetViewAdapter(getFragmentManager(), this, pager, mGoogleApiClient,
+                starredOnly, title, terms, definitions, ids, stars));
     }
 
     /**

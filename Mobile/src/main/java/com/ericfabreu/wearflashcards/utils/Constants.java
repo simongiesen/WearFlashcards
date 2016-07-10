@@ -20,6 +20,7 @@ public class Constants {
     public final static String TITLE = "title";
     public final static String STAR = "star";
     public final static String STARRED_OPTION = "starred_option";
+    public final static String STARRED_ONLY = "starred_only";
     public final static String ID = "_ID";
     public final static String CARD_ID = "card_id";
     public final static String FRAG_TAG_CARD_LIST = "cardListFragment";

@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.adapters.SetViewAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataMap;
@@ -24,12 +25,19 @@ import java.util.Date;
  */
 public class CardViewFragment extends Fragment {
     private GoogleApiClient mGoogleApiClient;
+    private int mPosition;
+    private SetViewAdapter mAdapter;
 
-    /**
-     * Allows SetViewAdapter to send its Google API Client to the fragment.
-     */
     public void setGoogleApiClient(GoogleApiClient googleApiClient) {
         mGoogleApiClient = googleApiClient;
+    }
+
+    public void setPosition(int position) {
+        mPosition = position;
+    }
+
+    public void setAdapter(SetViewAdapter adapter) {
+        mAdapter = adapter;
     }
 
     @Override
@@ -42,6 +50,7 @@ public class CardViewFragment extends Fragment {
         final String definition = bundle.getString(Constants.DEFINITION);
         final long id = bundle.getLong(Constants.ID);
         final boolean star = bundle.getBoolean(Constants.STAR);
+        final boolean starredOnly = bundle.getBoolean(Constants.STARRED_ONLY);
 
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
@@ -88,12 +97,19 @@ public class CardViewFragment extends Fragment {
                         .getApplicationContext(), starDrawable));
                 bundle.putBoolean(Constants.STAR, star);
                 flipStar(title, id);
-                onCreateView(inflater, container, savedInstanceState);
+
+                // Delete card if star is removed and starred only mode is on
+                if (!star && starredOnly) {
+                    mAdapter.deleteItem(mPosition);
+                }
             }
         });
         return card;
     }
 
+    /**
+     * Sends a data request to the phone in order to flip the star value in the database.
+     */
     private void flipStar(final String title, final long id) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();

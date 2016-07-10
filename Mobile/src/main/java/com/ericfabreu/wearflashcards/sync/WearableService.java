@@ -141,6 +141,7 @@ public class WearableService extends WearableListenerService {
         map.putStringArrayList(Constants.TERMS, terms);
         map.putStringArrayList(Constants.DEFINITIONS, definitions);
         map.putIntegerArrayList(Constants.STAR, stars);
+        map.putBoolean(Constants.STARRED_ONLY, starredOnly);
         map.putLong(Constants.TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
     }
