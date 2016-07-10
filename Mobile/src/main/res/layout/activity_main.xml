@@ -18,8 +18,9 @@
             android:id="@+id/tab_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabGravity="fill"
             app:tabIndicatorColor="@color/tab_indicator"
-            app:tabMode="fixed" />
+            app:tabMaxWidth="0dp" />
     </android.support.design.widget.AppBarLayout>
 
     <com.ericfabreu.wearflashcards.views.MainViewPager
