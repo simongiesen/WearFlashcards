@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Get menu items
-        MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
-        MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
+        MenuItem shuffle = menu.getItem(Constants.MENU_POS_SHUFFLE);
+        MenuItem termFirst = menu.getItem(Constants.MENU_POS_DEFINITION);
 
         // Restore settings
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));

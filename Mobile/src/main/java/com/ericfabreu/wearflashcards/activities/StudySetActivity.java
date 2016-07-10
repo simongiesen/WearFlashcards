@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 public class StudySetActivity extends AppCompatActivity {
+    private final int MENU_POS_STAR = 1;
     private String tableName, title;
     private long tableId;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
@@ -41,9 +42,9 @@ public class StudySetActivity extends AppCompatActivity {
 
         // Get set information from SetOverviewActivity
         Bundle bundle = getIntent().getExtras();
-        tableName = bundle.getString(Constants.TABLE_NAME);
-        tableId = bundle.getLong(Constants.ID);
-        title = bundle.getString(Constants.TITLE);
+        tableName = bundle.getString(Constants.TAG_TABLE_NAME);
+        tableId = bundle.getLong(Constants.TAG_ID);
+        title = bundle.getString(Constants.TAG_TITLE);
         setTitle(title);
 
         createCards();
@@ -60,7 +61,7 @@ public class StudySetActivity extends AppCompatActivity {
         final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
                 tableId, SetList.STARRED_ONLY);
         if (starredOnly) {
-            MenuItem star = menu.getItem(Constants.POS_STUDY_STAR);
+            MenuItem star = menu.getItem(MENU_POS_STAR);
             star.setIcon(R.drawable.ic_star_selected);
         }
         return true;

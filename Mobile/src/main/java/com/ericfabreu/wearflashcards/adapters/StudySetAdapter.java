@@ -63,11 +63,11 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
     private CardViewFragment newCard(String term, String definition, boolean star,
                                      long id, int position) {
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TABLE_NAME, mTableName);
-        bundle.putString(Constants.TERM, term);
-        bundle.putString(Constants.DEFINITION, definition);
-        bundle.putBoolean(Constants.STAR, star);
-        bundle.putLong(Constants.ID, id);
+        bundle.putString(Constants.TAG_TABLE_NAME, mTableName);
+        bundle.putString(Constants.TAG_TERM, term);
+        bundle.putString(Constants.TAG_DEFINITION, definition);
+        bundle.putBoolean(Constants.TAG_STAR, star);
+        bundle.putLong(Constants.TAG_ID, id);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         card.setPosition(position);
@@ -90,9 +90,9 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
         if (cards.size() <= 1) {
             Intent intent = new Intent(mContext, SetOverviewActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(Constants.TABLE_NAME, mTableName);
-            intent.putExtra(Constants.TITLE, mTitle);
-            intent.putExtra(Constants.ID, mTableId);
+            intent.putExtra(Constants.TAG_TABLE_NAME, mTableName);
+            intent.putExtra(Constants.TAG_TITLE, mTitle);
+            intent.putExtra(Constants.TAG_ID, mTableId);
             mContext.startActivity(intent);
         }
         mPager.setAdapter(null);

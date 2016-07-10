@@ -48,8 +48,8 @@ public class CardListFragment extends ListFragment
     public void onCreate(Bundle savedInstanceState) {
         // Get table name from SetOverviewActivity
         Bundle bundle = getArguments();
-        tableName = bundle.getString(Constants.TABLE_NAME);
-        tableId = bundle.getLong(Constants.ID);
+        tableName = bundle.getString(Constants.TAG_TABLE_NAME);
+        tableId = bundle.getLong(Constants.TAG_ID);
         mProvider = new FlashcardProvider(getActivity().getApplicationContext());
         super.onCreate(savedInstanceState);
     }
@@ -216,10 +216,10 @@ public class CardListFragment extends ListFragment
             String term = cursor.getString(cursor.getColumnIndex(CardSet.TERM));
             String definition = cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION));
             Intent intent = new Intent(getActivity(), EditCardActivity.class);
-            intent.putExtra(Constants.TERM, term);
-            intent.putExtra(Constants.DEFINITION, definition);
-            intent.putExtra(Constants.TABLE_NAME, tableName);
-            intent.putExtra(Constants.TITLE, getActivity().getTitle());
+            intent.putExtra(Constants.TAG_TERM, term);
+            intent.putExtra(Constants.TAG_DEFINITION, definition);
+            intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+            intent.putExtra(Constants.TAG_TITLE, getActivity().getTitle());
             startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
             cursor.close();
         }

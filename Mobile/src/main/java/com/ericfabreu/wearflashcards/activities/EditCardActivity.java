@@ -25,9 +25,9 @@ public class EditCardActivity extends AppCompatActivity {
 
         // Get term and definition from SetOverviewActivity
         Bundle bundle = getIntent().getExtras();
-        term = bundle.getString(Constants.TERM);
-        definition = bundle.getString(Constants.DEFINITION);
-        tableName = bundle.getString(Constants.TABLE_NAME);
+        term = bundle.getString(Constants.TAG_TERM);
+        definition = bundle.getString(Constants.TAG_DEFINITION);
+        tableName = bundle.getString(Constants.TAG_TABLE_NAME);
 
         // Create view
         setContentView(R.layout.activity_edit_card);

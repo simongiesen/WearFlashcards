@@ -27,25 +27,30 @@ import java.util.Date;
  * Provides data to the wearable app.
  */
 public class WearableService extends WearableListenerService {
+    private static final String PATH = "/WearFlashcardsP", TAG_TIME = "time", TAG_MAIN = "main",
+            TAG_SET_LIST = "set_list", TAG_CARD_ID = "card_id", TAG_TERMS = "terms",
+            TAG_DEFINITIONS = "definitions", TAG_STARRED_ONLY = "starred_only",
+            TAG_STARRED_OPTION = "starred_option";
+
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                final String main = dataMap.getString(Constants.MAIN);
+                final String main = dataMap.getString(TAG_MAIN);
                 // The wearable is asking for the list of sets
-                if (main != null && main.equals(Constants.SET_LIST)) {
+                if (main != null && main.equals(TAG_SET_LIST)) {
                     sendSetList();
                 }
                 // The wearable needs cards from a specific set
                 else {
-                    final String title = dataMap.getString(Constants.TITLE);
-                    final String starredOption = dataMap.getString(Constants.STARRED_OPTION);
+                    final String title = dataMap.getString(Constants.TAG_TITLE);
+                    final String starredOption = dataMap.getString(TAG_STARRED_OPTION);
                     if (title != null && starredOption != null) {
                         sendSet(title, starredOption);
                     } else {
-                        final long cardId = dataMap.getLong(Constants.CARD_ID);
+                        final long cardId = dataMap.getLong(TAG_CARD_ID);
                         // The wearable needs to flip a card's star value
                         if (title != null && cardId > 0) {
                             FlashcardProvider handle = new
@@ -81,10 +86,10 @@ public class WearableService extends WearableListenerService {
 
         // Send data to the wearable
         GoogleApiClient mGoogleApiClient = wearConnect();
-        final PutDataMapRequest putRequest = PutDataMapRequest.create(Constants.SET_LIST);
+        final PutDataMapRequest putRequest = PutDataMapRequest.create(PATH);
         final DataMap map = putRequest.getDataMap();
-        map.putStringArray(Constants.SET_LIST, setList);
-        map.putLong(Constants.TIME, new Date().getTime());
+        map.putStringArray(TAG_SET_LIST, setList);
+        map.putLong(TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
     }
 
@@ -135,14 +140,14 @@ public class WearableService extends WearableListenerService {
 
         // Send data to the wearable
         GoogleApiClient mGoogleApiClient = wearConnect();
-        final PutDataMapRequest putRequest = PutDataMapRequest.create("/" + tableName);
+        final PutDataMapRequest putRequest = PutDataMapRequest.create(PATH);
         final DataMap map = putRequest.getDataMap();
-        map.putLongArray(Constants.ID, ids);
-        map.putStringArrayList(Constants.TERMS, terms);
-        map.putStringArrayList(Constants.DEFINITIONS, definitions);
-        map.putIntegerArrayList(Constants.STAR, stars);
-        map.putBoolean(Constants.STARRED_ONLY, starredOnly);
-        map.putLong(Constants.TIME, new Date().getTime());
+        map.putLongArray(Constants.TAG_ID, ids);
+        map.putStringArrayList(TAG_TERMS, terms);
+        map.putStringArrayList(TAG_DEFINITIONS, definitions);
+        map.putIntegerArrayList(Constants.TAG_STAR, stars);
+        map.putBoolean(TAG_STARRED_ONLY, starredOnly);
+        map.putLong(TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
     }
 

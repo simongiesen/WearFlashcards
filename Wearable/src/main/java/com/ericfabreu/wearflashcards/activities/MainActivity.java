@@ -28,6 +28,7 @@ public class MainActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+    private static final String TAG_MAIN = "main";
     private GoogleApiClient mGoogleApiClient;
     private String[] setList;
 
@@ -61,7 +62,7 @@ public class MainActivity extends Activity implements
                 ListViewAdapter.ItemViewHolder itemHolder = (ListViewAdapter.ItemViewHolder) view;
                 TextView tv = (TextView) itemHolder.getView();
                 Intent intent = new Intent(MainActivity.this, SetViewActivity.class);
-                intent.putExtra(Constants.TITLE, tv.getText().toString());
+                intent.putExtra(Constants.TAG_TITLE, tv.getText().toString());
                 startActivity(intent);
             }
 
@@ -105,7 +106,7 @@ public class MainActivity extends Activity implements
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                setList = dataMap.getStringArray(Constants.SET_LIST);
+                setList = dataMap.getStringArray(Constants.TAG_SET_LIST);
                 if (setList != null && setList.length > 0) {
                     createList();
                 }
@@ -117,10 +118,10 @@ public class MainActivity extends Activity implements
      * Sends a data request to the mobile device asking for the list of sets.
      */
     private void getSets() {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
-        dataMap.putString(Constants.MAIN, Constants.SET_LIST);
-        dataMap.putLong(Constants.TIME, new Date().getTime());
+        dataMap.putString(TAG_MAIN, Constants.TAG_SET_LIST);
+        dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
     }
 

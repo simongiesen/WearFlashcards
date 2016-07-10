@@ -481,8 +481,8 @@ public class FlashcardProvider extends ContentProvider {
     public void flipFlag(Uri uri, long id, String flagColumn) {
         // Get the current flag value
         Cursor cursor = query(uri,
-                new String[]{Constants.ID, flagColumn},
-                Constants.ID + "=?",
+                new String[]{"_ID", flagColumn},
+                "_ID=?",
                 new String[]{String.valueOf(id)},
                 null);
 
@@ -491,7 +491,7 @@ public class FlashcardProvider extends ContentProvider {
             final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(flagColumn)) - 1);
             ContentValues values = new ContentValues();
             values.put(flagColumn, flippedValue);
-            update(uri, values, Constants.ID + "=?", new String[]{String.valueOf(id)});
+            update(uri, values, "_ID=?", new String[]{String.valueOf(id)});
             cursor.close();
         }
     }
@@ -501,8 +501,8 @@ public class FlashcardProvider extends ContentProvider {
      */
     public boolean getFlag(Uri uri, long id, String flagColumn) {
         Cursor cursor = query(uri,
-                new String[]{Constants.ID, flagColumn},
-                Constants.ID + "=?",
+                new String[]{"_ID", flagColumn},
+                "_ID=?",
                 new String[]{String.valueOf(id)},
                 null);
         if (cursor != null && cursor.moveToFirst()) {

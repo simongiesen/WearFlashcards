@@ -24,6 +24,7 @@ import java.util.Date;
  * Fragment used to display cards.
  */
 public class CardViewFragment extends Fragment {
+    private final static String TAG_CARD_ID = "card_id";
     private GoogleApiClient mGoogleApiClient;
     private int mPosition;
     private SetViewAdapter mAdapter;
@@ -45,12 +46,12 @@ public class CardViewFragment extends Fragment {
                              final Bundle savedInstanceState) {
         // Get term and definition
         final Bundle bundle = getArguments();
-        final String title = bundle.getString(Constants.TITLE);
-        final String term = bundle.getString(Constants.TERM);
-        final String definition = bundle.getString(Constants.DEFINITION);
-        final long id = bundle.getLong(Constants.ID);
-        final boolean star = bundle.getBoolean(Constants.STAR);
-        final boolean starredOnly = bundle.getBoolean(Constants.STARRED_ONLY);
+        final String title = bundle.getString(Constants.TAG_TITLE);
+        final String term = bundle.getString(Constants.TAG_TERM);
+        final String definition = bundle.getString(Constants.TAG_DEFINITION);
+        final long id = bundle.getLong(Constants.TAG_ID);
+        final boolean star = bundle.getBoolean(Constants.TAG_STAR);
+        final boolean starredOnly = bundle.getBoolean(Constants.TAG_STARRED_ONLY);
 
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
@@ -90,12 +91,12 @@ public class CardViewFragment extends Fragment {
         starFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final boolean star = !bundle.getBoolean(Constants.STAR);
+                final boolean star = !bundle.getBoolean(Constants.TAG_STAR);
                 final int starDrawable = star ? R.drawable.ic_star_selected
                         : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
                         .getApplicationContext(), starDrawable));
-                bundle.putBoolean(Constants.STAR, star);
+                bundle.putBoolean(Constants.TAG_STAR, star);
                 flipStar(title, id);
 
                 // Delete card if star is removed and starred only mode is on
@@ -111,11 +112,11 @@ public class CardViewFragment extends Fragment {
      * Sends a data request to the phone in order to flip the star value in the database.
      */
     private void flipStar(final String title, final long id) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
-        dataMap.putString(Constants.TITLE, title);
-        dataMap.putLong(Constants.CARD_ID, id);
-        dataMap.putLong(Constants.TIME, new Date().getTime());
+        dataMap.putString(Constants.TAG_TITLE, title);
+        dataMap.putLong(TAG_CARD_ID, id);
+        dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
     }
 }

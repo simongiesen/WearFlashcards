@@ -41,9 +41,9 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Get table name from the caller activity and pass it to CardListFragment
         Bundle bundle = getIntent().getExtras();
-        tableName = bundle.getString(Constants.TABLE_NAME);
-        title = bundle.getString(Constants.TITLE);
-        tableId = bundle.getLong(Constants.ID);
+        tableName = bundle.getString(Constants.TAG_TABLE_NAME);
+        title = bundle.getString(Constants.TAG_TITLE);
+        tableId = bundle.getLong(Constants.TAG_ID);
 
         setTitle(title);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_set_overview);
@@ -51,8 +51,8 @@ public class SetOverviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SetOverviewActivity.this, NewCardActivity.class);
-                intent.putExtra(Constants.TABLE_NAME, tableName);
-                intent.putExtra(Constants.TITLE, title);
+                intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_TITLE, title);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             }
         });
@@ -84,8 +84,8 @@ public class SetOverviewActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Load settings
-        final MenuItem shuffle = menu.getItem(Constants.SHUFFLE_POS);
-        final MenuItem termFirst = menu.getItem(Constants.DEF_FIRST_POS);
+        final MenuItem shuffle = menu.getItem(Constants.MENU_POS_SHUFFLE);
+        final MenuItem termFirst = menu.getItem(Constants.MENU_POS_DEFINITION);
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION, false));
 
@@ -132,9 +132,9 @@ public class SetOverviewActivity extends AppCompatActivity {
             // Launch StudySetActivity
             case R.id.item_study_set: {
                 Intent intent = new Intent(this, StudySetActivity.class);
-                intent.putExtra(Constants.TITLE, title);
-                intent.putExtra(Constants.TABLE_NAME, tableName);
-                intent.putExtra(Constants.ID, tableId);
+                intent.putExtra(Constants.TAG_TITLE, title);
+                intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_ID, tableId);
                 startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
                 return true;
             }
@@ -166,9 +166,9 @@ public class SetOverviewActivity extends AppCompatActivity {
                 requestCode == Constants.REQUEST_CODE_STUDY ||
                 requestCode == Constants.REQUEST_CODE_CREATE) {
             Intent refresh = new Intent(this, getClass());
-            refresh.putExtra(Constants.TABLE_NAME, tableName);
-            refresh.putExtra(Constants.TITLE, title);
-            refresh.putExtra(Constants.ID, tableId);
+            refresh.putExtra(Constants.TAG_TABLE_NAME, tableName);
+            refresh.putExtra(Constants.TAG_TITLE, title);
+            refresh.putExtra(Constants.TAG_ID, tableId);
             startActivity(refresh);
             this.finish();
         }
@@ -178,6 +178,8 @@ public class SetOverviewActivity extends AppCompatActivity {
      * Refreshes the CardListFragment when the starred only setting changes.
      */
     public void startCardListFragment(View view) {
+        final String fragTagCardList = "cardListFragment";
+
         // Check if the flag needs to be flipped
         if (view != null) {
             mProvider.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
@@ -185,12 +187,12 @@ public class SetOverviewActivity extends AppCompatActivity {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TABLE_NAME, tableName);
-        bundle.putLong(Constants.ID, tableId);
+        bundle.putString(Constants.TAG_TABLE_NAME, tableName);
+        bundle.putLong(Constants.TAG_ID, tableId);
         CardListFragment cardListFragment = new CardListFragment();
         cardListFragment.setArguments(bundle);
         getFragmentManager().beginTransaction()
-                .replace(R.id.layout_set_overview, cardListFragment, Constants.FRAG_TAG_CARD_LIST)
+                .replace(R.id.layout_set_overview, cardListFragment, fragTagCardList)
                 .commit();
     }
 }

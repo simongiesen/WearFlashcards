@@ -36,6 +36,7 @@ import java.util.List;
  * Generates CardViews for SetViewActivity.
  */
 public class SetViewAdapter extends FragmentGridPagerAdapter {
+    private final static int COLUMN_COUNT = 1;
     private List<CardViewFragment> cards = new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
     private SetViewActivity mActivity;
@@ -63,12 +64,12 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
     private CardViewFragment newCard(String title, String term, String definition,
                                      long id, int position, boolean starredOnly, boolean star) {
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TITLE, title);
-        bundle.putString(Constants.TERM, term);
-        bundle.putString(Constants.DEFINITION, definition);
-        bundle.putLong(Constants.ID, id);
-        bundle.putBoolean(Constants.STARRED_ONLY, starredOnly);
-        bundle.putBoolean(Constants.STAR, star);
+        bundle.putString(Constants.TAG_TITLE, title);
+        bundle.putString(Constants.TAG_TERM, term);
+        bundle.putString(Constants.TAG_DEFINITION, definition);
+        bundle.putLong(Constants.TAG_ID, id);
+        bundle.putBoolean(Constants.TAG_STARRED_ONLY, starredOnly);
+        bundle.putBoolean(Constants.TAG_STAR, star);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         card.setGoogleApiClient(mGoogleApiClient);
@@ -89,7 +90,7 @@ public class SetViewAdapter extends FragmentGridPagerAdapter {
 
     @Override
     public int getColumnCount(int rowNum) {
-        return Constants.COLUMN_COUNT;
+        return COLUMN_COUNT;
     }
 
     public void deleteItem(int position) {

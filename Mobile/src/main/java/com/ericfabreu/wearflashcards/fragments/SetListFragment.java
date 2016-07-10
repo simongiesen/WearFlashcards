@@ -119,7 +119,7 @@ public class SetListFragment extends ListFragment
                             String title = cursor.getString(cursor
                                     .getColumnIndex(SetList.SET_TITLE));
                             Intent intent = new Intent(getActivity(), EditSetTitleActivity.class);
-                            intent.putExtra(Constants.TITLE, title);
+                            intent.putExtra(Constants.TAG_TITLE, title);
                             startActivity(intent);
                             cursor.close();
                         }
@@ -171,9 +171,9 @@ public class SetListFragment extends ListFragment
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
         String tableName = handle.getTableName(title);
         Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
-        intent.putExtra(Constants.TABLE_NAME, tableName);
-        intent.putExtra(Constants.TITLE, title);
-        intent.putExtra(Constants.ID, id);
+        intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+        intent.putExtra(Constants.TAG_TITLE, title);
+        intent.putExtra(Constants.TAG_ID, id);
         startActivity(intent);
     }
 

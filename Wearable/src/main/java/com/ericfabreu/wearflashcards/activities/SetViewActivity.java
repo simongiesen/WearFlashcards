@@ -34,7 +34,8 @@ public class SetViewActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
+    private final static String TAG_TERMS = "terms", TAG_DEFINITIONS = "definitions",
+            TAG_STARRED_OPTION = "starred_option";
     private GoogleApiClient mGoogleApiClient;
     private String title, starValue;
     private boolean starredOnly;
@@ -47,7 +48,7 @@ public class SetViewActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.status_empty_database);
         Bundle bundle = getIntent().getExtras();
-        title = bundle.getString(Constants.TITLE);
+        title = bundle.getString(Constants.TAG_TITLE);
         starValue = PreferencesHelper.getStarredOption(getApplicationContext());
 
         // Listen for data item events
@@ -97,11 +98,11 @@ public class SetViewActivity extends Activity implements
                 // Create the cards upon receiving data from the mobile device
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                ids = dataMap.getLongArray(Constants.ID);
-                terms = dataMap.getStringArrayList(Constants.TERMS);
-                definitions = dataMap.getStringArrayList(Constants.DEFINITIONS);
-                stars = dataMap.getIntegerArrayList(Constants.STAR);
-                starredOnly = dataMap.getBoolean(Constants.STARRED_ONLY);
+                ids = dataMap.getLongArray(Constants.TAG_ID);
+                terms = dataMap.getStringArrayList(TAG_TERMS);
+                definitions = dataMap.getStringArrayList(TAG_DEFINITIONS);
+                stars = dataMap.getIntegerArrayList(Constants.TAG_STAR);
+                starredOnly = dataMap.getBoolean(Constants.TAG_STARRED_ONLY);
                 if (terms != null && definitions != null && stars != null && ids != null) {
                     if (terms.size() == 0) {
                         final TextView empty = (TextView) findViewById(R.id.text_empty_status);
@@ -118,11 +119,11 @@ public class SetViewActivity extends Activity implements
      * Sends a data request to the mobile device asking for the cards in a given set.
      */
     private void sendMessage(final String tableName, final String starredOption) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.PATH);
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
-        dataMap.putString(Constants.TITLE, tableName);
-        dataMap.putString(Constants.STARRED_OPTION, starredOption);
-        dataMap.putLong(Constants.TIME, new Date().getTime());
+        dataMap.putString(Constants.TAG_TITLE, tableName);
+        dataMap.putString(TAG_STARRED_OPTION, starredOption);
+        dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
     }
 

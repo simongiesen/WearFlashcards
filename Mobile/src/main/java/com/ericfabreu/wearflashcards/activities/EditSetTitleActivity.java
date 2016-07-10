@@ -23,7 +23,7 @@ public class EditSetTitleActivity extends AppCompatActivity {
 
         // Get set title from MainActivity
         Bundle bundle = getIntent().getExtras();
-        title = bundle.getString(Constants.TITLE);
+        title = bundle.getString(Constants.TAG_TITLE);
 
         // Create view
         setContentView(R.layout.activity_edit_set_title);

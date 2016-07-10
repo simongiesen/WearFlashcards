@@ -72,7 +72,7 @@
 
                 <data
                     android:host="*"
-                    android:pathPrefix="/WearFlashcards"
+                    android:pathPrefix="/WearFlashcardsW"
                     android:scheme="wear" />
             </intent-filter>
         </service>

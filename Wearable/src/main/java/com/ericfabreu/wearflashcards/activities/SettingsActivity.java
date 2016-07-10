@@ -49,7 +49,7 @@ public class SettingsActivity extends Activity {
     /**
      * Changes the status of a given setting.
      */
-    private void flipSetting(TextView description, int position) {
+    private void flipSetting(TextView description, final int position) {
         SharedPreferences.Editor editor = settings.edit();
         switch (position) {
             // Flip the shuffle status

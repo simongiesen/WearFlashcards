@@ -42,11 +42,11 @@ public class CardViewFragment extends Fragment {
                              final Bundle savedInstanceState) {
         // Get term and definition
         final Bundle bundle = getArguments();
-        final String tableName = bundle.getString(Constants.TABLE_NAME);
-        final String term = bundle.getString(Constants.TERM);
-        final String definition = bundle.getString(Constants.DEFINITION);
-        final boolean star = bundle.getBoolean(Constants.STAR);
-        final long id = bundle.getLong(Constants.ID);
+        final String tableName = bundle.getString(Constants.TAG_TABLE_NAME);
+        final String term = bundle.getString(Constants.TAG_TERM);
+        final String definition = bundle.getString(Constants.TAG_DEFINITION);
+        final boolean star = bundle.getBoolean(Constants.TAG_STAR);
+        final long id = bundle.getLong(Constants.TAG_ID);
 
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
@@ -105,7 +105,7 @@ public class CardViewFragment extends Fragment {
                 final boolean flag = handle.getFlag(uri, id, CardSet.STAR);
                 final int star = flag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getContext(), star));
-                bundle.putBoolean(Constants.STAR, flag);
+                bundle.putBoolean(Constants.TAG_STAR, flag);
                 onCreateView(inflater, container, savedInstanceState);
             }
         });

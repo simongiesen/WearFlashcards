@@ -25,7 +25,7 @@ public class NewCardActivity extends AppCompatActivity {
 
         // Get table name and title from CardListFragment
         Bundle bundle = getIntent().getExtras();
-        tableName = bundle.getString(Constants.TABLE_NAME);
+        tableName = bundle.getString(Constants.TAG_TABLE_NAME);
         setContentView(R.layout.activity_new_card);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
