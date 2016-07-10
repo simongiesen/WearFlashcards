@@ -1,13 +1,13 @@
 package com.ericfabreu.wearflashcards.fragments;
 
-import android.app.ListFragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -26,6 +26,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
+import com.ericfabreu.wearflashcards.views.MainViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,12 @@ import java.util.List;
 public class SetListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter mAdapter;
+    private MainViewPager mViewPager;
     private List<Long> selections = new ArrayList<>();
+
+    public void setViewPager(MainViewPager viewPager) {
+        mViewPager = viewPager;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,6 +143,8 @@ public class SetListFragment extends ListFragment
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual, menu);
+                getActivity().findViewById(R.id.tab_main).setVisibility(View.GONE);
+                mViewPager.setScrollable(false);
                 return true;
             }
 
@@ -144,6 +152,8 @@ public class SetListFragment extends ListFragment
             public void onDestroyActionMode(ActionMode mode) {
                 // Reset selections when action mode is dismissed
                 selections = new ArrayList<>();
+                getActivity().findViewById(R.id.tab_main).setVisibility(View.VISIBLE);
+                mViewPager.setScrollable(true);
             }
 
             @Override

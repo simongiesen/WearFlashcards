@@ -192,7 +192,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         bundle.putLong(Constants.TAG_ID, tableId);
         CardListFragment cardListFragment = new CardListFragment();
         cardListFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.layout_set_overview, cardListFragment, fragTagCardList)
                 .commit();
     }

@@ -5,6 +5,7 @@
     <color name="color_accent">#009688</color>
     <color name="color_edit">#009688</color>
     <color name="color_fab_accent">#F44336</color>
+    <color name="tab_indicator">#FFFFFF</color>
     <color name="list_activated">#BDBDBD</color>
     <color name="background_default">#FFFFFF</color>
     <color name="background_starred_only">#E0F2F1</color>
