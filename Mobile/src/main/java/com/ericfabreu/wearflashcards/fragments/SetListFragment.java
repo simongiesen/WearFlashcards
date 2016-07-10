@@ -20,7 +20,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.activities.EditSetTitleActivity;
+import com.ericfabreu.wearflashcards.activities.ManageSetActivity;
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -107,7 +107,7 @@ public class SetListFragment extends ListFragment
                         return true;
 
                     case R.id.item_edit:
-                        // Get set title and send it to EditSetTitleActivity
+                        // Get set title and send it to ManageSetActivity
                         FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         Cursor cursor = handle.query(SetList.CONTENT_URI,
@@ -118,9 +118,11 @@ public class SetListFragment extends ListFragment
                         if (cursor != null && cursor.moveToFirst()) {
                             String title = cursor.getString(cursor
                                     .getColumnIndex(SetList.SET_TITLE));
-                            Intent intent = new Intent(getActivity(), EditSetTitleActivity.class);
+                            Intent intent = new Intent(getActivity(), ManageSetActivity.class);
+                            intent.putExtra(Constants.TAG_EDITING_MODE, true);
                             intent.putExtra(Constants.TAG_TITLE, title);
-                            startActivity(intent);
+                            getActivity().startActivityForResult(intent,
+                                    Constants.REQUEST_CODE_EDIT);
                             cursor.close();
                         }
                         mode.finish();

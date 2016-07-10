@@ -22,26 +22,14 @@
         </activity>
 
         <activity
-            android:name=".activities.NewSetActivity"
+            android:name=".activities.ManageSetActivity"
             android:label="@string/title_activity_create_set"
             android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateVisible" />
 
         <activity
-            android:name=".activities.EditSetTitleActivity"
-            android:label="@string/title_activity_edit_set"
-            android:parentActivityName=".activities.MainActivity"
-            android:windowSoftInputMode="stateVisible" />
-
-        <activity
-            android:name=".activities.NewCardActivity"
+            android:name=".activities.ManageCardActivity"
             android:label="@string/title_activity_create_card"
-            android:parentActivityName=".activities.SetOverviewActivity"
-            android:windowSoftInputMode="stateVisible" />
-
-        <activity
-            android:name=".activities.EditCardActivity"
-            android:label="@string/title_activity_edit_card"
             android:parentActivityName=".activities.SetOverviewActivity"
             android:windowSoftInputMode="stateVisible" />
 

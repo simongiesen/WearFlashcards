@@ -27,8 +27,8 @@ public class PreferencesHelper {
     /**
      * Returns the default star value for new cards
      */
-    public static boolean getStarMode(Context context) {
+    public static String getStarMode(Context context) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(Constants.PREF_KEY_CREATE_STARRED, false);
+        return settings.getBoolean(Constants.PREF_KEY_CREATE_STARRED, false) ? "1" : "0";
     }
 }

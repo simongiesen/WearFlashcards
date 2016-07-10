@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewSetActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, ManageSetActivity.class);
+                intent.putExtra(Constants.TAG_EDITING_MODE, false);
+                startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             }
         });
 
@@ -100,8 +102,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Refresh activity with the proper sort order when SettingsActivity is closed
-        if (requestCode == Constants.REQUEST_CODE_SETTINGS) {
+        // Refresh activity with the proper sort order when another activity is closed
+        Log.d("here", "why");
+        if (requestCode == Constants.REQUEST_CODE_SETTINGS ||
+                requestCode == Constants.REQUEST_CODE_CREATE ||
+                requestCode == Constants.REQUEST_CODE_EDIT) {
             Intent refresh = new Intent(this, getClass());
             startActivity(refresh);
             this.finish();

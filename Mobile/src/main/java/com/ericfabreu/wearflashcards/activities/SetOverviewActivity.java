@@ -50,9 +50,10 @@ public class SetOverviewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SetOverviewActivity.this, NewCardActivity.class);
+                Intent intent = new Intent(SetOverviewActivity.this, ManageCardActivity.class);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
                 intent.putExtra(Constants.TAG_TITLE, title);
+                intent.putExtra(Constants.TAG_EDITING_MODE, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             }
         });

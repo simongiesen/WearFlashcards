@@ -19,7 +19,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.activities.EditCardActivity;
+import com.ericfabreu.wearflashcards.activities.ManageCardActivity;
 import com.ericfabreu.wearflashcards.adapters.CardListAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
@@ -204,7 +204,7 @@ public class CardListFragment extends ListFragment
     }
 
     /**
-     * Finds the card's term and definition and send it to EditCardActivity.
+     * Finds the card's term and definition and send it to ManageCardActivity.
      */
     private void cardEditListener(long id) {
         Cursor cursor = mProvider.query(Uri.withAppendedPath(CardSet.CONTENT_URI, tableName),
@@ -215,11 +215,12 @@ public class CardListFragment extends ListFragment
         if (cursor != null && cursor.moveToFirst()) {
             String term = cursor.getString(cursor.getColumnIndex(CardSet.TERM));
             String definition = cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION));
-            Intent intent = new Intent(getActivity(), EditCardActivity.class);
+            Intent intent = new Intent(getActivity(), ManageCardActivity.class);
             intent.putExtra(Constants.TAG_TERM, term);
             intent.putExtra(Constants.TAG_DEFINITION, definition);
             intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
             intent.putExtra(Constants.TAG_TITLE, getActivity().getTitle());
+            intent.putExtra(Constants.TAG_EDITING_MODE, true);
             startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
             cursor.close();
         }
