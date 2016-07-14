@@ -34,9 +34,6 @@ public final class FlashcardContract {
 
         // Deprecated columns
         public static final String SET_TABLE_NAME = "set_table_name";
-
-        // Default sort order
-        public static final String SORT_ORDER_DEFAULT = "_ID ASC";
     }
 
     // Table with a single set of flashcards
@@ -56,8 +53,42 @@ public final class FlashcardContract {
         public static final String TERM = "term";
         public static final String DEFINITION = "definition";
         public static final String STAR = "star";
+    }
 
-        // Default sort order
-        public static final String SORT_ORDER_DEFAULT = "_ID ASC";
+    // Table with all folders
+    public static abstract class FolderList implements BaseColumns {
+        public static final String TABLE_DIR = "folder_list";
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
+
+        // Mime type of a directory of folders
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_DIR;
+
+        // Mime type of a single folder
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_DIR;
+
+        // Columns
+        public static final String TABLE_NAME = "folders";
+        public static final String FOLDER_TITLE = "folder_title";
+        public static final String SET_COUNT = "set_count";
+        public static final String COLOR = "color";
+    }
+
+    // Table with a single set of flashcards
+    public static abstract class Folder implements BaseColumns {
+        public static final String TABLE_DIR = "folder";
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
+
+        // Mime type of a set of cards
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_DIR;
+
+        // Mime type of a single card
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_DIR;
+
+        // Columns
+        public static final String SET = "set";
     }
 }

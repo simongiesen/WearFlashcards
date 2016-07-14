@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.Folder;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
@@ -30,6 +32,10 @@ public class FlashcardProvider extends ContentProvider {
     private static final int SET_ITEM = 2;
     private static final int CARD_LIST = 3;
     private static final int CARD_ITEM = 4;
+    private static final int FOLDER_LIST = 5;
+    private static final int FOLDER_LIST_ITEM = 6;
+    private static final int FOLDER_TABLE = 7;
+    private static final int FOLDER_TABLE_ITEM = 8;
     private static final UriMatcher URI_MATCHER;
 
     // Prepare the UriMatcher
@@ -39,6 +45,10 @@ public class FlashcardProvider extends ContentProvider {
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, SetList.TABLE_DIR + "/#", 2);
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*", 3);
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*/#", 4);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FolderList.TABLE_DIR, 5);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FolderList.TABLE_DIR + "/#", 6);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, Folder.TABLE_DIR + "/*", 7);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, Folder.TABLE_DIR + "/*/#", 8);
     }
 
     Context context;
@@ -61,35 +71,55 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
         // Handle table name and order differently depending on the uri
         switch (URI_MATCHER.match(uri)) {
-            case SET_LIST:
+            case SET_LIST: {
                 builder.setTables(SetList.TABLE_NAME);
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = SetList.SORT_ORDER_DEFAULT;
-                }
                 break;
-            case SET_ITEM:
+            }
+            case SET_ITEM: {
                 builder.setTables(SetList.TABLE_NAME);
                 builder.appendWhere(SetList._ID + "=" + uri.getLastPathSegment());
                 break;
-            case CARD_LIST:
+            }
+            case CARD_LIST: {
                 builder.setTables("'" + uri.getLastPathSegment() + "'");
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = CardSet.SORT_ORDER_DEFAULT;
-                }
                 break;
-            case CARD_ITEM:
+            }
+            case CARD_ITEM: {
                 // Get table name from uri
                 List<String> segments = uri.getPathSegments();
                 final String table = "'" + segments.get(segments.size() - 1) + "'";
                 builder.setTables(table);
                 builder.appendWhere(CardSet._ID + "=" + uri.getLastPathSegment());
                 break;
+            }
+            case FOLDER_LIST: {
+                builder.setTables(FolderList.TABLE_NAME);
+                break;
+            }
+            case FOLDER_LIST_ITEM: {
+                builder.setTables(FolderList.TABLE_NAME);
+                builder.appendWhere(FolderList._ID + "=" + uri.getLastPathSegment());
+                break;
+            }
+            case FOLDER_TABLE: {
+                builder.setTables("'" + uri.getLastPathSegment() + "'");
+                break;
+            }
+            case FOLDER_TABLE_ITEM: {
+                // Get table name from uri
+                List<String> segments = uri.getPathSegments();
+                final String table = "'" + segments.get(segments.size() - 1) + "'";
+                builder.setTables(table);
+                builder.appendWhere(Folder._ID + "=" + uri.getLastPathSegment());
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -144,6 +174,14 @@ public class FlashcardProvider extends ContentProvider {
                 return CardSet.CONTENT_TYPE;
             case CARD_ITEM:
                 return CardSet.CONTENT_ITEM_TYPE;
+            case FOLDER_LIST:
+                return FolderList.CONTENT_TYPE;
+            case FOLDER_LIST_ITEM:
+                return FolderList.CONTENT_ITEM_TYPE;
+            case FOLDER_TABLE:
+                return Folder.CONTENT_TYPE;
+            case FOLDER_TABLE_ITEM:
+                return Folder.CONTENT_ITEM_TYPE;
             // Unsupported type
             default:
                 return null;
@@ -154,13 +192,15 @@ public class FlashcardProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         // Validate URI
         if (URI_MATCHER.match(uri) == SET_LIST ||
-                URI_MATCHER.match(uri) == SET_ITEM) {
-            throw new IllegalArgumentException("Cannot insert new sets directly into main table.");
+                URI_MATCHER.match(uri) == SET_ITEM ||
+                URI_MATCHER.match(uri) == FOLDER_LIST ||
+                URI_MATCHER.match(uri) == FOLDER_LIST_ITEM) {
+            throw new IllegalArgumentException("Cannot insert this directly into main table.");
         }
-        if (URI_MATCHER.match(uri) == CARD_ITEM) {
-            throw new IllegalArgumentException("Use update() to edit a flashcard.");
+        if (URI_MATCHER.match(uri) == CARD_ITEM || URI_MATCHER.match(uri) != FOLDER_TABLE_ITEM) {
+            throw new IllegalArgumentException("Use update() to edit a flashcard or folder.");
         }
-        if (URI_MATCHER.match(uri) != CARD_LIST) {
+        if (URI_MATCHER.match(uri) != CARD_LIST || URI_MATCHER.match(uri) != FOLDER_TABLE) {
             throw new IllegalArgumentException("Uri not supported for insertion: " + uri);
         }
 
@@ -234,6 +274,52 @@ public class FlashcardProvider extends ContentProvider {
                 );
                 break;
             }
+            case FOLDER_LIST: {
+                deleteCount = db.delete(FolderList.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+            // Used for updating the folder name
+            case FOLDER_LIST_ITEM: {
+                // Build where statement
+                final String id = uri.getLastPathSegment();
+                String where = FolderList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+                deleteCount = db.delete(FolderList.TABLE_NAME,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+            case FOLDER_TABLE: {
+                final String table = uri.getLastPathSegment();
+                deleteCount = db.delete(
+                        table,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+            // Used for updating individual cards
+            case FOLDER_TABLE_ITEM: {
+                final String id = uri.getLastPathSegment();
+                String where = Folder._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+                List<String> segments = uri.getPathSegments();
+                final String table = segments.get(segments.size() - 1);
+                deleteCount = db.delete(
+                        table,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
             }
@@ -245,7 +331,8 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues contentValues,
+                      String selection, String[] selectionArgs) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int updateCount;
 
@@ -286,6 +373,52 @@ public class FlashcardProvider extends ContentProvider {
             case CARD_ITEM: {
                 final String id = uri.getLastPathSegment();
                 String where = SetList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+                List<String> segments = uri.getPathSegments();
+                final String table = segments.get(segments.size() - 1);
+                updateCount = db.update(table,
+                        contentValues,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+            case FOLDER_LIST: {
+                updateCount = db.update(FolderList.TABLE_NAME,
+                        contentValues,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+            // Used for updating the folder name
+            case FOLDER_LIST_ITEM: {
+                final String id = uri.getLastPathSegment();
+                String where = FolderList._ID + "=" + id;
+                if (!TextUtils.isEmpty(selection)) {
+                    where += " AND " + selection;
+                }
+                updateCount = db.update(FolderList.TABLE_NAME,
+                        contentValues,
+                        where,
+                        selectionArgs
+                );
+                break;
+            }
+            case FOLDER_TABLE: {
+                final String table = uri.getLastPathSegment();
+                updateCount = db.update(table,
+                        contentValues,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            }
+            case FOLDER_TABLE_ITEM: {
+                final String id = uri.getLastPathSegment();
+                String where = Folder._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }

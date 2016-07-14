@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
  * http://developer.android.com/training/basics/data-storage/databases.html
  */
 public class FlashcardDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "flashcards";
 
     public FlashcardDbHelper(Context context) {
@@ -25,15 +26,16 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Build the CREATE command
-        final String SETLIST_TABLE_CREATE =
-                "CREATE TABLE IF NOT EXISTS " + SetList.TABLE_NAME + " (" +
-                        SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        SetList.SET_TITLE + " TEXT UNIQUE NOT NULL," +
-                        SetList.STARRED_ONLY + " INTEGER DEFAULT 0)";
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + SetList.TABLE_NAME + " (" +
+                SetList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                SetList.SET_TITLE + " TEXT UNIQUE NOT NULL," +
+                SetList.STARRED_ONLY + " INTEGER DEFAULT 0)");
 
-        // Create main table
-        db.execSQL(SETLIST_TABLE_CREATE);
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + FolderList.TABLE_NAME + " (" +
+                FolderList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                FolderList.FOLDER_TITLE + " TEXT UNIQUE NOT NULL," +
+                FolderList.SET_COUNT + " INTEGER DEFAULT 0," +
+                FolderList.COLOR + " INTEGER DEFAULT 0)");
     }
 
     /**
@@ -138,6 +140,15 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                         " SELECT " + SetList._ID + "," + SetList.SET_TITLE + " FROM sets_backup");
                 db.execSQL("DROP TABLE sets_backup");
                 db.execSQL("COMMIT");
+            }
+
+            // Create the folder list table
+            case 4: {
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + FolderList.TABLE_NAME + " (" +
+                        FolderList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        FolderList.FOLDER_TITLE + " TEXT UNIQUE NOT NULL," +
+                        FolderList.SET_COUNT + " INTEGER DEFAULT 0," +
+                        FolderList.COLOR + " INTEGER DEFAULT 0)");
             }
 
             default:
