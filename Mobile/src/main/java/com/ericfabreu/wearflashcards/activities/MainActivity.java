@@ -1,5 +1,6 @@
 package com.ericfabreu.wearflashcards.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,8 +10,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -138,8 +141,35 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        private final FragmentManager mFragmentManager;
+        private SparseArray<Fragment> mFragments;
+        private FragmentTransaction mCurTransaction;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            mFragmentManager = fm;
+            mFragments = new SparseArray<>();
+        }
+
+        @Override
+        @SuppressLint("CommitTransaction")
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = getItem(position);
+            if (mCurTransaction == null) {
+                mCurTransaction = mFragmentManager.beginTransaction();
+            }
+            mCurTransaction.add(container.getId(), fragment, "fragment:" + position);
+            return fragment;
+        }
+
+        @Override
+        @SuppressLint("CommitTransaction")
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            if (mCurTransaction == null) {
+                mCurTransaction = mFragmentManager.beginTransaction();
+            }
+            mCurTransaction.detach(mFragments.get(position));
+            mFragments.remove(position);
         }
 
         @Override
@@ -150,6 +180,11 @@ public class MainActivity extends AppCompatActivity {
                 return setListFragment;
             }
             return new PlaceholderFragment();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object fragment) {
+            return ((Fragment) fragment).getView() == view;
         }
 
         @Override
@@ -166,6 +201,15 @@ public class MainActivity extends AppCompatActivity {
                     return "FOLDERS";
             }
             return null;
+        }
+
+        @Override
+        public void finishUpdate(ViewGroup container) {
+            if (mCurTransaction != null) {
+                mCurTransaction.commitAllowingStateLoss();
+                mCurTransaction = null;
+                mFragmentManager.executePendingTransactions();
+            }
         }
     }
 }

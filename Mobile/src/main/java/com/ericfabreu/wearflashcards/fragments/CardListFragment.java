@@ -195,7 +195,6 @@ public class CardListFragment extends ListFragment
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Swap the new cursor in
         mAdapter.swapCursor(data);
     }
 
