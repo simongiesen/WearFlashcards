@@ -55,7 +55,7 @@ public class WearableService extends WearableListenerService {
                         if (title != null && cardId > 0) {
                             FlashcardProvider handle = new
                                     FlashcardProvider(getApplicationContext());
-                            final String tableName = handle.getTableName(title);
+                            final String tableName = handle.getTableName(title, false);
                             final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
                             handle.flipFlag(uri, cardId, CardSet.STAR);
                         }
@@ -99,8 +99,8 @@ public class WearableService extends WearableListenerService {
     private void sendSet(String title, String starredOption) {
         // Get terms and definitions from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        final String tableName = handle.getTableName(title);
-        final long tableId = handle.getTableId(title);
+        final String tableName = handle.getTableName(title, false);
+        final long tableId = handle.getTableId(title, false);
         final boolean starredOnly;
 
         // Respect the wearable's starred only setting

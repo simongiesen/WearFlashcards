@@ -197,12 +197,6 @@ public class FlashcardProvider extends ContentProvider {
                 URI_MATCHER.match(uri) == FOLDER_LIST_ITEM) {
             throw new IllegalArgumentException("Cannot insert this directly into main table.");
         }
-        if (URI_MATCHER.match(uri) == CARD_ITEM || URI_MATCHER.match(uri) != FOLDER_TABLE_ITEM) {
-            throw new IllegalArgumentException("Use update() to edit a flashcard or folder.");
-        }
-        if (URI_MATCHER.match(uri) != CARD_LIST || URI_MATCHER.match(uri) != FOLDER_TABLE) {
-            throw new IllegalArgumentException("Uri not supported for insertion: " + uri);
-        }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
@@ -444,17 +438,19 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Returns the table's row id in the main table.
      */
-    public long getTableId(String title) {
+    public long getTableId(String title, boolean folder) {
+        final String table = folder ? FolderList.TABLE_NAME : SetList.TABLE_NAME;
+        final String column = folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE;
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query(SetList.TABLE_NAME,
-                new String[]{SetList._ID},
-                SetList.SET_TITLE + "=?",
+        Cursor cursor = db.query(table,
+                new String[]{"_id"},
+                column + "=?",
                 new String[]{title},
                 null,
                 null,
                 null);
         if (cursor != null && cursor.moveToFirst()) {
-            final long tableId = cursor.getLong(cursor.getColumnIndex(SetList._ID));
+            final long tableId = cursor.getLong(cursor.getColumnIndex("_id"));
             cursor.close();
             return tableId;
         }
@@ -464,18 +460,21 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Returns a table name given the table's title.
      */
-    public String getTableName(String title) {
-        final long id = getTableId(title);
-        return id == 0 ? null : "w" + id + "f";
+    public String getTableName(String title, boolean folder) {
+        final String prefix = folder ? "f" : "w";
+        final long id = getTableId(title, folder);
+        return id == 0 ? null : prefix + id + "f";
     }
 
     /**
      * Checks if the given title is available.
      */
-    private boolean titleAvailable(String title) {
-        Cursor cursor = query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TITLE},
-                SetList.SET_TITLE + "=?",
+    private boolean titleAvailable(String title, boolean folder) {
+        final Uri uri = folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI;
+        final String column = folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE;
+        Cursor cursor = query(uri,
+                new String[]{column},
+                column + "=?",
                 new String[]{title},
                 null);
         if (cursor != null && cursor.getCount() == 0) {
@@ -488,73 +487,77 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Queries the main table to create a table name from the next row ID.
      */
-    private String nextTableName() {
-        final String query =
-                "SELECT seq FROM sqlite_sequence WHERE name = '" + SetList.TABLE_NAME + "'";
+    private String nextTableName(boolean folder) {
+        final String table = folder ? FolderList.TABLE_NAME : SetList.TABLE_NAME;
+        final String query = "SELECT seq FROM sqlite_sequence WHERE name = '" + table + "'";
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
+        final String prefix = folder ? "f" : "w";
         final String nextTableName = cursor.moveToFirst() ?
-                "w" + (cursor.getLong(cursor.getColumnIndex("seq")) + 1) + "f" : null;
+                prefix + (cursor.getLong(cursor.getColumnIndex("seq")) + 1) + "f" : null;
         cursor.close();
         return nextTableName;
     }
 
     /**
-     * Creates an empty set of flashcards.
+     * Creates an empty table and links it to the proper main table.
      */
-    public Boolean newSetTable(String title) {
+    public Boolean newTable(String title, boolean folder) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        if (titleAvailable(title)) {
-            // Get the next available table name
-            final String CARDSET_TABLE_CREATE;
-            CARDSET_TABLE_CREATE = "CREATE TABLE '" + nextTableName() + "' (" +
-                    CardSet._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CardSet.TERM + " TEXT NOT NULL," +
-                    CardSet.DEFINITION + " TEXT NOT NULL," +
-                    CardSet.STAR + " INTEGER DEFAULT 0)";
-            db.execSQL(CARDSET_TABLE_CREATE);
+        if (titleAvailable(title, folder)) {
+            final String columnDefinitions = folder ? Folder.COLUMN_DEFINITIONS
+                    : CardSet.COLUMN_DEFINITIONS;
+            final String tableCommand = "CREATE TABLE '" + nextTableName(folder) +
+                    columnDefinitions;
+            db.execSQL(tableCommand);
 
             // Link new set to main database
+            final String table = folder ? FolderList.TABLE_NAME : SetList.TABLE_NAME;
+            final String column = folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE;
             ContentValues values = new ContentValues();
-            values.put(SetList.SET_TITLE, title);
-            db.insert(SetList.TABLE_NAME, null, values);
+            values.put(column, title);
+            db.insert(table, null, values);
             return true;
         }
         return false;
     }
 
     /**
-     * Deletes a stack of flashcards from the database.
+     * Deletes a table (set or folder) from the database.
      */
-    public void deleteSetTable(long tableRowId) {
+    public void deleteTable(long tableRowId, boolean folder) {
+        final Uri uri = folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI;
+        final String column = folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE;
         // Get the table's title
-        Cursor cursor = this.query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TITLE},
-                SetList._ID + "=?",
+        Cursor cursor = query(uri,
+                new String[]{column},
+                "_id=?",
                 new String[]{String.valueOf(tableRowId)},
                 null);
         if (cursor != null && cursor.moveToFirst()) {
             SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-            final String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
+            final String title = cursor.getString(cursor.getColumnIndex(column));
 
             // Remove set from main database
-            db.execSQL("DROP TABLE IF EXISTS '" + getTableName(title) + "'");
-            delete(SetList.CONTENT_URI, SetList.SET_TITLE + " = ?", new String[]{title});
+            db.execSQL("DROP TABLE IF EXISTS '" + getTableName(title, folder) + "'");
+            delete(uri, column + "=?", new String[]{title});
             cursor.close();
         }
     }
 
     /**
-     * Renames a set of flashcards.
+     * Renames a set or folder.
      */
-    public boolean renameSet(String oldTitle, String newTitle) {
+    public boolean renameMember(String oldTitle, String newTitle, boolean folder) {
+        final String table = folder ? FolderList.TABLE_NAME : SetList.TABLE_NAME;
+        final String column = folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE;
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-        // Update set name in main table
-        if (titleAvailable(newTitle)) {
+        // Update set or title in main table
+        if (titleAvailable(newTitle, folder)) {
             ContentValues values = new ContentValues();
-            values.put(SetList.SET_TITLE, newTitle);
-            db.update(SetList.TABLE_NAME, values, SetList.SET_TITLE + "=?", new String[]{oldTitle});
+            values.put(column, newTitle);
+            db.update(table, values, column + "=?", new String[]{oldTitle});
             return true;
         }
         return false;
@@ -614,8 +617,8 @@ public class FlashcardProvider extends ContentProvider {
     public void flipFlag(Uri uri, long id, String flagColumn) {
         // Get the current flag value
         Cursor cursor = query(uri,
-                new String[]{"_ID", flagColumn},
-                "_ID=?",
+                new String[]{"_id", flagColumn},
+                "_id=?",
                 new String[]{String.valueOf(id)},
                 null);
 
@@ -624,7 +627,7 @@ public class FlashcardProvider extends ContentProvider {
             final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(flagColumn)) - 1);
             ContentValues values = new ContentValues();
             values.put(flagColumn, flippedValue);
-            update(uri, values, "_ID=?", new String[]{String.valueOf(id)});
+            update(uri, values, "_id=?", new String[]{String.valueOf(id)});
             cursor.close();
         }
     }
@@ -634,8 +637,8 @@ public class FlashcardProvider extends ContentProvider {
      */
     public boolean getFlag(Uri uri, long id, String flagColumn) {
         Cursor cursor = query(uri,
-                new String[]{"_ID", flagColumn},
-                "_ID=?",
+                new String[]{"_id", flagColumn},
+                "_id=?",
                 new String[]{String.valueOf(id)},
                 null);
         if (cursor != null && cursor.moveToFirst()) {

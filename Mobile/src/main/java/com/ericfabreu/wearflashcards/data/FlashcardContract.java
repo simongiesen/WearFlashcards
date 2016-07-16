@@ -53,6 +53,13 @@ public final class FlashcardContract {
         public static final String TERM = "term";
         public static final String DEFINITION = "definition";
         public static final String STAR = "star";
+
+        // Creation command
+        public static final String COLUMN_DEFINITIONS = "' (" +
+                _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                TERM + " TEXT NOT NULL," +
+                DEFINITION + " TEXT NOT NULL," +
+                STAR + " INTEGER DEFAULT 0)";
     }
 
     // Table with all folders
@@ -89,6 +96,11 @@ public final class FlashcardContract {
                 AUTHORITY + "/" + TABLE_DIR;
 
         // Columns
-        public static final String SET = "set";
+        public static final String SET_TITLE = "set";
+
+        // Creation command
+        public static final String COLUMN_DEFINITIONS = "' (" +
+                _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                SET_TITLE + " TEXT NOT NULL)";
     }
 }

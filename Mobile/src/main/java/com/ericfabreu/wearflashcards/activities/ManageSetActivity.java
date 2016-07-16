@@ -70,8 +70,8 @@ public class ManageSetActivity extends AppCompatActivity {
 
         // Check if title is available
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        if ((editing && !handle.renameSet(title, newTitle)) ||
-                (!editing && !handle.newSetTable(newTitle))) {
+        if ((editing && !handle.renameMember(title, newTitle, false)) ||
+                (!editing && !handle.newTable(newTitle, false))) {
             text.setError(getString(R.string.error_title_taken));
             return;
         }
