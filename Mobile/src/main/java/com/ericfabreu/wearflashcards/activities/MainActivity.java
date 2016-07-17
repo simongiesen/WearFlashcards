@@ -14,13 +14,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.fragments.FolderListFragment;
 import com.ericfabreu.wearflashcards.fragments.SetListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.views.MainViewPager;
@@ -45,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ManageSetActivity.class);
+                // Determine if the fab should open the set or the folder activity
+                final Class activityClass = mViewPager.getCurrentItem() == 0 ?
+                        ManageSetActivity.class : ManageFolderActivity.class;
+                Intent intent = new Intent(MainActivity.this, activityClass);
                 intent.putExtra(Constants.TAG_EDITING_MODE, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             }
@@ -123,20 +126,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_card_list, container, false);
-        }
-    }
-
-    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
@@ -178,8 +167,11 @@ public class MainActivity extends AppCompatActivity {
                 SetListFragment setListFragment = new SetListFragment();
                 setListFragment.setViewPager(mViewPager);
                 return setListFragment;
+            } else {
+                FolderListFragment folderListFragment = new FolderListFragment();
+                folderListFragment.setViewPager(mViewPager);
+                return folderListFragment;
             }
-            return new PlaceholderFragment();
         }
 
         @Override

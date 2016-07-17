@@ -6,9 +6,11 @@
     <string name="title_activity_edit_card">Edit card</string>
     <string name="title_activity_create_set">Create a new set</string>
     <string name="title_activity_create_card">Create a new card</string>
+    <string name="title_activity_create_folder">Create a new folder</string>
 
     <!-- Messages -->
     <string name="message_empty_database">Tap the + button to create a flashcard set</string>
+    <string name="message_no_folders">Tap the + button to create a folder</string>
     <string name="message_empty_stack">Tap the + button to create a flashcard</string>
     <string name="message_all_cards_hidden">All cards are hidden</string>
 
@@ -16,6 +18,7 @@
     <string name="hint_set_title">Set title</string>
     <string name="hint_term">Term</string>
     <string name="hint_definition">Definition</string>
+    <string name="hint_folder_title">Folder title</string>
 
     <!-- Buttons -->
     <string name="button_create">Create</string>
@@ -42,8 +45,10 @@
     <!-- Dialogs -->
     <string name="dialog_delete_set">Delete set?</string>
     <string name="dialog_delete_card">Delete card?</string>
+    <string name="dialog_delete_folder">Delete folder?</string>
     <string name="dialog_delete_sets">Delete sets?</string>
     <string name="dialog_delete_cards">Delete cards?</string>
+    <string name="dialog_delete_folders">Delete folders?</string>
     <string name="dialog_cannot_undo">This cannot be undone.</string>
 
     <!-- Preferences -->

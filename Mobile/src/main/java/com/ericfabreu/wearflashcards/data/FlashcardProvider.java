@@ -11,9 +11,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
-import com.ericfabreu.wearflashcards.data.FlashcardContract.Folder;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -34,8 +35,8 @@ public class FlashcardProvider extends ContentProvider {
     private static final int CARD_ITEM = 4;
     private static final int FOLDER_LIST = 5;
     private static final int FOLDER_LIST_ITEM = 6;
-    private static final int FOLDER_TABLE = 7;
-    private static final int FOLDER_TABLE_ITEM = 8;
+    private static final int FOLDER = 7;
+    private static final int FOLDER_ITEM = 8;
     private static final UriMatcher URI_MATCHER;
 
     // Prepare the UriMatcher
@@ -47,8 +48,8 @@ public class FlashcardProvider extends ContentProvider {
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, CardSet.TABLE_DIR + "/*/#", 4);
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FolderList.TABLE_DIR, 5);
         URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FolderList.TABLE_DIR + "/#", 6);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, Folder.TABLE_DIR + "/*", 7);
-        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, Folder.TABLE_DIR + "/*/#", 8);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FolderEntry.TABLE_DIR + "/*", 7);
+        URI_MATCHER.addURI(FlashcardContract.AUTHORITY, FolderEntry.TABLE_DIR + "/*/#", 8);
     }
 
     Context context;
@@ -108,16 +109,16 @@ public class FlashcardProvider extends ContentProvider {
                 builder.appendWhere(FolderList._ID + "=" + uri.getLastPathSegment());
                 break;
             }
-            case FOLDER_TABLE: {
+            case FOLDER: {
                 builder.setTables("'" + uri.getLastPathSegment() + "'");
                 break;
             }
-            case FOLDER_TABLE_ITEM: {
+            case FOLDER_ITEM: {
                 // Get table name from uri
                 List<String> segments = uri.getPathSegments();
                 final String table = "'" + segments.get(segments.size() - 1) + "'";
                 builder.setTables(table);
-                builder.appendWhere(Folder._ID + "=" + uri.getLastPathSegment());
+                builder.appendWhere(FolderEntry._ID + "=" + uri.getLastPathSegment());
                 break;
             }
             default:
@@ -178,10 +179,10 @@ public class FlashcardProvider extends ContentProvider {
                 return FolderList.CONTENT_TYPE;
             case FOLDER_LIST_ITEM:
                 return FolderList.CONTENT_ITEM_TYPE;
-            case FOLDER_TABLE:
-                return Folder.CONTENT_TYPE;
-            case FOLDER_TABLE_ITEM:
-                return Folder.CONTENT_ITEM_TYPE;
+            case FOLDER:
+                return FolderEntry.CONTENT_TYPE;
+            case FOLDER_ITEM:
+                return FolderEntry.CONTENT_ITEM_TYPE;
             // Unsupported type
             default:
                 return null;
@@ -289,7 +290,7 @@ public class FlashcardProvider extends ContentProvider {
                 );
                 break;
             }
-            case FOLDER_TABLE: {
+            case FOLDER: {
                 final String table = uri.getLastPathSegment();
                 deleteCount = db.delete(
                         table,
@@ -299,9 +300,9 @@ public class FlashcardProvider extends ContentProvider {
                 break;
             }
             // Used for updating individual cards
-            case FOLDER_TABLE_ITEM: {
+            case FOLDER_ITEM: {
                 final String id = uri.getLastPathSegment();
-                String where = Folder._ID + "=" + id;
+                String where = FolderEntry._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
@@ -401,7 +402,7 @@ public class FlashcardProvider extends ContentProvider {
                 );
                 break;
             }
-            case FOLDER_TABLE: {
+            case FOLDER: {
                 final String table = uri.getLastPathSegment();
                 updateCount = db.update(table,
                         contentValues,
@@ -410,9 +411,9 @@ public class FlashcardProvider extends ContentProvider {
                 );
                 break;
             }
-            case FOLDER_TABLE_ITEM: {
+            case FOLDER_ITEM: {
                 final String id = uri.getLastPathSegment();
-                String where = Folder._ID + "=" + id;
+                String where = FolderEntry._ID + "=" + id;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
                 }
@@ -493,10 +494,10 @@ public class FlashcardProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         final String prefix = folder ? "f" : "w";
-        final String nextTableName = cursor.moveToFirst() ?
-                prefix + (cursor.getLong(cursor.getColumnIndex("seq")) + 1) + "f" : null;
+        final long middle = cursor.moveToFirst() ? (cursor.getLong(cursor.getColumnIndex("seq")) + 1) : 1;
         cursor.close();
-        return nextTableName;
+        Log.d("name", prefix + middle + "f");
+        return prefix + middle + "f";
     }
 
     /**
@@ -505,7 +506,7 @@ public class FlashcardProvider extends ContentProvider {
     public Boolean newTable(String title, boolean folder) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         if (titleAvailable(title, folder)) {
-            final String columnDefinitions = folder ? Folder.COLUMN_DEFINITIONS
+            final String columnDefinitions = folder ? FolderEntry.COLUMN_DEFINITIONS
                     : CardSet.COLUMN_DEFINITIONS;
             final String tableCommand = "CREATE TABLE '" + nextTableName(folder) +
                     columnDefinitions;

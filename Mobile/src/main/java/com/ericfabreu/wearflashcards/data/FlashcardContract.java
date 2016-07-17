@@ -83,7 +83,7 @@ public final class FlashcardContract {
     }
 
     // Table with a single set of flashcards
-    public static abstract class Folder implements BaseColumns {
+    public static abstract class FolderEntry implements BaseColumns {
         public static final String TABLE_DIR = "folder";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
 
@@ -96,7 +96,7 @@ public final class FlashcardContract {
                 AUTHORITY + "/" + TABLE_DIR;
 
         // Columns
-        public static final String SET_TITLE = "set";
+        public static final String SET_TITLE = "title";
 
         // Creation command
         public static final String COLUMN_DEFINITIONS = "' (" +
