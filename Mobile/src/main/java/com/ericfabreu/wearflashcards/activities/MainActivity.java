@@ -28,6 +28,7 @@ import com.ericfabreu.wearflashcards.views.MainViewPager;
 public class MainActivity extends AppCompatActivity {
     private SharedPreferences settings;
     private MainViewPager mViewPager;
+    private SectionsPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Create the adapter and pager used to display the tabbed fragments
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (MainViewPager) findViewById(R.id.layout_main);
-        mViewPager.setAdapter(adapter);
+        mViewPager.setAdapter(mPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_main);
         tabLayout.setupWithViewPager(mViewPager);
     }
@@ -115,13 +116,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Refresh activity with the proper sort order when another activity is closed
+        // Refresh the fragments with the proper sort order when another activity is closed
         if (requestCode == Constants.REQUEST_CODE_SETTINGS ||
                 requestCode == Constants.REQUEST_CODE_CREATE ||
-                requestCode == Constants.REQUEST_CODE_EDIT) {
-            Intent refresh = new Intent(this, getClass());
-            startActivity(refresh);
-            this.finish();
+                requestCode == Constants.REQUEST_CODE_EDIT ||
+                requestCode == Constants.REQUEST_CODE_STUDY) {
+            mPagerAdapter.refreshFragments();
         }
     }
 
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         private final FragmentManager mFragmentManager;
+        private ViewGroup mContainer;
         private SparseArray<Fragment> mFragments;
         private FragmentTransaction mCurTransaction;
 
@@ -140,14 +141,21 @@ public class MainActivity extends AppCompatActivity {
             mFragments = new SparseArray<>();
         }
 
+        public void refreshFragments() {
+            ((SetListFragment) mFragments.get(0)).refresh();
+            ((FolderListFragment) mFragments.get(1)).refresh();
+        }
+
         @Override
         @SuppressLint("CommitTransaction")
         public Object instantiateItem(ViewGroup container, int position) {
             Fragment fragment = getItem(position);
+            mContainer = container;
             if (mCurTransaction == null) {
                 mCurTransaction = mFragmentManager.beginTransaction();
             }
-            mCurTransaction.add(container.getId(), fragment, "fragment:" + position);
+            mCurTransaction.add(mContainer.getId(), fragment);
+            mFragments.append(position, fragment);
             return fragment;
         }
 

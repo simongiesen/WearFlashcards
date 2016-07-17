@@ -44,6 +44,10 @@ public class FolderListFragment extends ListFragment
         mViewPager = viewPager;
     }
 
+    public void refresh() {
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

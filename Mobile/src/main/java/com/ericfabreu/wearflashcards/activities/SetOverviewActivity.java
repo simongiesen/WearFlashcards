@@ -144,17 +144,14 @@ public class SetOverviewActivity extends AppCompatActivity {
                 startActivityForResult(intent, Constants.REQUEST_CODE_SETTINGS);
                 return true;
             }
+            case android.R.id.home: {
+                onBackPressed();
+                return true;
+            }
             default: {
                 return super.onOptionsItemSelected(item);
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Return to MainActivity if back key is pressed instead of going to previous activity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override

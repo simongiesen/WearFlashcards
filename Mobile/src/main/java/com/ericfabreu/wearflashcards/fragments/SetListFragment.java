@@ -44,6 +44,10 @@ public class SetListFragment extends ListFragment
         mViewPager = viewPager;
     }
 
+    public void refresh() {
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,7 +190,7 @@ public class SetListFragment extends ListFragment
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);
         intent.putExtra(Constants.TAG_ID, id);
-        startActivity(intent);
+        startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
