@@ -9,7 +9,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +20,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.activities.FolderOverviewActivity;
 import com.ericfabreu.wearflashcards.activities.ManageFolderActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -181,10 +181,16 @@ public class FolderListFragment extends ListFragment
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        // TODO FolderOverviewActivity
+        // Use title to find the table name and pass it to FolderOverviewActivity
         TextView textView = (TextView) view.findViewById(R.id.text_folder_title);
         String title = textView.getText().toString();
-        Log.d("title", title);
+        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
+        String tableName = handle.getTableName(title, true);
+        Intent intent = new Intent(getActivity(), FolderOverviewActivity.class);
+        intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+        intent.putExtra(Constants.TAG_TITLE, title);
+        intent.putExtra(Constants.TAG_ID, id);
+        startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

@@ -12,6 +12,7 @@
     <string name="message_empty_database">Tap the + button to create a flashcard set</string>
     <string name="message_no_folders">Tap the + button to create a folder</string>
     <string name="message_empty_stack">Tap the + button to create a flashcard</string>
+    <string name="message_empty_folder">Tap the red button to import a set</string>
     <string name="message_all_cards_hidden">All cards are hidden</string>
 
     <!-- EditText hints -->

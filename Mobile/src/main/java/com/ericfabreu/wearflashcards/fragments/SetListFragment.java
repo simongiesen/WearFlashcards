@@ -3,6 +3,7 @@ package com.ericfabreu.wearflashcards.fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.ManageSetActivity;
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -38,10 +40,17 @@ public class SetListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter mAdapter;
     private MainViewPager mViewPager;
+    private boolean mFolder = false;
+    private String mTable = null;
     private List<Long> selections = new ArrayList<>();
 
     public void setViewPager(MainViewPager viewPager) {
         mViewPager = viewPager;
+    }
+
+    public void setFolderMode(String table) {
+        mFolder = true;
+        mTable = table;
     }
 
     public void refresh() {
@@ -58,7 +67,8 @@ public class SetListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
 
         // Show text if database is empty
-        setEmptyText(getString(R.string.message_empty_database));
+        setEmptyText(mFolder ? getString(R.string.message_empty_folder)
+                : getString(R.string.message_empty_database));
 
         // Setup contextual action mode
         final ListView listView = getListView();
@@ -100,7 +110,7 @@ public class SetListFragment extends ListFragment
                                         for (int i = 0, n = selections.size(); i < n; i++) {
                                             FlashcardProvider handle = new FlashcardProvider(
                                                     getActivity().getApplicationContext());
-                                            handle.deleteTable(selections.get(i), false);
+                                            handle.deleteTable(selections.get(i), mFolder);
                                         }
                                         mode.finish();
                                     }
@@ -121,13 +131,15 @@ public class SetListFragment extends ListFragment
                         FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         Cursor cursor = handle.query(SetList.CONTENT_URI,
-                                new String[]{SetList.SET_TITLE},
-                                SetList._ID + "=?",
+                                mFolder ? new String[]{FolderEntry.SET_TITLE}
+                                        : new String[]{SetList.SET_TITLE},
+                                (mFolder ? FolderEntry._ID : SetList._ID) + "=?",
                                 new String[]{String.valueOf(selections.get(0))},
                                 null);
                         if (cursor != null && cursor.moveToFirst()) {
                             String title = cursor.getString(cursor
-                                    .getColumnIndex(SetList.SET_TITLE));
+                                    .getColumnIndex(mFolder ? FolderEntry.SET_TITLE
+                                            : SetList.SET_TITLE));
                             Intent intent = new Intent(getActivity(), ManageSetActivity.class);
                             intent.putExtra(Constants.TAG_EDITING_MODE, true);
                             intent.putExtra(Constants.TAG_TITLE, title);
@@ -148,7 +160,9 @@ public class SetListFragment extends ListFragment
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual, menu);
                 getActivity().findViewById(R.id.tab_main).setVisibility(View.GONE);
-                mViewPager.setScrollable(false);
+                if (mViewPager != null) {
+                    mViewPager.setScrollable(false);
+                }
                 return true;
             }
 
@@ -157,7 +171,9 @@ public class SetListFragment extends ListFragment
                 // Reset selections when action mode is dismissed
                 selections = new ArrayList<>();
                 getActivity().findViewById(R.id.tab_main).setVisibility(View.VISIBLE);
-                mViewPager.setScrollable(true);
+                if (mViewPager != null) {
+                    mViewPager.setScrollable(true);
+                }
             }
 
             @Override
@@ -170,7 +186,7 @@ public class SetListFragment extends ListFragment
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 R.layout.fragment_set_list,
                 null,
-                new String[]{SetList.SET_TITLE},
+                mFolder ? new String[]{FolderEntry.SET_TITLE} : new String[]{SetList.SET_TITLE},
                 new int[]{R.id.text_set_title},
                 0);
         setListAdapter(mAdapter);
@@ -185,7 +201,7 @@ public class SetListFragment extends ListFragment
         TextView textView = (TextView) view.findViewById(R.id.text_set_title);
         String title = textView.getText().toString();
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-        String tableName = handle.getTableName(title, false);
+        String tableName = handle.getTableName(title, mFolder);
         Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);
@@ -194,16 +210,18 @@ public class SetListFragment extends ListFragment
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final String SET_SELECTION = "((" +
-                SetList.SET_TITLE + " NOTNULL) AND (" +
-                SetList.SET_TITLE + " != '' ))";
+        final Uri uri = mFolder ? Uri.withAppendedPath(FolderEntry.CONTENT_URI, mTable)
+                : SetList.CONTENT_URI;
+        final String[] columns = mFolder ? new String[]{FolderEntry._ID, FolderEntry.SET_TITLE}
+                : new String[]{SetList._ID, SetList.SET_TITLE};
         return new CursorLoader(getActivity(),
-                SetList.CONTENT_URI,
-                new String[]{SetList._ID, SetList.SET_TITLE},
-                SET_SELECTION,
+                uri,
+                columns,
+                null,
                 null,
                 PreferencesHelper.getOrder(getActivity().getApplicationContext(),
-                        SetList.SET_TITLE, Constants.PREF_KEY_SET_ORDER));
+                        mFolder ? FolderEntry.SET_TITLE : SetList.SET_TITLE,
+                        Constants.PREF_KEY_SET_ORDER));
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
