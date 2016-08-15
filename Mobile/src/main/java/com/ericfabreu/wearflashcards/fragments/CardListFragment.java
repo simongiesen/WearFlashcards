@@ -173,7 +173,8 @@ public class CardListFragment extends ListFragment
         final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
                 tableId, SetList.STARRED_ONLY);
         final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-        if (starredOnly && mProvider.getStarredCount(tableUri) == 0) {
+        if (starredOnly && mProvider.getCardCount(tableUri, true) == 0 &&
+                mProvider.getCardCount(tableUri, false) > 0) {
             super.setEmptyText(getText(R.string.message_all_cards_hidden));
         } else {
             super.setEmptyText(text);

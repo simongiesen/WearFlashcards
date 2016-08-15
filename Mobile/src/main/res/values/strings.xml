@@ -9,10 +9,10 @@
     <string name="title_activity_create_folder">Create a new folder</string>
 
     <!-- Messages -->
-    <string name="message_empty_database">Tap the + button to create a flashcard set</string>
-    <string name="message_no_folders">Tap the + button to create a folder</string>
-    <string name="message_empty_stack">Tap the + button to create a flashcard</string>
-    <string name="message_empty_folder">Tap the red button to import a set</string>
+    <string name="message_empty_database">Tap on the + button to create a flashcard set</string>
+    <string name="message_no_folders">Tap on the + button to create a folder</string>
+    <string name="message_empty_stack">Tap on the + button to create a flashcard</string>
+    <string name="message_empty_folder">Tap on the red button to import a set</string>
     <string name="message_all_cards_hidden">All cards are hidden</string>
 
     <!-- EditText hints -->
@@ -66,12 +66,16 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-    <string name="pref_title_sort_sets">Sets</string>
+    <string name="pref_title_sort_sets">Sets and folders</string>
     <string name="pref_title_sort_cards">Cards</string>
     <string name="pref_title_shuffle">Shuffle</string>
     <string name="pref_title_flip">Definitions first</string>
+    <string name="pref_title_share_star">Share starred only setting</string>
     <string name="pref_title_creating_star">Create starred cards</string>
     <string name="pref_description_shuffle">Study cards in random order</string>
     <string name="pref_description_flip">Show the back side of the cards first</string>
-    <string name="pref_description_creating_star">Automatically star new cards</string>
+    <string name="pref_description_star_on">Use the same value for all items</string>
+    <string name="pref_description_star_off">Use a separate value for each item</string>
+    <string name="pref_description_creating_star_on">Automatically star new cards</string>
+    <string name="pref_description_creating_star_off">Do not star new cards automatically</string>
 </resources>

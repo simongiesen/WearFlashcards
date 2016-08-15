@@ -10,6 +10,7 @@ public class Constants {
     public final static String PREF_KEY_SET_ORDER = "setOrder";
     public final static String PREF_KEY_CARD_ORDER = "cardOrder";
     public final static String PREF_KEY_CREATE_STARRED = "createCardStarred";
+    public final static String PREF_KEY_SHARED_STAR = "sharedStar";
 
     // Bundle tags
     public final static String TAG_TERM = "term";

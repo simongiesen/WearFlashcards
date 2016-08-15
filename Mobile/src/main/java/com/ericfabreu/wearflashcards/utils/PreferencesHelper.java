@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
  * Group of functions that handle interactions with SharedPreferences.
  */
 public class PreferencesHelper {
+    private static String PREF_KEY_STARRED_ONLY = "starredOnly";
+
     /**
      * Returns the order in which the content in `column` should be displayed.
      */
@@ -25,10 +27,35 @@ public class PreferencesHelper {
     }
 
     /**
-     * Returns the default star value for new cards
+     * Returns the default star value for new cards.
      */
     public static String getStarMode(Context context) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(Constants.PREF_KEY_CREATE_STARRED, false) ? "1" : "0";
+    }
+
+    /**
+     * Returns whether or not the global star setting should be used instead
+     * of the set's or folder's own setting.
+     */
+    public static boolean getSharedStarSetting(Context context) {
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(Constants.PREF_KEY_SHARED_STAR, false);
+    }
+
+    /**
+     * Returns the global starred only setting.
+     */
+    public static boolean getStarredOnly(Context context) {
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(PREF_KEY_STARRED_ONLY, false);
+    }
+
+    /**
+     * Flips the global starred only setting.
+     */
+    public static void flipStarredOnly(Context context) {
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().putBoolean(PREF_KEY_STARRED_ONLY, !getStarredOnly(context)).apply();
     }
 }

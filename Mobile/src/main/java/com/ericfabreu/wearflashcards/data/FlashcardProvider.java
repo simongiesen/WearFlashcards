@@ -616,20 +616,26 @@ public class FlashcardProvider extends ContentProvider {
      * Flips an integer flag in a given table.
      */
     public void flipFlag(Uri uri, long id, String flagColumn) {
-        // Get the current flag value
-        Cursor cursor = query(uri,
-                new String[]{"_id", flagColumn},
-                "_id=?",
-                new String[]{String.valueOf(id)},
-                null);
+        // Check if the global value should be used instead of the local one
+        if ((flagColumn.equals(SetList.STARRED_ONLY) || flagColumn.equals(FolderList.STARRED_ONLY))
+                && PreferencesHelper.getSharedStarSetting(context)) {
+            PreferencesHelper.flipStarredOnly(context);
+        } else {
+            // Get the current flag value
+            Cursor cursor = query(uri,
+                    new String[]{"_id", flagColumn},
+                    "_id=?",
+                    new String[]{String.valueOf(id)},
+                    null);
 
-        // Update the star flag
-        if (cursor != null && cursor.moveToFirst()) {
-            final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(flagColumn)) - 1);
-            ContentValues values = new ContentValues();
-            values.put(flagColumn, flippedValue);
-            update(uri, values, "_id=?", new String[]{String.valueOf(id)});
-            cursor.close();
+            // Update the star flag
+            if (cursor != null && cursor.moveToFirst()) {
+                final int flippedValue = Math.abs(cursor.getInt(cursor.getColumnIndex(flagColumn)) - 1);
+                ContentValues values = new ContentValues();
+                values.put(flagColumn, flippedValue);
+                update(uri, values, "_id=?", new String[]{String.valueOf(id)});
+                cursor.close();
+            }
         }
     }
 
@@ -637,6 +643,11 @@ public class FlashcardProvider extends ContentProvider {
      * Returns the current value of a flag.
      */
     public boolean getFlag(Uri uri, long id, String flagColumn) {
+        // Check if the global value should be used instead of the local one
+        if ((flagColumn.equals(SetList.STARRED_ONLY) || flagColumn.equals(FolderList.STARRED_ONLY))
+                && PreferencesHelper.getSharedStarSetting(context)) {
+            return PreferencesHelper.getStarredOnly(context);
+        }
         Cursor cursor = query(uri,
                 new String[]{"_id", flagColumn},
                 "_id=?",
@@ -653,11 +664,11 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Returns the number of starred cards.
      */
-    public int getStarredCount(Uri uri) {
+    public int getCardCount(Uri uri, boolean star) {
         Cursor cursor = query(uri,
                 new String[]{CardSet.STAR},
                 CardSet.STAR + "=?",
-                new String[]{"1"},
+                new String[]{star ? "1" : "0"},
                 null);
         if (cursor != null && cursor.moveToFirst()) {
             final int size = cursor.getCount();

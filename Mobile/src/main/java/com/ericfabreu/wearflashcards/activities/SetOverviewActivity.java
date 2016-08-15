@@ -103,7 +103,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         } else {
             final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
                     tableId, SetList.STARRED_ONLY);
-            final int starredCount = mProvider.getStarredCount(tableUri);
+            final int starredCount = mProvider.getCardCount(tableUri, true);
             if (starredOnly && starredCount == 0) {
                 menu.removeItem(R.id.item_study_set);
             }
