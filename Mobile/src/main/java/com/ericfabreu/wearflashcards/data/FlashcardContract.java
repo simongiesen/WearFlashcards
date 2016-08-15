@@ -80,6 +80,7 @@ public final class FlashcardContract {
         public static final String FOLDER_TITLE = "folder_title";
         public static final String SET_COUNT = "set_count";
         public static final String COLOR = "color";
+        public static final String STARRED_ONLY = "starred_only";
     }
 
     // Table with a single set of flashcards

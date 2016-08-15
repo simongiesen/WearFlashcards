@@ -35,7 +35,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                 FolderList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 FolderList.FOLDER_TITLE + " TEXT UNIQUE NOT NULL," +
                 FolderList.SET_COUNT + " INTEGER DEFAULT 0," +
-                FolderList.COLOR + " INTEGER DEFAULT 0)");
+                FolderList.COLOR + " INTEGER DEFAULT 0," +
+                FolderList.STARRED_ONLY + " INTEGER DEFAULT 0)");
     }
 
     /**
