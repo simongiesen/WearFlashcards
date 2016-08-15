@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
@@ -496,7 +495,6 @@ public class FlashcardProvider extends ContentProvider {
         final String prefix = folder ? "f" : "w";
         final long middle = cursor.moveToFirst() ? (cursor.getLong(cursor.getColumnIndex("seq")) + 1) : 1;
         cursor.close();
-        Log.d("name", prefix + middle + "f");
         return prefix + middle + "f";
     }
 

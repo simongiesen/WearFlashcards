@@ -98,10 +98,12 @@ public final class FlashcardContract {
 
         // Columns
         public static final String SET_TITLE = "title";
+        public static final String SET_ID = "set_id";
 
         // Creation command
         public static final String COLUMN_DEFINITIONS = "' (" +
                 _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                SET_TITLE + " TEXT NOT NULL)";
+                SET_TITLE + " TEXT NOT NULL," +
+                SET_ID + " LONG NOT NULL)";
     }
 }
