@@ -34,7 +34,6 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + FolderList.TABLE_NAME + " (" +
                 FolderList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 FolderList.FOLDER_TITLE + " TEXT UNIQUE NOT NULL," +
-                FolderList.SET_COUNT + " INTEGER DEFAULT 0," +
                 FolderList.COLOR + " INTEGER DEFAULT 0," +
                 FolderList.STARRED_ONLY + " INTEGER DEFAULT 0)");
     }
@@ -148,8 +147,8 @@ public class FlashcardDbHelper extends SQLiteOpenHelper {
                 db.execSQL("CREATE TABLE IF NOT EXISTS " + FolderList.TABLE_NAME + " (" +
                         FolderList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         FolderList.FOLDER_TITLE + " TEXT UNIQUE NOT NULL," +
-                        FolderList.SET_COUNT + " INTEGER DEFAULT 0," +
-                        FolderList.COLOR + " INTEGER DEFAULT 0)");
+                        FolderList.COLOR + " INTEGER DEFAULT 0," +
+                        FolderList.STARRED_ONLY + " INTEGER DEFAULT 0)");
             }
 
             default:

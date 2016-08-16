@@ -184,7 +184,7 @@ public class SetListFragment extends ListFragment
 
         // Create an empty adapter to display the list of sets
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.fragment_set_list,
+                R.layout.item_set_list,
                 null,
                 mFolder ? new String[]{FolderEntry.SET_TITLE} : new String[]{SetList.SET_TITLE},
                 new int[]{R.id.text_set_title},

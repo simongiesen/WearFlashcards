@@ -12,9 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.SetListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -48,11 +50,18 @@ public class FolderOverviewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FolderOverviewActivity.this, ManageFolderActivity.class);
-                intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
-                intent.putExtra(Constants.TAG_TITLE, title);
-                intent.putExtra(Constants.TAG_EDITING_MODE, false);
-                startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
+                // Do not launch ImportSetsActivity if there are no sets to import
+                FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
+                if (handle.getRowCount(SetList.TABLE_NAME) == handle.getRowCount(tableName)) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            R.string.message_import_empty, Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Intent intent = new Intent(FolderOverviewActivity.this,
+                            ImportSetsActivity.class);
+                    intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                    startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
+                }
             }
         });
 
@@ -147,8 +156,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
         // Refresh activity with the proper sort order when a child activity is closed
         if (requestCode == Constants.REQUEST_CODE_SETTINGS ||
                 requestCode == Constants.REQUEST_CODE_EDIT ||
-                requestCode == Constants.REQUEST_CODE_STUDY ||
-                requestCode == Constants.REQUEST_CODE_CREATE) {
+                requestCode == Constants.REQUEST_CODE_STUDY) {
             Intent refresh = new Intent(this, getClass());
             refresh.putExtra(Constants.TAG_TABLE_NAME, tableName);
             refresh.putExtra(Constants.TAG_TITLE, title);

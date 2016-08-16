@@ -44,7 +44,7 @@ public class ManageFolderActivity extends AppCompatActivity {
             text.setSelection(title.length());
 
             // Rename the create button to save
-            ((Button) findViewById(R.id.button_manage_folder)).setText(getText(R.string.button_save));
+            ((Button) findViewById(R.id.button_import_sets)).setText(getText(R.string.button_save));
         }
     }
 

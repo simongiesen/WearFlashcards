@@ -168,7 +168,7 @@ public class FolderListFragment extends ListFragment
 
         // Create an empty adapter to display the list of folders
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.fragment_folder_list,
+                R.layout.item_folder_list,
                 null,
                 new String[]{FolderList.FOLDER_TITLE},
                 new int[]{R.id.text_folder_title},

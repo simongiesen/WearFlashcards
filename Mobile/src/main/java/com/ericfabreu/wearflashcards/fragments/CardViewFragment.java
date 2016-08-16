@@ -49,7 +49,7 @@ public class CardViewFragment extends Fragment {
         final long id = bundle.getLong(Constants.TAG_ID);
 
         // Create card and get necessary views
-        View card = inflater.inflate(R.layout.fragment_card_view, container, false);
+        View card = inflater.inflate(R.layout.item_card_view, container, false);
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_view);
         final AutoResizeTextView termView =
                 (AutoResizeTextView) frame.findViewById(R.id.text_card_term);

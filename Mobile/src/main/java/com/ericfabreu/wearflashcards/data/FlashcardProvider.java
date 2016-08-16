@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -161,6 +162,24 @@ public class FlashcardProvider extends ContentProvider {
                 selectionArgs,
                 PreferencesHelper.getOrder(context, CardSet.TERM,
                         Constants.PREF_KEY_CARD_ORDER));
+    }
+
+    /**
+     * Queries the database for all set titles and ids.
+     * If {@param tableName} is provided, it returns all the sets that are not inside the folder.
+     */
+    public Cursor fetchAllSets(String tableName) {
+        String whereClause = null;
+        if (tableName != null) {
+            whereClause = SetList._ID + " NOT IN (SELECT " +
+                    FolderEntry.SET_ID + " FROM " + tableName + ")";
+        }
+        return query(SetList.CONTENT_URI,
+                new String[]{SetList.SET_TITLE, SetList._ID},
+                whereClause,
+                null,
+                PreferencesHelper.getOrder(context, SetList.SET_TITLE,
+                        Constants.PREF_KEY_SET_ORDER));
     }
 
     @Override
@@ -674,5 +693,12 @@ public class FlashcardProvider extends ContentProvider {
             return size;
         }
         return 0;
+    }
+
+    /**
+     * Returns the number of rows in {@param table}.
+     */
+    public long getRowCount(String table) {
+        return DatabaseUtils.queryNumEntries(mOpenHelper.getReadableDatabase(), table);
     }
 }

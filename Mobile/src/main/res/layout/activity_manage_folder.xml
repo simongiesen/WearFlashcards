@@ -30,7 +30,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/button_manage_folder"
+            android:id="@+id/button_import_sets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/layout_manage_folder"

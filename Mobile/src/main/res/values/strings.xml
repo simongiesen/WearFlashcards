@@ -7,6 +7,11 @@
     <string name="title_activity_create_set">Create a new set</string>
     <string name="title_activity_create_card">Create a new card</string>
     <string name="title_activity_create_folder">Create a new folder</string>
+    <string name="title_activity_import_sets">Import sets</string>
+
+    <!-- TextViews -->
+    <string name="text_import_sets_title">Title</string>
+    <string name="text_import_sets_count">Card count</string>
 
     <!-- Messages -->
     <string name="message_empty_database">Tap on the + button to create a flashcard set</string>
@@ -14,6 +19,7 @@
     <string name="message_empty_stack">Tap on the + button to create a flashcard</string>
     <string name="message_empty_folder">Tap on the red button to import a set</string>
     <string name="message_all_cards_hidden">All cards are hidden</string>
+    <string name="message_import_empty">There are no sets left to import</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
@@ -32,6 +38,7 @@
     <string name="button_set_view">Show cards</string>
     <string name="button_starred_only">Only show starred cards</string>
     <string name="button_reload_cards">Reload</string>
+    <string name="button_import">Import</string>
 
     <!-- Image descriptions -->
     <string name="description_star">Star</string>
@@ -51,6 +58,10 @@
     <string name="dialog_delete_cards">Delete cards?</string>
     <string name="dialog_delete_folders">Delete folders?</string>
     <string name="dialog_cannot_undo">This cannot be undone.</string>
+    <string name="dialog_remove_set">Remove set from folder?</string>
+    <string name="dialog_remove_sets">Remove sets from folder?</string>
+    <string name="dialog_remove_undo">This will not delete it permanently.</string>
+    <string name="dialog_remove_undo_plural">This will not delete them permanently.</string>
 
     <!-- Preferences -->
     <string name="pref_header_sorting">Sorting</string>
