@@ -2,7 +2,11 @@ package com.ericfabreu.wearflashcards.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+
+import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 
 /**
  * Group of functions that handle interactions with SharedPreferences.
@@ -29,7 +33,7 @@ public class PreferencesHelper {
     /**
      * Returns the default star value for new cards.
      */
-    public static String getStarMode(Context context) {
+    public static String getDefaultStar(Context context) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(Constants.PREF_KEY_CREATE_STARRED, false) ? "1" : "0";
     }
@@ -38,24 +42,33 @@ public class PreferencesHelper {
      * Returns whether or not the global star setting should be used instead
      * of the set's or folder's own setting.
      */
-    public static boolean getSharedStarSetting(Context context) {
+    private static boolean getSharedStarSetting(Context context) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(Constants.PREF_KEY_SHARED_STAR, false);
     }
 
     /**
-     * Returns the global starred only setting.
+     * Returns the appropriate starred only setting.
      */
-    public static boolean getStarredOnly(Context context) {
+    public static boolean getStar(Context context, FlashcardProvider provider, Uri uri,
+                                  long tableId, String column) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(PREF_KEY_STARRED_ONLY, false);
+        return !column.equals(CardSet.STAR) && getSharedStarSetting(context) ?
+                settings.getBoolean(PREF_KEY_STARRED_ONLY, false) :
+                provider.getFlag(uri, tableId, column);
     }
 
     /**
-     * Flips the global starred only setting.
+     * Flips the appropriate starred only setting.
      */
-    public static void flipStarredOnly(Context context) {
+    public static void flipStar(Context context, FlashcardProvider provider, Uri uri,
+                                long id, String column) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        settings.edit().putBoolean(PREF_KEY_STARRED_ONLY, !getStarredOnly(context)).apply();
+        if (!column.equals(CardSet.STAR) && getSharedStarSetting(context)) {
+            settings.edit().putBoolean(PREF_KEY_STARRED_ONLY,
+                    !settings.getBoolean(PREF_KEY_STARRED_ONLY, false)).apply();
+        } else {
+            provider.flipFlag(uri, id, column);
+        }
     }
 }

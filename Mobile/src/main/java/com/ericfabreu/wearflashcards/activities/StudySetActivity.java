@@ -15,6 +15,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.ericfabreu.wearflashcards.views.VerticalViewPager;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 public class StudySetActivity extends AppCompatActivity {
-    private final int MENU_POS_STAR = 1;
+    private static final int MENU_POS_STAR = 1;
     private String tableName, title;
     private long tableId;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
@@ -58,8 +59,8 @@ public class StudySetActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
-                tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
         if (starredOnly) {
             MenuItem star = menu.getItem(MENU_POS_STAR);
             star.setIcon(R.drawable.ic_star_selected);
@@ -72,8 +73,8 @@ public class StudySetActivity extends AppCompatActivity {
      */
     protected void createCards() {
         // Get information from the database
-        final boolean starredOnly = mProvider
-                .getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
         Cursor cursor = mProvider.fetchAllCards(tableName, starredOnly);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
@@ -116,11 +117,12 @@ public class StudySetActivity extends AppCompatActivity {
             }
             // Flip starred only flag and reload cards
             case R.id.item_starred_only: {
-                final boolean flag = mProvider.getFlag(SetList.CONTENT_URI,
-                        tableId, SetList.STARRED_ONLY);
+                final boolean flag = PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
                 final int icon = flag ? R.drawable.ic_star_unselected : R.drawable.ic_star_selected;
                 item.setIcon(icon);
-                mProvider.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                PreferencesHelper.flipStar(getApplicationContext(), mProvider,
+                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
                 recreateCards();
                 return true;
             }

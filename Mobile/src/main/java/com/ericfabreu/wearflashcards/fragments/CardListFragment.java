@@ -170,8 +170,8 @@ public class CardListFragment extends ListFragment
 
     @Override
     public void setEmptyText(CharSequence text) {
-        final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
-                tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
+                mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
         final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
         if (starredOnly && mProvider.getCardCount(tableUri, true) == 0 &&
                 mProvider.getCardCount(tableUri, false) > 0) {
@@ -182,8 +182,8 @@ public class CardListFragment extends ListFragment
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
-                tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
+                mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
         final String selection = starredOnly ? CardSet.STAR + "=?" : null;
         final String[] selectionArgs = starredOnly ? new String[]{"1"} : null;
         return new CursorLoader(getActivity(),

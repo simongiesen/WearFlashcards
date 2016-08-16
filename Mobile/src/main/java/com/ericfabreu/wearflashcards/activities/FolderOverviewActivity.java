@@ -12,14 +12,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.SetListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 public class FolderOverviewActivity extends AppCompatActivity {
     private String tableName, title;
@@ -76,6 +79,11 @@ public class FolderOverviewActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Load the starred only setting
+        final Switch starredOnly = (Switch) findViewById(R.id.switch_folder_starred_only);
+        starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY));
     }
 
     @Override
@@ -103,6 +111,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
             menu.removeItem(R.id.item_study_set);
         } else {
             menu.removeItem(R.id.item_study_set);
+            findViewById(R.id.layout_folder_starred_only).setVisibility(View.VISIBLE);
             cursor.close();
         }
         return true;
@@ -176,5 +185,10 @@ public class FolderOverviewActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.layout_folder_overview, setListFragment, fragTagSetList)
                 .commit();
+    }
+
+    public void flipStarredOnly(View view) {
+        PreferencesHelper.flipStar(getApplicationContext(), mProvider,
+                FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY);
     }
 }

@@ -20,6 +20,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 public class SetOverviewActivity extends AppCompatActivity {
     private String tableName, title;
@@ -72,8 +73,8 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Load the starred only setting
         final Switch starredOnly = (Switch) findViewById(R.id.switch_starred_only);
-        starredOnly.setChecked(mProvider.getFlag(SetList.CONTENT_URI,
-                tableId, SetList.STARRED_ONLY));
+        starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY));
     }
 
     @Override
@@ -101,8 +102,8 @@ public class SetOverviewActivity extends AppCompatActivity {
             menu.removeItem(R.id.item_study_set);
             findViewById(R.id.layout_starred_only).setVisibility(View.GONE);
         } else {
-            final boolean starredOnly = mProvider.getFlag(SetList.CONTENT_URI,
-                    tableId, SetList.STARRED_ONLY);
+            final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(),
+                    mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
             final int starredCount = mProvider.getCardCount(tableUri, true);
             if (starredOnly && starredCount == 0) {
                 menu.removeItem(R.id.item_study_set);
@@ -180,7 +181,8 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Check if the flag needs to be flipped
         if (view != null) {
-            mProvider.flipFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            PreferencesHelper.flipStar(getApplicationContext(), mProvider,
+                    SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
             invalidateOptionsMenu();
         }
 

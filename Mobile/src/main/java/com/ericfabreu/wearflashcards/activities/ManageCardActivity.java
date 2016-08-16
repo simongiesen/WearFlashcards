@@ -103,7 +103,7 @@ public class ManageCardActivity extends AppCompatActivity {
                 contentValues.put(CardSet.TERM, newTerm);
                 contentValues.put(CardSet.DEFINITION, newDefinition);
                 contentValues.put(CardSet.STAR,
-                        PreferencesHelper.getStarMode(getApplicationContext()));
+                        PreferencesHelper.getDefaultStar(getApplicationContext()));
                 handle.insert(tableUri, contentValues);
 
                 // Check if it should reset view

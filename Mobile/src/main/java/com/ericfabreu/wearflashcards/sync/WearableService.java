@@ -9,6 +9,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataEvent;
@@ -57,7 +58,8 @@ public class WearableService extends WearableListenerService {
                                     FlashcardProvider(getApplicationContext());
                             final String tableName = handle.getTableName(title, false);
                             final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-                            handle.flipFlag(uri, cardId, CardSet.STAR);
+                            PreferencesHelper.flipStar(getApplicationContext(), handle, uri,
+                                    cardId, CardSet.STAR);
                         }
                     }
                 }
@@ -106,7 +108,8 @@ public class WearableService extends WearableListenerService {
         // Respect the wearable's starred only setting
         switch (starredOption) {
             case "0": {
-                starredOnly = handle.getFlag(SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                starredOnly = PreferencesHelper.getStar(getApplicationContext(), handle,
+                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
                 break;
             }
             case "1": {

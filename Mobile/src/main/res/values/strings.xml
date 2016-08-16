@@ -37,6 +37,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_set_view">Show cards</string>
     <string name="button_starred_only">Only show starred cards</string>
+    <string name="button_starred_only_folder">Only study starred cards</string>
     <string name="button_reload_cards">Reload</string>
     <string name="button_import">Import</string>
 

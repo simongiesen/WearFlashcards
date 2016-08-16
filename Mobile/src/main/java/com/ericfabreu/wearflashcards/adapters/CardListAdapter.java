@@ -16,6 +16,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardListFragment;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 /**
  * Simple adapter for CardListFragment.
@@ -44,8 +45,8 @@ public class CardListAdapter extends CursorAdapter {
             view.findViewById(R.id.layout_star_list).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FlashcardProvider handle = new FlashcardProvider(mContext);
-                    handle.flipFlag(Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
+                    PreferencesHelper.flipStar(mContext, new FlashcardProvider(mContext),
+                            Uri.withAppendedPath(CardSet.CONTENT_URI, mTableName),
                             getItemId(position), CardSet.STAR);
 
                     // Hide the study set and refresh the empty text if necessary
