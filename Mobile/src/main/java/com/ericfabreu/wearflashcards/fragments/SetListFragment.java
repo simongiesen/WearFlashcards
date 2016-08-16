@@ -159,7 +159,9 @@ public class SetListFragment extends ListFragment
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual, menu);
-                getActivity().findViewById(R.id.tab_main).setVisibility(View.GONE);
+                if (!mFolder) {
+                    getActivity().findViewById(R.id.tab_main).setVisibility(View.GONE);
+                }
                 if (mViewPager != null) {
                     mViewPager.setScrollable(false);
                 }
@@ -170,7 +172,9 @@ public class SetListFragment extends ListFragment
             public void onDestroyActionMode(ActionMode mode) {
                 // Reset selections when action mode is dismissed
                 selections = new ArrayList<>();
-                getActivity().findViewById(R.id.tab_main).setVisibility(View.VISIBLE);
+                if (!mFolder) {
+                    getActivity().findViewById(R.id.tab_main).setVisibility(View.VISIBLE);
+                }
                 if (mViewPager != null) {
                     mViewPager.setScrollable(true);
                 }
@@ -201,7 +205,7 @@ public class SetListFragment extends ListFragment
         TextView textView = (TextView) view.findViewById(R.id.text_set_title);
         String title = textView.getText().toString();
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-        String tableName = handle.getTableName(title, mFolder);
+        String tableName = handle.getTableName(title, false);
         Intent intent = new Intent(getActivity(), SetOverviewActivity.class);
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);
