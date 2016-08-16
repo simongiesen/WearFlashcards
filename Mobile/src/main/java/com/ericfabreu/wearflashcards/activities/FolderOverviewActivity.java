@@ -110,7 +110,6 @@ public class FolderOverviewActivity extends AppCompatActivity {
         if (cursor == null || cursor.getCount() == 0) {
             menu.removeItem(R.id.item_study_set);
         } else {
-            menu.removeItem(R.id.item_study_set);
             findViewById(R.id.layout_folder_starred_only).setVisibility(View.VISIBLE);
             cursor.close();
         }
@@ -140,6 +139,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
                 intent.putExtra(Constants.TAG_TITLE, title);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
                 intent.putExtra(Constants.TAG_ID, tableId);
+                intent.putExtra(Constants.TAG_FOLDER, true);
                 startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
                 return true;
             }

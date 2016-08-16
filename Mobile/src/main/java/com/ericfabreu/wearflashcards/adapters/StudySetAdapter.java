@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
+import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
@@ -43,7 +44,8 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
 
     public StudySetAdapter(FragmentManager fragmentManager, ViewPager viewPager, String tableName,
                            List<String> terms, List<String> definitions, List<Boolean> stars,
-                           List<Long> ids, Context context, long tableId, String title) {
+                           List<Long> ids, List<Long> tableIds, Context context, long tableId,
+                           String title) {
         super(fragmentManager);
         mTableName = tableName;
         mTitle = title;
@@ -53,7 +55,8 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
 
         // Create all cards
         for (int i = 0, n = terms.size(); i < n; i++) {
-            cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i), i));
+            cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i),
+                    tableIds.isEmpty() ? -1 : tableIds.get(i), i));
         }
     }
 
@@ -61,9 +64,14 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
      * Sends term and definition to CardViewFragment and creates a new card.
      */
     private CardViewFragment newCard(String term, String definition, boolean star,
-                                     long id, int position) {
+                                     long id, long tableId, int position) {
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TAG_TABLE_NAME, mTableName);
+        FlashcardProvider provider = new FlashcardProvider(mContext);
+
+        // Use the tableId to get the table name if this was started inside a folder
+        bundle.putString(Constants.TAG_TABLE_NAME, tableId > 0 ?
+                provider.getTableName(tableId, false) : mTableName);
+
         bundle.putString(Constants.TAG_TERM, term);
         bundle.putString(Constants.TAG_DEFINITION, definition);
         bundle.putBoolean(Constants.TAG_STAR, star);

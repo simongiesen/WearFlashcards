@@ -137,6 +137,7 @@ public class SetOverviewActivity extends AppCompatActivity {
                 intent.putExtra(Constants.TAG_TITLE, title);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
                 intent.putExtra(Constants.TAG_ID, tableId);
+                intent.putExtra(Constants.TAG_FOLDER, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
                 return true;
             }

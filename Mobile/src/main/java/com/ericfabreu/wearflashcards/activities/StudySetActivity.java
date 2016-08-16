@@ -2,6 +2,7 @@ package com.ericfabreu.wearflashcards.activities;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.StudySetAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -26,9 +29,10 @@ public class StudySetActivity extends AppCompatActivity {
     private static final int MENU_POS_STAR = 1;
     private String tableName, title;
     private long tableId;
+    private boolean folder;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
     private List<Boolean> stars = new ArrayList<>();
-    private List<Long> ids = new ArrayList<>();
+    private List<Long> ids = new ArrayList<>(), tableIds = new ArrayList<>();
     private FlashcardProvider mProvider;
 
     @Override
@@ -41,11 +45,12 @@ public class StudySetActivity extends AppCompatActivity {
         }
         mProvider = new FlashcardProvider(getApplicationContext());
 
-        // Get set information from SetOverviewActivity
+        // Get set or folder information from the parent activity
         Bundle bundle = getIntent().getExtras();
         tableName = bundle.getString(Constants.TAG_TABLE_NAME);
         tableId = bundle.getLong(Constants.TAG_ID);
         title = bundle.getString(Constants.TAG_TITLE);
+        folder = bundle.getBoolean(Constants.TAG_FOLDER);
         setTitle(title);
 
         createCards();
@@ -60,7 +65,8 @@ public class StudySetActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
+                folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
         if (starredOnly) {
             MenuItem star = menu.getItem(MENU_POS_STAR);
             star.setIcon(R.drawable.ic_star_selected);
@@ -74,16 +80,42 @@ public class StudySetActivity extends AppCompatActivity {
     protected void createCards() {
         // Get information from the database
         final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
-        Cursor cursor = mProvider.fetchAllCards(tableName, starredOnly);
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
-            definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
-            stars.add(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)) == 1);
-            ids.add(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
+                folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
+                folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
+        // Check if it needs to load more than one set
+        if (folder) {
+            Cursor cursor = mProvider.query(Uri.withAppendedPath(FolderEntry.CONTENT_URI, tableName),
+                    new String[]{FolderEntry.SET_ID}, null, null, null);
+            if (cursor != null) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    final long setId = cursor.getLong(cursor.getColumnIndex(FolderEntry.SET_ID));
+                    final String setTable = mProvider.getTableName(setId, false);
+                    Cursor set = mProvider.fetchAllCards(setTable, starredOnly);
+                    for (set.moveToFirst(); !set.isAfterLast(); set.moveToNext()) {
+                        terms.add(set.getString(set.getColumnIndex(CardSet.TERM)));
+                        definitions.add(set.getString(set.getColumnIndex(CardSet.DEFINITION)));
+                        stars.add(set.getInt(set.getColumnIndex(CardSet.STAR)) == 1);
+                        ids.add(set.getLong(set.getColumnIndex(CardSet._ID)));
+                        tableIds.add(setId);
+                    }
+                    set.close();
+                }
+                cursor.close();
+            }
+        } else {
+            Cursor cursor = mProvider.fetchAllCards(tableName, starredOnly);
+            if (cursor != null) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
+                    definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
+                    stars.add(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)) == 1);
+                    ids.add(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
+                }
+                cursor.close();
+            }
         }
 
-        // Return to SetOverviewActivity if all cards have been hidden
+        // Return to the parent activity if all cards have been hidden
         if (terms.isEmpty()) {
             finish();
         }
@@ -101,7 +133,7 @@ public class StudySetActivity extends AppCompatActivity {
 
         final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
         pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), pager, tableName,
-                terms, definitions, stars, ids, getApplicationContext(), tableId, title));
+                terms, definitions, stars, ids, tableIds, getApplicationContext(), tableId, title));
     }
 
     @Override
@@ -118,11 +150,13 @@ public class StudySetActivity extends AppCompatActivity {
             // Flip starred only flag and reload cards
             case R.id.item_starred_only: {
                 final boolean flag = PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                        folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
+                        folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
                 final int icon = flag ? R.drawable.ic_star_unselected : R.drawable.ic_star_selected;
                 item.setIcon(icon);
                 PreferencesHelper.flipStar(getApplicationContext(), mProvider,
-                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                        folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
+                        folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
                 recreateCards();
                 return true;
             }
@@ -140,7 +174,7 @@ public class StudySetActivity extends AppCompatActivity {
         int[] shuffleOrder = getShuffledArray(size);
         List<String> newTerms = new ArrayList<>(), newDefinitions = new ArrayList<>();
         List<Boolean> newStars = new ArrayList<>();
-        List<Long> newIds = new ArrayList<>();
+        List<Long> newIds = new ArrayList<>(), newTableIds = new ArrayList<>();
 
         // Use shuffled int array to ensure that the new terms, definitions, and stars match
         for (int i = 0; i < size; i++) {
@@ -148,11 +182,16 @@ public class StudySetActivity extends AppCompatActivity {
             newDefinitions.add(i, definitions.get(shuffleOrder[i]));
             newStars.add(i, stars.get(shuffleOrder[i]));
             newIds.add(i, ids.get(shuffleOrder[i]));
+            if (folder) {
+                newTableIds.add(i, tableIds.get(shuffleOrder[i]));
+            }
         }
+
         terms = newTerms;
         definitions = newDefinitions;
         stars = newStars;
         ids = newIds;
+        tableIds = newTableIds;
     }
 
     /**
@@ -192,6 +231,7 @@ public class StudySetActivity extends AppCompatActivity {
         definitions.clear();
         stars.clear();
         ids.clear();
+        tableIds.clear();
         createCards();
     }
 }

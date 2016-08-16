@@ -20,6 +20,7 @@ public class Constants {
     public final static String TAG_STAR = "star";
     public final static String TAG_ID = "id";
     public final static String TAG_EDITING_MODE = "editing";
+    public final static String TAG_FOLDER = "folder";
 
     // Fragments and activities
     public final static int REQUEST_CODE_SETTINGS = 1;
