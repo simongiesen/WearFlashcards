@@ -100,12 +100,12 @@ public class SetListFragment extends ListFragment
                             builder.setTitle(mFolder ? R.string.dialog_remove_sets
                                     : R.string.dialog_delete_sets);
                             builder.setMessage(mFolder ? R.string.dialog_remove_undo_plural
-                                    : R.string.dialog_cannot_undo);
+                                    : R.string.dialog_set_cannot_undo_plural);
                         } else {
                             builder.setTitle(mFolder ? R.string.dialog_remove_set
                                     : R.string.dialog_delete_set);
                             builder.setMessage(mFolder ? R.string.dialog_remove_undo
-                                    : R.string.dialog_cannot_undo);
+                                    : R.string.dialog_set_cannot_undo);
                         }
                         builder.setCancelable(true);
                         builder.setPositiveButton(R.string.button_delete,

@@ -91,7 +91,7 @@ public class CardListFragment extends ListFragment
                         } else {
                             builder.setTitle(R.string.dialog_delete_card);
                         }
-                        builder.setMessage(R.string.dialog_cannot_undo);
+                        builder.setMessage(R.string.dialog_card_cannot_undo);
                         builder.setCancelable(true);
                         builder.setPositiveButton(R.string.button_delete,
                                 new DialogInterface.OnClickListener() {

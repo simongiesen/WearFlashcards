@@ -58,11 +58,15 @@
     <string name="dialog_delete_sets">Delete sets</string>
     <string name="dialog_delete_cards">Delete cards</string>
     <string name="dialog_delete_folders">Delete folders</string>
-    <string name="dialog_cannot_undo">This cannot be undone.</string>
+    <string name="dialog_set_cannot_undo">This will also delete it from the folders and cannot be undone</string>
+    <string name="dialog_set_cannot_undo_plural">This will also delete them from the folders and cannot be undone</string>
+    <string name="dialog_folder_cannot_undo">This will not delete its sets permanently</string>
+    <string name="dialog_folder_cannot_undo_plural">This will not delete their sets permanently</string>
+    <string name="dialog_card_cannot_undo">This cannot be undone</string>
     <string name="dialog_remove_set">Remove set from folder</string>
     <string name="dialog_remove_sets">Remove sets from folder</string>
-    <string name="dialog_remove_undo">This will not delete it permanently.</string>
-    <string name="dialog_remove_undo_plural">This will not delete them permanently.</string>
+    <string name="dialog_remove_undo">This will not delete it permanently</string>
+    <string name="dialog_remove_undo_plural">This will not delete them permanently</string>
 
     <!-- Preferences -->
     <string name="pref_header_sorting">Sorting</string>

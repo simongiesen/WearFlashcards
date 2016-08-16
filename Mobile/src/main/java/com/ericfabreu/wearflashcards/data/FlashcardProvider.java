@@ -486,6 +486,13 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
+     * Returns a table name given the table's id.
+     */
+    public String getTableName(long tableId, boolean folder) {
+        return folder ? "f" + tableId + "f" : "w" + tableId + "f";
+    }
+
+    /**
      * Checks if the given title is available.
      */
     private boolean titleAvailable(String title, boolean folder) {
@@ -512,7 +519,8 @@ public class FlashcardProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         final String prefix = folder ? "f" : "w";
-        final long middle = cursor.moveToFirst() ? (cursor.getLong(cursor.getColumnIndex("seq")) + 1) : 1;
+        final long middle = cursor.moveToFirst() ?
+                (cursor.getLong(cursor.getColumnIndex("seq")) + 1) : 1;
         cursor.close();
         return prefix + middle + "f";
     }
@@ -556,10 +564,24 @@ public class FlashcardProvider extends ContentProvider {
             SQLiteDatabase db = mOpenHelper.getWritableDatabase();
             final String title = cursor.getString(cursor.getColumnIndex(column));
 
-            // Remove set from main database
+            // Remove set or folder from main database
             db.execSQL("DROP TABLE IF EXISTS '" + getTableName(title, folder) + "'");
             delete(uri, column + "=?", new String[]{title});
             cursor.close();
+        }
+
+        // Remove set from folders
+        if (!folder) {
+            cursor = query(FolderList.CONTENT_URI, new String[]{FolderList._ID}, null, null, null);
+            if (cursor != null) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    final String table = getTableName(cursor
+                            .getLong(cursor.getColumnIndex(FolderList._ID)), true);
+                    delete(Uri.withAppendedPath(FolderEntry.CONTENT_URI, table),
+                            FolderEntry.SET_ID + "=?", new String[]{String.valueOf(tableRowId)});
+                }
+                cursor.close();
+            }
         }
     }
 

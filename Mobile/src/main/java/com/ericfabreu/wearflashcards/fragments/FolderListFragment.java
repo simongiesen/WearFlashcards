@@ -89,10 +89,11 @@ public class FolderListFragment extends ListFragment
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         if (selections.size() > 1) {
                             builder.setTitle(R.string.dialog_delete_folders);
+                            builder.setMessage(R.string.dialog_folder_cannot_undo_plural);
                         } else {
                             builder.setTitle(R.string.dialog_delete_folder);
+                            builder.setMessage(R.string.dialog_folder_cannot_undo);
                         }
-                        builder.setMessage(R.string.dialog_cannot_undo);
                         builder.setCancelable(true);
                         builder.setPositiveButton(R.string.button_delete,
                                 new DialogInterface.OnClickListener() {
