@@ -18,6 +18,7 @@ public final class FlashcardContract {
     public static abstract class SetList implements BaseColumns {
         public static final String TABLE_DIR = "set_list";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
+        public static final String TABLE_NAME = "sets";
 
         // Mime type of a directory of sets
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
@@ -28,7 +29,6 @@ public final class FlashcardContract {
                 AUTHORITY + "/" + TABLE_DIR;
 
         // Columns
-        public static final String TABLE_NAME = "sets";
         public static final String SET_TITLE = "set_title";
         public static final String STARRED_ONLY = "starred_only";
 
@@ -66,6 +66,7 @@ public final class FlashcardContract {
     public static abstract class FolderList implements BaseColumns {
         public static final String TABLE_DIR = "folder_list";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, TABLE_DIR);
+        public static final String TABLE_NAME = "folders";
 
         // Mime type of a directory of folders
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
@@ -76,7 +77,6 @@ public final class FlashcardContract {
                 AUTHORITY + "/" + TABLE_DIR;
 
         // Columns
-        public static final String TABLE_NAME = "folders";
         public static final String FOLDER_TITLE = "folder_title";
         public static final String COLOR = "color";
         public static final String STARRED_ONLY = "starred_only";
@@ -96,13 +96,11 @@ public final class FlashcardContract {
                 AUTHORITY + "/" + TABLE_DIR;
 
         // Columns
-        public static final String SET_TITLE = "title";
         public static final String SET_ID = "set_id";
 
         // Creation command
         public static final String COLUMN_DEFINITIONS = "' (" +
                 _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                SET_TITLE + " TEXT NOT NULL," +
                 SET_ID + " LONG NOT NULL)";
     }
 }

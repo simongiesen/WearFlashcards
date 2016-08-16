@@ -51,15 +51,15 @@
     <string name="error_term_taken">Term already exists</string>
 
     <!-- Dialogs -->
-    <string name="dialog_delete_set">Delete set?</string>
-    <string name="dialog_delete_card">Delete card?</string>
-    <string name="dialog_delete_folder">Delete folder?</string>
-    <string name="dialog_delete_sets">Delete sets?</string>
-    <string name="dialog_delete_cards">Delete cards?</string>
-    <string name="dialog_delete_folders">Delete folders?</string>
+    <string name="dialog_delete_set">Delete set</string>
+    <string name="dialog_delete_card">Delete card</string>
+    <string name="dialog_delete_folder">Delete folder</string>
+    <string name="dialog_delete_sets">Delete sets</string>
+    <string name="dialog_delete_cards">Delete cards</string>
+    <string name="dialog_delete_folders">Delete folders</string>
     <string name="dialog_cannot_undo">This cannot be undone.</string>
-    <string name="dialog_remove_set">Remove set from folder?</string>
-    <string name="dialog_remove_sets">Remove sets from folder?</string>
+    <string name="dialog_remove_set">Remove set from folder</string>
+    <string name="dialog_remove_sets">Remove sets from folder</string>
     <string name="dialog_remove_undo">This will not delete it permanently.</string>
     <string name="dialog_remove_undo_plural">This will not delete them permanently.</string>
 

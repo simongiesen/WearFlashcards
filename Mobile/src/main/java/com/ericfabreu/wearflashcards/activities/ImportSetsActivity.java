@@ -69,8 +69,6 @@ public class ImportSetsActivity extends AppCompatActivity {
         for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext(), index++) {
             if (mImports[index]) {
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(FolderEntry.SET_TITLE,
-                        mCursor.getString(mCursor.getColumnIndex(SetList.SET_TITLE)));
                 contentValues.put(FolderEntry.SET_ID,
                         mCursor.getLong(mCursor.getColumnIndex(SetList._ID)));
                 Uri uri = Uri.withAppendedPath(FolderEntry.CONTENT_URI, mTableName);

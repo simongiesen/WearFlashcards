@@ -190,7 +190,7 @@ public class FolderListFragment extends ListFragment
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);
         intent.putExtra(Constants.TAG_ID, id);
-        startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
+        getActivity().startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

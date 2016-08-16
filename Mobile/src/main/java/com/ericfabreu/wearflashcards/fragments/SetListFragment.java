@@ -3,7 +3,6 @@ package com.ericfabreu.wearflashcards.fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -98,11 +97,16 @@ public class SetListFragment extends ListFragment
                     case R.id.item_delete:
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         if (selections.size() > 1) {
-                            builder.setTitle(R.string.dialog_delete_sets);
+                            builder.setTitle(mFolder ? R.string.dialog_remove_sets
+                                    : R.string.dialog_delete_sets);
+                            builder.setMessage(mFolder ? R.string.dialog_remove_undo_plural
+                                    : R.string.dialog_cannot_undo);
                         } else {
-                            builder.setTitle(R.string.dialog_delete_set);
+                            builder.setTitle(mFolder ? R.string.dialog_remove_set
+                                    : R.string.dialog_delete_set);
+                            builder.setMessage(mFolder ? R.string.dialog_remove_undo
+                                    : R.string.dialog_cannot_undo);
                         }
-                        builder.setMessage(R.string.dialog_cannot_undo);
                         builder.setCancelable(true);
                         builder.setPositiveButton(R.string.button_delete,
                                 new DialogInterface.OnClickListener() {
@@ -110,8 +114,13 @@ public class SetListFragment extends ListFragment
                                         for (int i = 0, n = selections.size(); i < n; i++) {
                                             FlashcardProvider handle = new FlashcardProvider(
                                                     getActivity().getApplicationContext());
-                                            handle.deleteTable(selections.get(i), mFolder);
+                                            if (mFolder) {
+                                                handle.removeSet(mTable, selections.get(i));
+                                            } else {
+                                                handle.deleteTable(selections.get(i), mFolder);
+                                            }
                                         }
+                                        refresh();
                                         mode.finish();
                                     }
                                 });
@@ -131,15 +140,13 @@ public class SetListFragment extends ListFragment
                         FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         Cursor cursor = handle.query(SetList.CONTENT_URI,
-                                mFolder ? new String[]{FolderEntry.SET_TITLE}
-                                        : new String[]{SetList.SET_TITLE},
-                                (mFolder ? FolderEntry._ID : SetList._ID) + "=?",
+                                new String[]{SetList.SET_TITLE},
+                                SetList._ID + "=?",
                                 new String[]{String.valueOf(selections.get(0))},
                                 null);
                         if (cursor != null && cursor.moveToFirst()) {
                             String title = cursor.getString(cursor
-                                    .getColumnIndex(mFolder ? FolderEntry.SET_TITLE
-                                            : SetList.SET_TITLE));
+                                    .getColumnIndex(SetList.SET_TITLE));
                             Intent intent = new Intent(getActivity(), ManageSetActivity.class);
                             intent.putExtra(Constants.TAG_EDITING_MODE, true);
                             intent.putExtra(Constants.TAG_TITLE, title);
@@ -190,7 +197,7 @@ public class SetListFragment extends ListFragment
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 R.layout.item_set_list,
                 null,
-                mFolder ? new String[]{FolderEntry.SET_TITLE} : new String[]{SetList.SET_TITLE},
+                new String[]{SetList.SET_TITLE},
                 new int[]{R.id.text_set_title},
                 0);
         setListAdapter(mAdapter);
@@ -210,22 +217,19 @@ public class SetListFragment extends ListFragment
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);
         intent.putExtra(Constants.TAG_ID, id);
-        startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
+        getActivity().startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final Uri uri = mFolder ? Uri.withAppendedPath(FolderEntry.CONTENT_URI, mTable)
-                : SetList.CONTENT_URI;
-        final String[] columns = mFolder ? new String[]{FolderEntry._ID, FolderEntry.SET_TITLE}
-                : new String[]{SetList._ID, SetList.SET_TITLE};
+        final String whereClause = mFolder ? SetList._ID + " IN (SELECT " +
+                FolderEntry.SET_ID + " FROM " + mTable + ")" : null;
         return new CursorLoader(getActivity(),
-                uri,
-                columns,
-                null,
+                SetList.CONTENT_URI,
+                new String[]{SetList._ID, SetList.SET_TITLE},
+                whereClause,
                 null,
                 PreferencesHelper.getOrder(getActivity().getApplicationContext(),
-                        mFolder ? FolderEntry.SET_TITLE : SetList.SET_TITLE,
-                        Constants.PREF_KEY_SET_ORDER));
+                        SetList.SET_TITLE, Constants.PREF_KEY_SET_ORDER));
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

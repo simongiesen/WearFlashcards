@@ -564,6 +564,14 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
+     * Removes a set from a folder.
+     */
+    public void removeSet(String folderTable, long setId) {
+        final Uri uri = Uri.withAppendedPath(FolderEntry.CONTENT_URI, folderTable);
+        delete(uri, FolderEntry.SET_ID + "=?", new String[]{String.valueOf(setId)});
+    }
+
+    /**
      * Renames a set or folder.
      */
     public boolean renameMember(String oldTitle, String newTitle, boolean folder) {
