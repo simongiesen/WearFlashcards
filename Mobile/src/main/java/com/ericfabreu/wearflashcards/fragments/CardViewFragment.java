@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.StudySetAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -38,6 +39,7 @@ public class CardViewFragment extends Fragment {
         mAdapter = adapter;
     }
 
+
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -47,7 +49,9 @@ public class CardViewFragment extends Fragment {
         final String term = bundle.getString(Constants.TAG_TERM);
         final String definition = bundle.getString(Constants.TAG_DEFINITION);
         final boolean star = bundle.getBoolean(Constants.TAG_STAR);
+        final boolean folderMode = bundle.getBoolean(Constants.TAG_FOLDER_MODE);
         final long id = bundle.getLong(Constants.TAG_ID);
+        final long folderId = bundle.getLong(Constants.TAG_FOLDER_ID);
 
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.item_card_view, container, false);
@@ -92,10 +96,16 @@ public class CardViewFragment extends Fragment {
 
                 // Delete card if star is removed and starred only mode is on
                 if (tableName != null) {
-                    final long tableId = Long.valueOf(tableName
-                            .substring(1, tableName.length() - 1));
-                    final boolean starredOnly = PreferencesHelper.getStar(getContext(), handle,
-                            SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                    final boolean starredOnly;
+                    if (!folderMode) {
+                        final long tableId = Long.valueOf(tableName
+                                .substring(1, tableName.length() - 1));
+                        starredOnly = PreferencesHelper.getStar(getContext(), handle,
+                                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                    } else {
+                        starredOnly = PreferencesHelper.getStar(getContext(), handle,
+                                FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
+                    }
                     if (starredOnly) {
                         mAdapter.deleteItem(mPosition);
                         return;

@@ -24,6 +24,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.ericfabreu.wearflashcards.activities.FolderOverviewActivity;
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
@@ -39,6 +40,7 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
     private List<CardViewFragment> cards = new ArrayList<>();
     private String mTableName, mTitle;
     private long mTableId;
+    private boolean mFolderMode;
     private ViewPager mPager;
     private Context mContext;
 
@@ -52,11 +54,12 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
         mTableId = tableId;
         mPager = viewPager;
         mContext = context;
+        mFolderMode = tableIds.size() > 0;
 
         // Create all cards
         for (int i = 0, n = terms.size(); i < n; i++) {
             cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i),
-                    tableIds.isEmpty() ? -1 : tableIds.get(i), i));
+                    tableIds.size() == 0 ? -1 : tableIds.get(i), i));
         }
     }
 
@@ -71,11 +74,13 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
         // Use the tableId to get the table name if this was started inside a folder
         bundle.putString(Constants.TAG_TABLE_NAME, tableId > 0 ?
                 provider.getTableName(tableId, false) : mTableName);
-
+        bundle.putString(Constants.TAG_FOLDER, mTableName);
         bundle.putString(Constants.TAG_TERM, term);
         bundle.putString(Constants.TAG_DEFINITION, definition);
         bundle.putBoolean(Constants.TAG_STAR, star);
+        bundle.putBoolean(Constants.TAG_FOLDER_MODE, mFolderMode);
         bundle.putLong(Constants.TAG_ID, id);
+        bundle.putLong(Constants.TAG_FOLDER_ID, mTableId);
         CardViewFragment card = new CardViewFragment();
         card.setArguments(bundle);
         card.setPosition(position);
@@ -94,9 +99,10 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
     }
 
     public void deleteItem(int position) {
-        // Go back to SetOverviewActivity if this is the last starred card
+        // Go back to the parent activity if this is the last starred card
         if (cards.size() <= 1) {
-            Intent intent = new Intent(mContext, SetOverviewActivity.class);
+            Intent intent = new Intent(mContext, mFolderMode ?
+                    FolderOverviewActivity.class : SetOverviewActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(Constants.TAG_TABLE_NAME, mTableName);
             intent.putExtra(Constants.TAG_TITLE, mTitle);
