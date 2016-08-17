@@ -132,8 +132,8 @@ public class StudySetActivity extends AppCompatActivity {
         }
 
         final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
-        pager.setAdapter(new StudySetAdapter(getSupportFragmentManager(), pager, tableName,
-                terms, definitions, stars, ids, tableIds, getApplicationContext(), tableId, title));
+        pager.setAdapter(new StudySetAdapter(this, getSupportFragmentManager(), pager, tableName,
+                terms, definitions, stars, ids, tableIds, tableId));
     }
 
     @Override
