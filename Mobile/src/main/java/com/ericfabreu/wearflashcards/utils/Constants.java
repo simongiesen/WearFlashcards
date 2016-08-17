@@ -21,6 +21,7 @@ public class Constants {
     public final static String TAG_ID = "id";
     public final static String TAG_EDITING_MODE = "editing";
     public final static String TAG_FOLDER = "folder";
+    public final static String TAG_FOLDER_ID = "folder_id";
 
     // Fragments and activities
     public final static int REQUEST_CODE_SETTINGS = 1;

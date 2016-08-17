@@ -22,6 +22,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.ManageCardActivity;
 import com.ericfabreu.wearflashcards.adapters.CardListAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -40,8 +41,8 @@ public class CardListFragment extends ListFragment
             new String[]{CardSet._ID, CardSet.TERM, CardSet.DEFINITION, CardSet.STAR};
     private CardListAdapter mAdapter;
     private FlashcardProvider mProvider;
-    private String tableName;
-    private long tableId;
+    private String tableName, folderTable;
+    private long tableId, folderId;
     private List<Long> selections = new ArrayList<>();
 
     @Override
@@ -49,7 +50,9 @@ public class CardListFragment extends ListFragment
         // Get table name from SetOverviewActivity
         Bundle bundle = getArguments();
         tableName = bundle.getString(Constants.TAG_TABLE_NAME);
+        folderTable = bundle.getString(Constants.TAG_FOLDER);
         tableId = bundle.getLong(Constants.TAG_ID);
+        folderId = bundle.getLong(Constants.TAG_FOLDER_ID);
         mProvider = new FlashcardProvider(getActivity().getApplicationContext());
         super.onCreate(savedInstanceState);
     }
@@ -170,8 +173,14 @@ public class CardListFragment extends ListFragment
 
     @Override
     public void setEmptyText(CharSequence text) {
-        final boolean starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
-                mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly;
+        if (folderTable == null) {
+            starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
+                    mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        } else {
+            starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
+                    mProvider, FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
+        }
         final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
         if (starredOnly && mProvider.getCardCount(tableUri, true) == 0 &&
                 mProvider.getCardCount(tableUri, false) > 0) {
@@ -182,8 +191,14 @@ public class CardListFragment extends ListFragment
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final boolean starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
-                mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        final boolean starredOnly;
+        if (folderTable == null) {
+            starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
+                    mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+        } else {
+            starredOnly = PreferencesHelper.getStar(getActivity().getApplicationContext(),
+                    mProvider, FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
+        }
         final String selection = starredOnly ? CardSet.STAR + "=?" : null;
         final String[] selectionArgs = starredOnly ? new String[]{"1"} : null;
         return new CursorLoader(getActivity(),

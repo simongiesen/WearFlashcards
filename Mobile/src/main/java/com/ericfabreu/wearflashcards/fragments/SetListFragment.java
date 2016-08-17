@@ -41,15 +41,17 @@ public class SetListFragment extends ListFragment
     private MainViewPager mViewPager;
     private boolean mFolder = false;
     private String mTable = null;
+    private long mFolderId;
     private List<Long> selections = new ArrayList<>();
 
     public void setViewPager(MainViewPager viewPager) {
         mViewPager = viewPager;
     }
 
-    public void setFolderMode(String table) {
+    public void setFolderMode(String table, long id) {
         mFolder = true;
         mTable = table;
+        mFolderId = id;
     }
 
     public void refresh() {
@@ -217,6 +219,10 @@ public class SetListFragment extends ListFragment
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);
         intent.putExtra(Constants.TAG_ID, id);
+        if (mFolder) {
+            intent.putExtra(Constants.TAG_FOLDER, mTable);
+            intent.putExtra(Constants.TAG_FOLDER_ID, mFolderId);
+        }
         getActivity().startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
     }
 

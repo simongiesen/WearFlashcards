@@ -181,7 +181,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
     public void startSetListFragment() {
         final String fragTagSetList = "setListFragment";
         SetListFragment setListFragment = new SetListFragment();
-        setListFragment.setFolderMode(tableName);
+        setListFragment.setFolderMode(tableName, tableId);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.layout_folder_overview, setListFragment, fragTagSetList)
                 .commit();

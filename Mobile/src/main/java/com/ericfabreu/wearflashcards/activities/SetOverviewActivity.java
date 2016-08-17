@@ -16,6 +16,7 @@ import android.widget.Switch;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardListFragment;
@@ -23,8 +24,8 @@ import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 
 public class SetOverviewActivity extends AppCompatActivity {
-    private String tableName, title;
-    private long tableId;
+    private String tableName, title, folderTable;
+    private long tableId, folderId;
     private SharedPreferences settings;
     private FlashcardProvider mProvider;
 
@@ -45,6 +46,8 @@ public class SetOverviewActivity extends AppCompatActivity {
         tableName = bundle.getString(Constants.TAG_TABLE_NAME);
         title = bundle.getString(Constants.TAG_TITLE);
         tableId = bundle.getLong(Constants.TAG_ID);
+        folderTable = bundle.getString(Constants.TAG_FOLDER, null);
+        folderId = bundle.getLong(Constants.TAG_FOLDER_ID, -1);
 
         setTitle(title);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_set_overview);
@@ -73,8 +76,13 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Load the starred only setting
         final Switch starredOnly = (Switch) findViewById(R.id.switch_starred_only);
-        starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY));
+        if (folderTable == null) {
+            starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                    SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY));
+        } else {
+            starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                    FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY));
+        }
     }
 
     @Override
@@ -102,8 +110,14 @@ public class SetOverviewActivity extends AppCompatActivity {
             menu.removeItem(R.id.item_study_set);
             findViewById(R.id.layout_starred_only).setVisibility(View.GONE);
         } else {
-            final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(),
-                    mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            final boolean starredOnly;
+            if (folderTable == null) {
+                starredOnly = PreferencesHelper.getStar(getApplicationContext(),
+                        mProvider, SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            } else {
+                starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                        FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
+            }
             final int starredCount = mProvider.getCardCount(tableUri, true);
             if (starredOnly && starredCount == 0) {
                 menu.removeItem(R.id.item_study_set);
@@ -169,6 +183,8 @@ public class SetOverviewActivity extends AppCompatActivity {
             refresh.putExtra(Constants.TAG_TABLE_NAME, tableName);
             refresh.putExtra(Constants.TAG_TITLE, title);
             refresh.putExtra(Constants.TAG_ID, tableId);
+            refresh.putExtra(Constants.TAG_FOLDER, folderTable);
+            refresh.putExtra(Constants.TAG_FOLDER_ID, folderId);
             startActivity(refresh);
             this.finish();
         }
@@ -182,14 +198,21 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Check if the flag needs to be flipped
         if (view != null) {
-            PreferencesHelper.flipStar(getApplicationContext(), mProvider,
-                    SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            if (folderTable == null) {
+                PreferencesHelper.flipStar(getApplicationContext(), mProvider,
+                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+            } else {
+                PreferencesHelper.flipStar(getApplicationContext(), mProvider,
+                        FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
+            }
             invalidateOptionsMenu();
         }
 
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TAG_TABLE_NAME, tableName);
+        bundle.putString(Constants.TAG_FOLDER, folderTable);
         bundle.putLong(Constants.TAG_ID, tableId);
+        bundle.putLong(Constants.TAG_FOLDER_ID, folderId);
         CardListFragment cardListFragment = new CardListFragment();
         cardListFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
