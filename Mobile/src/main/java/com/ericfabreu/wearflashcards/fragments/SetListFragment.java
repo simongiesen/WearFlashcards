@@ -122,8 +122,9 @@ public class SetListFragment extends ListFragment
                                                 handle.deleteTable(selections.get(i), mFolder);
                                             }
                                         }
-                                        refresh();
                                         mode.finish();
+                                        refresh();
+                                        getActivity().invalidateOptionsMenu();
                                     }
                                 });
 

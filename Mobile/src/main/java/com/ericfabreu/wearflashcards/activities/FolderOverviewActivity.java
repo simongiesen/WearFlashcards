@@ -2,8 +2,6 @@ package com.ericfabreu.wearflashcards.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +14,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -100,18 +97,18 @@ public class FolderOverviewActivity extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION, false));
 
-        // Hide set study button and the starred only bar if there are no cards to display
-        final Uri tableUri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-        Cursor cursor = mProvider.query(tableUri,
-                new String[]{CardSet._ID},
-                null,
-                null,
-                null);
-        if (cursor == null || cursor.getCount() == 0) {
+        // Hide set study button if there are no cards to display
+        final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY);
+        if (!mProvider.isFolderStudyable(tableName, starredOnly)) {
             menu.removeItem(R.id.item_study_set);
-        } else {
+        }
+
+        // Hide the starred only bar if the folder is empty
+        if (mProvider.getRowCount(tableName) > 0) {
             findViewById(R.id.layout_folder_starred_only).setVisibility(View.VISIBLE);
-            cursor.close();
+        } else {
+            findViewById(R.id.layout_folder_starred_only).setVisibility(View.GONE);
         }
         return true;
     }
@@ -187,8 +184,12 @@ public class FolderOverviewActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /**
+     * Flips the folder's starred only value and refreshed the options menu.
+     */
     public void flipStarredOnly(View view) {
         PreferencesHelper.flipStar(getApplicationContext(), mProvider,
                 FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY);
+        invalidateOptionsMenu();
     }
 }

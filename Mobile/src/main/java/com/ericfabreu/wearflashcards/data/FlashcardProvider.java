@@ -182,6 +182,30 @@ public class FlashcardProvider extends ContentProvider {
                         Constants.PREF_KEY_SET_ORDER));
     }
 
+    /**
+     * Checks if the folder has any cards in its sets.
+     */
+    public boolean isFolderStudyable(String table, boolean starredOnly) {
+        Cursor cursor = query(Uri.withAppendedPath(FolderEntry.CONTENT_URI, table),
+                new String[]{FolderEntry.SET_ID}, null, null, null);
+        // Go through all the sets in the folder until it finds a valid card
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                final long setId = cursor.getLong(cursor.getColumnIndex(FolderEntry.SET_ID));
+                final String setTable = getTableName(setId, false);
+                Cursor set = fetchAllCards(setTable, starredOnly);
+                if (set != null) {
+                    if (set.getCount() > 0) {
+                        set.close();
+                        return true;
+                    }
+                }
+            }
+            cursor.close();
+        }
+        return false;
+    }
+
     @Override
     public String getType(@NonNull Uri uri) {
         switch (URI_MATCHER.match(uri)) {
