@@ -49,6 +49,7 @@ public class ImportSetsActivity extends AppCompatActivity {
         SetsAdapter adapter = new SetsAdapter(this, mCursor, 0);
         mListView = (ListView) findViewById(R.id.list_import_data);
         mListView.setAdapter(adapter);
+        mListView.setDividerHeight(0);
         FrameLayout importButton = (FrameLayout) getLayoutInflater()
                 .inflate(R.layout.item_import_button, mListView, false);
         mListView.addFooterView(importButton);
@@ -125,8 +126,13 @@ public class ImportSetsActivity extends AppCompatActivity {
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            TextView title = (TextView) view.findViewById(R.id.text_import_title);
-            title.setText(cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE)));
+            TextView titleView = (TextView) view.findViewById(R.id.text_import_title);
+            TextView countView = (TextView) view.findViewById(R.id.text_import_count);
+            final String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
+            final long rowCount = mProvider.getRowCount(mProvider.getTableName(title, false));
+            titleView.setText(title);
+            countView.setText(getResources().getQuantityString(R.plurals.text_set_card_count,
+                    (int) rowCount, rowCount));
         }
     }
 }
