@@ -55,7 +55,10 @@ public final class ListViewAdapter extends WearableListView.Adapter {
             WearableListItemLayout layout = (WearableListItemLayout) itemHolder.getView();
             ((ImageView) layout.findViewById(R.id.image_list_drawable))
                     .setImageDrawable(mIcons[position]);
-            ((TextView) layout.findViewById(R.id.text_list_item)).setText(mDataSet[position]);
+            TextView textView = ((TextView) layout.findViewById(R.id.text_list_item));
+            textView.setText(mDataSet[position]);
+            textView.setPadding(8, 0, 0, 0);
+            textView.setTextSize(18f);
         }
 
         // MainActivity displaying a list of either sets or folders
