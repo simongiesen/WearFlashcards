@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.ericfabreu.wearflashcards.R;
@@ -83,6 +84,14 @@ public class SetOverviewActivity extends AppCompatActivity {
             starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
                     FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY));
         }
+
+        // Call the onClickListener if the user slides the switch or taps on it
+        starredOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                startCardListFragment(starredOnly);
+            }
+        });
     }
 
     @Override

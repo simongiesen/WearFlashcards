@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gray"
-    tools:context=".activities.FolderOverviewActivity">
+    android:background="@color/background_gray">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:onClick="flipStarredOnly"
                 android:paddingEnd="4dp"
                 android:paddingStart="0dp" />
         </RelativeLayout>

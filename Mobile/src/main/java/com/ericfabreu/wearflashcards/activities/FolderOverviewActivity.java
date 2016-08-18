@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -81,6 +82,14 @@ public class FolderOverviewActivity extends AppCompatActivity {
         final Switch starredOnly = (Switch) findViewById(R.id.switch_folder_starred_only);
         starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
                 FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY));
+
+        // Call the onClickListener if the user slides the switch or taps on it
+        starredOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                flipStarredOnly(starredOnly);
+            }
+        });
     }
 
     @Override
