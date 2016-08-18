@@ -129,10 +129,13 @@ public class ImportSetsActivity extends AppCompatActivity {
             TextView titleView = (TextView) view.findViewById(R.id.text_import_title);
             TextView countView = (TextView) view.findViewById(R.id.text_import_count);
             final String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
-            final long rowCount = mProvider.getRowCount(mProvider.getTableName(title, false));
-            titleView.setText(title);
-            countView.setText(getResources().getQuantityString(R.plurals.text_set_card_count,
-                    (int) rowCount, rowCount));
+            final String table = mProvider.getTableName(title, false);
+            if (table != null) {
+                final long rowCount = mProvider.getRowCount(table);
+                titleView.setText(title);
+                countView.setText(getResources().getQuantityString(R.plurals.text_set_card_count,
+                        (int) rowCount, rowCount));
+            }
         }
     }
 }

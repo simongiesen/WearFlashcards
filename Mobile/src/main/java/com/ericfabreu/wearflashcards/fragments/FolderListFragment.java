@@ -184,10 +184,13 @@ public class FolderListFragment extends ListFragment
                 TextView countView = (TextView) view.findViewById(R.id.text_set_folder_2);
                 final String title = cursor.getString(cursor
                         .getColumnIndex(FolderList.FOLDER_TITLE));
-                final long rowCount = mProvider.getRowCount(mProvider.getTableName(title, true));
-                titleView.setText(title);
-                countView.setText(getResources().getQuantityString(R.plurals.text_folder_set_count,
-                        (int) rowCount, rowCount));
+                final String table = mProvider.getTableName(title, true);
+                if (table != null) {
+                    final long rowCount = mProvider.getRowCount(table);
+                    titleView.setText(title);
+                    countView.setText(getResources().getQuantityString(
+                            R.plurals.text_folder_set_count, (int) rowCount, rowCount));
+                }
             }
 
         };
