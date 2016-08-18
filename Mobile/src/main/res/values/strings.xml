@@ -10,8 +10,14 @@
     <string name="title_activity_import_sets">Import sets</string>
 
     <!-- TextViews -->
-    <string name="text_import_sets_title">Title</string>
-    <string name="text_import_sets_count">Card count</string>
+    <plurals name="text_set_card_count">
+        <item quantity="one">%1$d card</item>
+        <item quantity="other">%1$d cards</item>
+    </plurals>
+    <plurals name="text_folder_set_count">
+        <item quantity="one">%1$d set</item>
+        <item quantity="other">%1$d sets</item>
+    </plurals>
 
     <!-- Messages -->
     <string name="message_empty_database">Tap on the + button to create a flashcard set</string>

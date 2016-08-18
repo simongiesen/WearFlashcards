@@ -1,5 +1,6 @@
 package com.ericfabreu.wearflashcards.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -39,6 +40,7 @@ public class SetListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter mAdapter;
     private MainViewPager mViewPager;
+    private FlashcardProvider mProvider;
     private boolean mFolder = false;
     private String mTable = null;
     private long mFolderId;
@@ -66,6 +68,7 @@ public class SetListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mProvider = new FlashcardProvider(getActivity().getApplicationContext());
 
         // Show text if database is empty
         setEmptyText(mFolder ? getString(R.string.message_empty_folder)
@@ -203,7 +206,19 @@ public class SetListFragment extends ListFragment
                 null,
                 new String[]{SetList.SET_TITLE},
                 new int[]{R.id.text_set_folder_1},
-                0);
+                0) {
+            @Override
+            public void bindView(View view, Context context, Cursor cursor) {
+                TextView titleView = (TextView) view.findViewById(R.id.text_set_folder_1);
+                TextView countView = (TextView) view.findViewById(R.id.text_set_folder_2);
+                final String title = cursor.getString(cursor.getColumnIndex(SetList.SET_TITLE));
+                final long rowCount = mProvider.getRowCount(mProvider.getTableName(title, false));
+                titleView.setText(title);
+                countView.setText(getResources().getQuantityString(R.plurals.text_set_card_count,
+                        (int) rowCount, rowCount));
+            }
+
+        };
         setListAdapter(mAdapter);
 
         // Prepare the loader
