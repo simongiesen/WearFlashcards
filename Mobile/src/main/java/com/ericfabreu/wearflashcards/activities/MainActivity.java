@@ -142,8 +142,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void refreshFragments() {
-            ((SetListFragment) mFragments.get(0)).refresh();
-            ((FolderListFragment) mFragments.get(1)).refresh();
+            if (mFragments.get(0) != null && mFragments.get(1) != null) {
+                ((SetListFragment) mFragments.get(0)).refresh();
+                ((FolderListFragment) mFragments.get(1)).refresh();
+            }
         }
 
         @Override
