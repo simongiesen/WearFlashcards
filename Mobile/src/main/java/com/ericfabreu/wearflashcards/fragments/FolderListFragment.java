@@ -63,6 +63,7 @@ public class FolderListFragment extends ListFragment
         // Setup contextual action mode
         final ListView listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setDividerHeight(0);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position,
@@ -169,10 +170,10 @@ public class FolderListFragment extends ListFragment
 
         // Create an empty adapter to display the list of folders
         mAdapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.item_folder_list,
+                R.layout.item_set_folder_list,
                 null,
                 new String[]{FolderList.FOLDER_TITLE},
-                new int[]{R.id.text_folder_title},
+                new int[]{R.id.text_set_folder_1},
                 0);
         setListAdapter(mAdapter);
 
@@ -183,7 +184,7 @@ public class FolderListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         // Use title to find the table name and pass it to FolderOverviewActivity
-        TextView textView = (TextView) view.findViewById(R.id.text_folder_title);
+        TextView textView = (TextView) view.findViewById(R.id.text_set_folder_1);
         String title = textView.getText().toString();
         FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
         String tableName = handle.getTableName(title, true);

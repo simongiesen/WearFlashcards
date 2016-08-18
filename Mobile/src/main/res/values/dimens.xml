@@ -2,6 +2,9 @@
     <!-- Default screen margins for lists, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_padding">16dp</dimen>
     <dimen name="activity_vertical_padding">16dp</dimen>
+    <dimen name="list_item_vertical_margin">4dp</dimen>
+    <dimen name="list_item_horizontal_margin">8dp</dimen>
+    <dimen name="list_vertical_divider_margin">6dp</dimen>
     <dimen name="list_vertical_padding">8dp</dimen>
     <dimen name="list_vertical_padding_large">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
