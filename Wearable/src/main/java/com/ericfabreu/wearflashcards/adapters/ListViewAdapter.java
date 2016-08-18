@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
+import com.ericfabreu.wearflashcards.layouts.WearableListItemLayout;
 
 /**
  * Provides the ListView adapter used throughout the app.
@@ -19,30 +20,27 @@ public final class ListViewAdapter extends WearableListView.Adapter {
     private final LayoutInflater mInflater;
     private String[] mDataSet, mOptions;
     private Drawable[] mIcons;
-    private int mLayout;
-    private boolean mSettings;
+    private int mLayout, mMode;
 
-    public ListViewAdapter(Context context, int layout, String[] dataSet) {
-        mInflater = LayoutInflater.from(context);
-        mDataSet = dataSet;
-        mLayout = layout;
-        mSettings = false;
-    }
-
+    /**
+     * Uses {@param mode} to determine if the parent is MainActivity (0) trying to display the
+     * initial sets/folders choices, MainActivity (1) trying to display either a list of sets or a
+     * list of folders, or SettingsActivity (2).
+     */
     public ListViewAdapter(Context context, int layout, String[] dataSet,
-                           String[] options, Drawable[] icons) {
+                           String[] options, Drawable[] icons, int mode) {
         mInflater = LayoutInflater.from(context);
         mLayout = layout;
         mDataSet = dataSet;
         mOptions = options;
         mIcons = icons;
-        mSettings = true;
+        mMode = mode;
     }
 
     @Override
     public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate custom layout for list items
-        return new ItemViewHolder(mInflater.inflate(mLayout, parent, false), mSettings);
+        return new ItemViewHolder(mInflater.inflate(mLayout, parent, false), mMode);
     }
 
     // Replace the contents of a list item
@@ -52,7 +50,22 @@ public final class ListViewAdapter extends WearableListView.Adapter {
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
         holder.itemView.setTag(position);
 
-        if (mSettings) {
+        // MainActivity displaying the original sets and folders options
+        if (mMode == 0) {
+            WearableListItemLayout layout = (WearableListItemLayout) itemHolder.getView();
+            ((ImageView) layout.findViewById(R.id.image_list_drawable))
+                    .setImageDrawable(mIcons[position]);
+            ((TextView) layout.findViewById(R.id.text_list_item)).setText(mDataSet[position]);
+        }
+
+        // MainActivity displaying a list of either sets or folders
+        else if (mMode == 1) {
+            TextView view = itemHolder.textView;
+            view.setText(mDataSet[position]);
+        }
+
+        // SettingsActivity
+        else {
             RelativeLayout layout = (RelativeLayout) itemHolder.getView();
             ((ImageView) layout.findViewById(R.id.image_list_settings))
                     .setImageDrawable(mIcons[position]);
@@ -60,9 +73,6 @@ public final class ListViewAdapter extends WearableListView.Adapter {
                     .setText(mDataSet[position]);
             ((TextView) layout.findViewById(R.id.text_list_description_settings))
                     .setText(mOptions[position]);
-        } else {
-            TextView view = itemHolder.textView;
-            view.setText(mDataSet[position]);
         }
     }
 
@@ -75,21 +85,26 @@ public final class ListViewAdapter extends WearableListView.Adapter {
     public static class ItemViewHolder extends WearableListView.ViewHolder {
         private TextView textView;
         private RelativeLayout relativeLayout;
-        private boolean mSettings;
+        private WearableListItemLayout wearableListItemLayout;
+        private int mMode;
 
-        public ItemViewHolder(View itemView, boolean settings) {
+        // Save the proper view/layout depending on the mode
+        public ItemViewHolder(View itemView, int mode) {
             super(itemView);
-            mSettings = settings;
-            if (settings) {
+            mMode = mode;
+            if (mMode == 0) {
+                wearableListItemLayout = (WearableListItemLayout) itemView
+                        .findViewById(R.id.layout_set_list_item);
+            } else if (mMode == 1) {
+                textView = (TextView) itemView.findViewById(R.id.text_list_item);
+            } else {
                 relativeLayout = (RelativeLayout) itemView
                         .findViewById(R.id.layout_relative_settings);
-            } else {
-                textView = (TextView) itemView.findViewById(R.id.text_list_item);
             }
         }
 
         public View getView() {
-            return mSettings ? relativeLayout : textView;
+            return mMode == 0 ? wearableListItemLayout : (mMode == 1 ? textView : relativeLayout);
         }
     }
 }

@@ -12,7 +12,7 @@ import android.view.WindowInsets;
 import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.adapters.SetViewAdapter;
+import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,17 +30,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-public class SetViewActivity extends Activity implements
+public class StudyActivity extends Activity implements
         DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private final static String TAG_TERMS = "terms", TAG_DEFINITIONS = "definitions",
-            TAG_STARRED_OPTION = "starred_option";
+            TAG_STARRED_OPTION = "starred_option", TAG_FOLDER_ID = "folder_id";
     private GoogleApiClient mGoogleApiClient;
+    private boolean setMode;
     private String title, starValue;
     private boolean starredOnly;
     private ArrayList<String> terms, definitions;
-    private long[] ids;
+    private long[] ids, tableIds;
     private ArrayList<Integer> stars;
 
     @Override
@@ -48,6 +49,7 @@ public class SetViewActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.status_empty_database);
         Bundle bundle = getIntent().getExtras();
+        setMode = bundle.getBoolean(Constants.TAG_MODE);
         title = bundle.getString(Constants.TAG_TITLE);
         starValue = PreferencesHelper.getStarredOption(getApplicationContext());
 
@@ -99,6 +101,11 @@ public class SetViewActivity extends Activity implements
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 ids = dataMap.getLongArray(Constants.TAG_ID);
+                if (!setMode) {
+                    tableIds = dataMap.getLongArray(TAG_FOLDER_ID);
+                } else if (ids != null) {
+                    tableIds = new long[ids.length];
+                }
                 terms = dataMap.getStringArrayList(TAG_TERMS);
                 definitions = dataMap.getStringArrayList(TAG_DEFINITIONS);
                 stars = dataMap.getIntegerArrayList(Constants.TAG_STAR);
@@ -121,6 +128,7 @@ public class SetViewActivity extends Activity implements
     private void sendMessage(final String tableName, final String starredOption) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
+        dataMap.putInt(Constants.TAG_MODE, setMode ? 2 : 3);
         dataMap.putString(Constants.TAG_TITLE, tableName);
         dataMap.putString(TAG_STARRED_OPTION, starredOption);
         dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
@@ -160,8 +168,8 @@ public class SetViewActivity extends Activity implements
         if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
             shuffleCards();
         }
-        pager.setAdapter(new SetViewAdapter(getFragmentManager(), this, pager, mGoogleApiClient,
-                starredOnly, title, terms, definitions, ids, stars));
+        pager.setAdapter(new StudyAdapter(getFragmentManager(), this, pager, mGoogleApiClient,
+                starredOnly, title, terms, definitions, ids, tableIds, stars));
     }
 
     /**
@@ -171,7 +179,7 @@ public class SetViewActivity extends Activity implements
         int size = terms.size();
         int[] shuffleOrder = getShuffledArray(size);
         ArrayList<String> newTerms = new ArrayList<>(), newDefinitions = new ArrayList<>();
-        long[] newIds = new long[size];
+        long[] newIds = new long[size], newTableIds = new long[size];
         ArrayList<Integer> newStars = new ArrayList<>();
 
         // Use shuffled int array to ensure that the new terms and definitions match
@@ -179,11 +187,15 @@ public class SetViewActivity extends Activity implements
             newTerms.add(i, terms.get(shuffleOrder[i]));
             newDefinitions.add(i, definitions.get(shuffleOrder[i]));
             newIds[i] = ids[shuffleOrder[i]];
+            if (!setMode) {
+                newTableIds[i] = tableIds[shuffleOrder[i]];
+            }
             newStars.add(i, stars.get(shuffleOrder[i]));
         }
         terms = newTerms;
         definitions = newDefinitions;
         ids = newIds;
+        tableIds = newTableIds;
         stars = newStars;
     }
 

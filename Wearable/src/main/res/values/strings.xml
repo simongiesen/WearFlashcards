@@ -3,6 +3,10 @@
     <string name="app_name">Wear Flashcards</string>
     <string name="title_activity_settings">Settings</string>
 
+    <!-- TextViews -->
+    <string name="text_option_sets">Sets</string>
+    <string name="text_option_folders">Folders</string>
+
     <!-- Messages -->
     <string name="message_empty">Open the app on your phone to create flashcards</string>
     <string name="message_offline">Cannot sync flashcards offline</string>

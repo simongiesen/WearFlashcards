@@ -31,7 +31,7 @@ public class SettingsActivity extends Activity {
 
         WearableListView listView = (WearableListView) findViewById(R.id.layout_list_settings);
         listView.setAdapter(new ListViewAdapter(this, R.layout.item_settings_list,
-                titles, options, icons));
+                titles, options, icons, 2));
         listView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder viewHolder) {

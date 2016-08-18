@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.adapters.SetViewAdapter;
+import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataMap;
@@ -27,7 +27,7 @@ public class CardViewFragment extends Fragment {
     private final static String TAG_CARD_ID = "card_id";
     private GoogleApiClient mGoogleApiClient;
     private int mPosition;
-    private SetViewAdapter mAdapter;
+    private StudyAdapter mAdapter;
 
     public void setGoogleApiClient(GoogleApiClient googleApiClient) {
         mGoogleApiClient = googleApiClient;
@@ -37,7 +37,7 @@ public class CardViewFragment extends Fragment {
         mPosition = position;
     }
 
-    public void setAdapter(SetViewAdapter adapter) {
+    public void setAdapter(StudyAdapter adapter) {
         mAdapter = adapter;
     }
 
@@ -50,6 +50,7 @@ public class CardViewFragment extends Fragment {
         final String term = bundle.getString(Constants.TAG_TERM);
         final String definition = bundle.getString(Constants.TAG_DEFINITION);
         final long id = bundle.getLong(Constants.TAG_ID);
+        final long tableId = bundle.getLong(Constants.TAG_TABLE_ID);
         final boolean star = bundle.getBoolean(Constants.TAG_STAR);
         final boolean starredOnly = bundle.getBoolean(Constants.TAG_STARRED_ONLY);
 
@@ -97,7 +98,11 @@ public class CardViewFragment extends Fragment {
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
                         .getApplicationContext(), starDrawable));
                 bundle.putBoolean(Constants.TAG_STAR, star);
-                flipStar(title, id);
+                if (tableId == 0) {
+                    flipStar(title, id);
+                } else {
+                    flipStar(tableId, id);
+                }
 
                 // Delete card if star is removed and starred only mode is on
                 if (!star && starredOnly) {
@@ -114,7 +119,18 @@ public class CardViewFragment extends Fragment {
     private void flipStar(final String title, final long id) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
+        dataMap.putInt(Constants.TAG_MODE, 4);
         dataMap.putString(Constants.TAG_TITLE, title);
+        dataMap.putLong(TAG_CARD_ID, id);
+        dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());
+    }
+
+    private void flipStar(long tableId, final long id) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
+        final DataMap dataMap = putDataMapReq.getDataMap();
+        dataMap.putInt(Constants.TAG_MODE, 5);
+        dataMap.putLong(Constants.TAG_TABLE_ID, tableId);
         dataMap.putLong(TAG_CARD_ID, id);
         dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());

@@ -27,7 +27,7 @@ import java.util.Random;
 
 public class StudySetActivity extends AppCompatActivity {
     private static final int MENU_POS_STAR = 1;
-    private String tableName, title;
+    private String tableName;
     private long tableId;
     private boolean folder;
     private List<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
@@ -49,9 +49,8 @@ public class StudySetActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         tableName = bundle.getString(Constants.TAG_TABLE_NAME);
         tableId = bundle.getLong(Constants.TAG_ID);
-        title = bundle.getString(Constants.TAG_TITLE);
         folder = bundle.getBoolean(Constants.TAG_FOLDER);
-        setTitle(title);
+        setTitle(bundle.getString(Constants.TAG_TITLE));
 
         createCards();
     }

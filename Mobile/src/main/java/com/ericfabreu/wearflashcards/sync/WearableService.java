@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
+import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -28,10 +30,10 @@ import java.util.Date;
  * Provides data to the wearable app.
  */
 public class WearableService extends WearableListenerService {
-    private static final String PATH = "/WearFlashcardsP", TAG_TIME = "time", TAG_MAIN = "main",
-            TAG_SET_LIST = "set_list", TAG_CARD_ID = "card_id", TAG_TERMS = "terms",
+    private static final String PATH = "/WearFlashcardsP", TAG_TIME = "time", TAG_MODE = "mode",
+            TAG_TITLE_LIST = "title_list", TAG_CARD_ID = "card_id", TAG_TERMS = "terms",
             TAG_DEFINITIONS = "definitions", TAG_STARRED_ONLY = "starred_only",
-            TAG_STARRED_OPTION = "starred_option";
+            TAG_STARRED_OPTION = "starred_option", TAG_TABLE_ID = "table_id";
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
@@ -39,24 +41,30 @@ public class WearableService extends WearableListenerService {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                final String main = dataMap.getString(TAG_MAIN);
+                final int mode = dataMap.getInt(TAG_MODE, -1);
+
                 // The wearable is asking for the list of sets
-                if (main != null && main.equals(TAG_SET_LIST)) {
-                    sendSetList();
+                if (mode == 0 || mode == 1) {
+                    setTitles(mode == 1);
                 }
                 // The wearable needs cards from a specific set
-                else {
+                else if (mode >= 2 && mode <= 5) {
                     final String title = dataMap.getString(Constants.TAG_TITLE);
                     final String starredOption = dataMap.getString(TAG_STARRED_OPTION);
-                    if (title != null && starredOption != null) {
-                        sendSet(title, starredOption);
+                    if (title != null && starredOption != null && mode < 4) {
+                        sendCards(title, starredOption, mode == 3);
                     } else {
                         final long cardId = dataMap.getLong(TAG_CARD_ID);
+                        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
                         // The wearable needs to flip a card's star value
-                        if (title != null && cardId > 0) {
-                            FlashcardProvider handle = new
-                                    FlashcardProvider(getApplicationContext());
+                        if (title != null && cardId > 0 && mode == 4) {
                             final String tableName = handle.getTableName(title, false);
+                            final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
+                            PreferencesHelper.flipStar(getApplicationContext(), handle, uri,
+                                    cardId, CardSet.STAR);
+                        } else {
+                            final long tableId = dataMap.getLong(TAG_TABLE_ID);
+                            final String tableName = handle.getTableName(tableId, false);
                             final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
                             PreferencesHelper.flipStar(getApplicationContext(), handle, uri,
                                     cardId, CardSet.STAR);
@@ -70,10 +78,10 @@ public class WearableService extends WearableListenerService {
     /**
      * Sends a list of all sets to the wearable device.
      */
-    private void sendSetList() {
+    private void setTitles(boolean folder) {
         // Get titles from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        Cursor cursor = handle.fetchAllTitles();
+        Cursor cursor = handle.fetchAllTitles(folder);
         if (cursor == null) {
             return;
         }
@@ -82,7 +90,7 @@ public class WearableService extends WearableListenerService {
         ArrayList<String> columnArray = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             columnArray.add(cursor.getString(cursor
-                    .getColumnIndex(SetList.SET_TITLE)));
+                    .getColumnIndex(folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE)));
         }
         String[] setList = columnArray.toArray(new String[columnArray.size()]);
 
@@ -90,7 +98,7 @@ public class WearableService extends WearableListenerService {
         GoogleApiClient mGoogleApiClient = wearConnect();
         final PutDataMapRequest putRequest = PutDataMapRequest.create(PATH);
         final DataMap map = putRequest.getDataMap();
-        map.putStringArray(TAG_SET_LIST, setList);
+        map.putStringArray(TAG_TITLE_LIST, setList);
         map.putLong(TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
     }
@@ -98,18 +106,19 @@ public class WearableService extends WearableListenerService {
     /**
      * Sends all the cards in a set to the wearable device.
      */
-    private void sendSet(String title, String starredOption) {
+    private void sendCards(String title, String starredOption, boolean folder) {
         // Get terms and definitions from the database
         FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        final String tableName = handle.getTableName(title, false);
-        final long tableId = handle.getTableId(title, false);
+        final String tableName = handle.getTableName(title, folder);
+        final long tableId = handle.getTableId(title, folder);
         final boolean starredOnly;
 
         // Respect the wearable's starred only setting
         switch (starredOption) {
             case "0": {
                 starredOnly = PreferencesHelper.getStar(getApplicationContext(), handle,
-                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
+                        folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
+                        folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
                 break;
             }
             case "1": {
@@ -121,24 +130,49 @@ public class WearableService extends WearableListenerService {
                 break;
             }
         }
-        Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
 
-        // Put terms and definitions into string arrays
-        ArrayList<Long> tempIds = new ArrayList<>();
-        ArrayList<String> terms = new ArrayList<>();
-        ArrayList<String> definitions = new ArrayList<>();
+        ArrayList<Long> tempIds = new ArrayList<>(), tempTableIds = new ArrayList<>();
+        ArrayList<String> terms = new ArrayList<>(), definitions = new ArrayList<>();
         ArrayList<Integer> stars = new ArrayList<>();
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            tempIds.add(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
-            terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
-            definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
-            stars.add(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)));
+
+        // Check if it needs to load more than one set
+        if (folder) {
+            Cursor cursor = handle.query(Uri.withAppendedPath(FolderEntry.CONTENT_URI, tableName),
+                    new String[]{FolderEntry.SET_ID}, null, null, null);
+            if (cursor != null) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    final long setId = cursor.getLong(cursor.getColumnIndex(FolderEntry.SET_ID));
+                    final String setTable = handle.getTableName(setId, false);
+                    Cursor set = handle.fetchAllCards(setTable, starredOnly);
+                    for (set.moveToFirst(); !set.isAfterLast(); set.moveToNext()) {
+                        terms.add(set.getString(set.getColumnIndex(CardSet.TERM)));
+                        definitions.add(set.getString(set.getColumnIndex(CardSet.DEFINITION)));
+                        stars.add(set.getInt(set.getColumnIndex(CardSet.STAR)));
+                        tempIds.add(set.getLong(set.getColumnIndex(CardSet._ID)));
+                        tempTableIds.add(setId);
+                    }
+                    set.close();
+                }
+                cursor.close();
+            }
+        } else {
+            Cursor cursor = handle.fetchAllCards(tableName, starredOnly);
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                tempIds.add(cursor.getLong(cursor.getColumnIndex(CardSet._ID)));
+                terms.add(cursor.getString(cursor.getColumnIndex(CardSet.TERM)));
+                definitions.add(cursor.getString(cursor.getColumnIndex(CardSet.DEFINITION)));
+                stars.add(cursor.getInt(cursor.getColumnIndex(CardSet.STAR)));
+            }
+            cursor.close();
         }
 
         // For some reason it is not possible to send long array lists to wearable devices
-        long[] ids = new long[tempIds.size()];
+        long[] ids = new long[tempIds.size()], tableIds = new long[tempTableIds.size()];
         for (int i = 0; i < tempIds.size(); i++) {
             ids[i] = tempIds.get(i);
+            if (folder) {
+                tableIds[i] = tempTableIds.get(i);
+            }
         }
 
         // Send data to the wearable
@@ -146,6 +180,9 @@ public class WearableService extends WearableListenerService {
         final PutDataMapRequest putRequest = PutDataMapRequest.create(PATH);
         final DataMap map = putRequest.getDataMap();
         map.putLongArray(Constants.TAG_ID, ids);
+        if (folder) {
+            map.putLongArray(Constants.TAG_FOLDER_ID, tableIds);
+        }
         map.putStringArrayList(TAG_TERMS, terms);
         map.putStringArrayList(TAG_DEFINITIONS, definitions);
         map.putIntegerArrayList(Constants.TAG_STAR, stars);

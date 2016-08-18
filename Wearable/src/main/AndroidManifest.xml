@@ -20,7 +20,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.SetViewActivity" />
+        <activity android:name=".activities.ListActivity" />
+
+        <activity android:name=".activities.StudyActivity" />
 
         <activity android:name=".activities.SettingsActivity" />
     </application>

@@ -139,15 +139,15 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
-     * Queries the database for all the titles in the main table.
+     * Queries the database for all the set or folder titles in the main table.
      */
-    public Cursor fetchAllTitles() {
-        return query(SetList.CONTENT_URI,
-                new String[]{SetList.SET_TITLE},
+    public Cursor fetchAllTitles(boolean folder) {
+        return query(folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI,
+                new String[]{folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE},
                 null,
                 null,
-                PreferencesHelper.getOrder(context, SetList.SET_TITLE,
-                        Constants.PREF_KEY_SET_ORDER));
+                PreferencesHelper.getOrder(context, folder ? FolderList.FOLDER_TITLE
+                        : SetList.SET_TITLE, Constants.PREF_KEY_SET_ORDER));
     }
 
     /**
@@ -185,7 +185,7 @@ public class FlashcardProvider extends ContentProvider {
     /**
      * Checks if the folder has any cards in its sets.
      */
-    public boolean isFolderStudyable(String table, boolean starredOnly) {
+    public boolean isFolderStudiable(String table, boolean starredOnly) {
         Cursor cursor = query(Uri.withAppendedPath(FolderEntry.CONTENT_URI, table),
                 new String[]{FolderEntry.SET_ID}, null, null, null);
         // Go through all the sets in the folder until it finds a valid card

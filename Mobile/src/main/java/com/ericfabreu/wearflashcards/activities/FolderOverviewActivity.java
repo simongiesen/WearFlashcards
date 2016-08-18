@@ -100,7 +100,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
         // Hide set study button if there are no cards to display
         final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
                 FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY);
-        if (!mProvider.isFolderStudyable(tableName, starredOnly)) {
+        if (!mProvider.isFolderStudiable(tableName, starredOnly)) {
             menu.removeItem(R.id.item_study_set);
         }
 
