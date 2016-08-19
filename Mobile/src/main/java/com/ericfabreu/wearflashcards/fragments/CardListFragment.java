@@ -96,11 +96,8 @@ public class CardListFragment extends ListFragment
                     case R.id.item_delete:
                         // Display alert message
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        if (selections.size() > 1) {
-                            builder.setTitle(R.string.dialog_delete_cards);
-                        } else {
-                            builder.setTitle(R.string.dialog_delete_card);
-                        }
+                        builder.setTitle(getResources().getQuantityString(
+                                R.plurals.dialog_delete_card, selections.size()));
                         builder.setMessage(R.string.dialog_card_cannot_undo);
                         builder.setCancelable(true);
                         builder.setPositiveButton(R.string.button_delete,

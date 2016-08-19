@@ -19,8 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.fragments.FolderListFragment;
-import com.ericfabreu.wearflashcards.fragments.SetListFragment;
+import com.ericfabreu.wearflashcards.fragments.SetFolderListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.views.MainViewPager;
 import com.melnykov.fab.FloatingActionButton;
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         private final FragmentManager mFragmentManager;
         private ViewGroup mContainer;
-        private SparseArray<Fragment> mFragments;
+        private SparseArray<SetFolderListFragment> mFragments;
         private FragmentTransaction mCurTransaction;
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -142,16 +141,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void refreshFragments() {
-            if (mFragments.get(0) != null && mFragments.get(1) != null) {
-                ((SetListFragment) mFragments.get(0)).refresh();
-                ((FolderListFragment) mFragments.get(1)).refresh();
+            for (int i = 0; i < mFragments.size(); i++) {
+                if (mFragments.get(i) != null) {
+                    mFragments.get(i).refresh();
+                }
             }
         }
 
         @Override
         @SuppressLint("CommitTransaction")
         public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = getItem(position);
+            SetFolderListFragment fragment = (SetFolderListFragment) getItem(position);
             mContainer = container;
             if (mCurTransaction == null) {
                 mCurTransaction = mFragmentManager.beginTransaction();
@@ -173,16 +173,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) {
-                SetListFragment setListFragment = new SetListFragment();
-                setListFragment.setViewPager(mViewPager);
-                setListFragment.setFabId(R.id.fab_main);
-                return setListFragment;
-            } else {
-                FolderListFragment folderListFragment = new FolderListFragment();
-                folderListFragment.setViewPager(mViewPager);
-                return folderListFragment;
-            }
+            SetFolderListFragment setFolderListFragment = new SetFolderListFragment();
+            setFolderListFragment.setViewPager(mViewPager);
+            setFolderListFragment.setMode(null, 0, R.id.fab_main, position);
+            return setFolderListFragment;
         }
 
         @Override

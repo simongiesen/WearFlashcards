@@ -58,21 +58,35 @@
     <string name="error_term_taken">Term already exists</string>
 
     <!-- Dialogs -->
-    <string name="dialog_delete_set">Delete set</string>
-    <string name="dialog_delete_card">Delete card</string>
-    <string name="dialog_delete_folder">Delete folder</string>
-    <string name="dialog_delete_sets">Delete sets</string>
-    <string name="dialog_delete_cards">Delete cards</string>
-    <string name="dialog_delete_folders">Delete folders</string>
-    <string name="dialog_set_cannot_undo">This will also delete it from the folders and cannot be undone</string>
-    <string name="dialog_set_cannot_undo_plural">This will also delete them from the folders and cannot be undone</string>
-    <string name="dialog_folder_cannot_undo">This will not delete its sets permanently</string>
-    <string name="dialog_folder_cannot_undo_plural">This will not delete their sets permanently</string>
+    <plurals name="dialog_delete_set">
+        <item quantity="one">Delete set</item>
+        <item quantity="other">Delete sets</item>
+    </plurals>
+    <plurals name="dialog_delete_card">
+        <item quantity="one">Delete card</item>
+        <item quantity="other">Delete cards</item>
+    </plurals>
+    <plurals name="dialog_delete_folder">
+        <item quantity="one">Delete folder</item>
+        <item quantity="other">Delete folders</item>
+    </plurals>
+    <plurals name="dialog_set_cannot_undo">
+        <item quantity="one">This will also delete it from the folders and cannot be undone</item>
+        <item quantity="other">This will also delete them from the folders and cannot be undone</item>
+    </plurals>
+    <plurals name="dialog_folder_cannot_undo">
+        <item quantity="one">This will not delete its sets permanently</item>
+        <item quantity="other">This will not delete their sets permanently</item>
+    </plurals>
     <string name="dialog_card_cannot_undo">This cannot be undone</string>
-    <string name="dialog_remove_set">Remove set from folder</string>
-    <string name="dialog_remove_sets">Remove sets from folder</string>
-    <string name="dialog_remove_undo">This will not delete it permanently</string>
-    <string name="dialog_remove_undo_plural">This will not delete them permanently</string>
+    <plurals name="dialog_remove_set">
+        <item quantity="one">Remove set from folder</item>
+        <item quantity="other">Remove sets from folder</item>
+    </plurals>
+    <plurals name="dialog_remove_undo">
+        <item quantity="one">This will not delete it permanently</item>
+        <item quantity="other">This will not delete them permanently</item>
+    </plurals>
 
     <!-- Preferences -->
     <string name="pref_header_sorting">Sorting</string>

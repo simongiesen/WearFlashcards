@@ -17,7 +17,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
-import com.ericfabreu.wearflashcards.fragments.SetListFragment;
+import com.ericfabreu.wearflashcards.fragments.SetFolderListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.melnykov.fab.FloatingActionButton;
@@ -182,15 +182,14 @@ public class FolderOverviewActivity extends AppCompatActivity {
     }
 
     /**
-     * Refreshes the SetListFragment when the starred only setting changes.
+     * Refreshes the SetFolderListFragment when the starred only setting changes.
      */
     public void startSetListFragment() {
-        final String fragTagSetList = "setListFragment";
-        SetListFragment setListFragment = new SetListFragment();
-        setListFragment.setFolderMode(tableName, tableId);
-        setListFragment.setFabId(R.id.fab_folder_overview);
+        final String fragTagSetList = "setFolderListFragment";
+        SetFolderListFragment setFolderListFragment = new SetFolderListFragment();
+        setFolderListFragment.setMode(tableName, tableId, R.id.fab_folder_overview, 2);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.layout_folder_overview, setListFragment, fragTagSetList)
+                .replace(R.id.layout_folder_overview, setFolderListFragment, fragTagSetList)
                 .commit();
     }
 
