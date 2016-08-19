@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
@@ -93,21 +94,24 @@ public class StudyAdapter extends FragmentStatePagerAdapter {
         return cards.size();
     }
 
+    @Override
+    public int getItemPosition(Object object) {
+        return PagerAdapter.POSITION_NONE;
+    }
+
     public void deleteItem(int position) {
         // Go back to the parent activity if this is the last starred card
         if (cards.size() <= 1) {
             mActivity.finish();
         }
-        mPager.setAdapter(null);
+
         cards.remove(position);
 
         // Update the position in the cards after the one being removed
         for (int i = position; i < cards.size(); i++) {
             cards.get(i).setPosition(i);
         }
-
-        // Reset the adapter and go to the next card
-        mPager.setAdapter(this);
+        notifyDataSetChanged();
         mPager.setCurrentItem(position);
     }
 }

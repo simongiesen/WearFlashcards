@@ -56,6 +56,18 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reset the adapter when on rotation in order to be able to remove cards from it
+        final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
+        final int currentItem = pager.getCurrentItem();
+        pager.setAdapter(new StudyAdapter(this, getSupportFragmentManager(), pager, tableName,
+                terms, definitions, stars, ids, tableIds, tableId));
+        pager.setCurrentItem(currentItem);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.studying, menu);
         return true;

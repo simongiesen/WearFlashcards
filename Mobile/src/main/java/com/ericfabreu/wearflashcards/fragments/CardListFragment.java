@@ -47,8 +47,13 @@ public class CardListFragment extends ListFragment
     private List<Long> selections = new ArrayList<>();
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("adapter", mAdapter.toString());
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Get table name from SetOverviewActivity
+        // Get table name from the parent activity
         Bundle bundle = getArguments();
         tableName = bundle.getString(Constants.TAG_TABLE_NAME);
         folderTable = bundle.getString(Constants.TAG_FOLDER);

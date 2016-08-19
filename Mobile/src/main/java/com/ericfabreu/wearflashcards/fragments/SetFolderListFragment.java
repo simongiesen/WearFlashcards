@@ -11,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -74,26 +73,10 @@ public class SetFolderListFragment extends ListFragment
         getLoaderManager().restartLoader(mMode, null, this);
     }
 
-    // Fragments are recreated when the orientation changes, so is necessary to save the mode
-    // variables and load them in onCreate()
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(Constants.TAG_TABLE_NAME, mTable);
-        outState.putLong(Constants.TAG_FOLDER_ID, mFolderId);
-        outState.putInt(TAG_FAB, mFabId);
-        outState.putInt(TAG_MODE, mMode);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
-            mFolderId = savedInstanceState.getLong(Constants.TAG_FOLDER_ID);
-            mFabId = savedInstanceState.getInt(TAG_FAB);
-            mMode = savedInstanceState.getInt(TAG_MODE);
-        }
+        setRetainInstance(true);
     }
 
     @Override
@@ -317,13 +300,7 @@ public class SetFolderListFragment extends ListFragment
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("mode2", String.valueOf(mMode));
-        if (mTable != null) {
-            Log.d("table", mTable);
-        }
-        if (mMode >= 0) {
-            mAdapter.swapCursor(data);
-        }
+        mAdapter.swapCursor(data);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

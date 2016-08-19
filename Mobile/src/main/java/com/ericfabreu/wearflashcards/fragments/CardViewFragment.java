@@ -39,7 +39,6 @@ public class CardViewFragment extends Fragment {
         mAdapter = adapter;
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
