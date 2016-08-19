@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Generates CardViews for SetView.
  */
-public class StudySetAdapter extends FragmentStatePagerAdapter {
+public class StudyAdapter extends FragmentStatePagerAdapter {
     private List<CardViewFragment> cards = new ArrayList<>();
     private String mTableName;
     private long mTableId;
@@ -41,9 +41,9 @@ public class StudySetAdapter extends FragmentStatePagerAdapter {
     private Activity mActivity;
     private ViewPager mPager;
 
-    public StudySetAdapter(Activity activity, FragmentManager fragmentManager, ViewPager viewPager,
-                           String tableName, List<String> terms, List<String> definitions,
-                           List<Boolean> stars, List<Long> ids, List<Long> tableIds, long tableId) {
+    public StudyAdapter(Activity activity, FragmentManager fragmentManager, ViewPager viewPager,
+                        String tableName, List<String> terms, List<String> definitions,
+                        List<Boolean> stars, List<Long> ids, List<Long> tableIds, long tableId) {
         super(fragmentManager);
         mActivity = activity;
         mPager = viewPager;

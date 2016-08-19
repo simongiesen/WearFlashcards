@@ -139,9 +139,9 @@ public class FolderOverviewActivity extends AppCompatActivity {
                 editor.apply();
                 return true;
             }
-            // Launch StudySetActivity
+            // Launch StudyActivity
             case R.id.item_study_set: {
-                Intent intent = new Intent(this, StudySetActivity.class);
+                Intent intent = new Intent(this, StudyActivity.class);
                 intent.putExtra(Constants.TAG_TITLE, title);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
                 intent.putExtra(Constants.TAG_ID, tableId);

@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.adapters.StudySetAdapter;
+import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
@@ -24,7 +24,7 @@ import com.thinkincode.utils.views.AutoResizeTextView;
  * Displays cards on the screen.
  */
 public class CardViewFragment extends Fragment {
-    private StudySetAdapter mAdapter;
+    private StudyAdapter mAdapter;
     private int mPosition;
 
     public CardViewFragment() {
@@ -35,7 +35,7 @@ public class CardViewFragment extends Fragment {
         mPosition = position;
     }
 
-    public void setAdapter(StudySetAdapter adapter) {
+    public void setAdapter(StudyAdapter adapter) {
         mAdapter = adapter;
     }
 

@@ -53,7 +53,7 @@
             android:parentActivityName=".activities.FolderOverviewActivity" />
 
         <activity
-            android:name=".activities.StudySetActivity"
+            android:name=".activities.StudyActivity"
             android:parentActivityName=".activities.SetOverviewActivity" />
 
         <activity

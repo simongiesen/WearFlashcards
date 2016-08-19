@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ericfabreu.wearflashcards.R;
-import com.ericfabreu.wearflashcards.adapters.StudySetAdapter;
+import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class StudySetActivity extends AppCompatActivity {
+public class StudyActivity extends AppCompatActivity {
     private static final int MENU_POS_STAR = 1;
     private String tableName;
     private long tableId;
@@ -131,7 +131,7 @@ public class StudySetActivity extends AppCompatActivity {
         }
 
         final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
-        pager.setAdapter(new StudySetAdapter(this, getSupportFragmentManager(), pager, tableName,
+        pager.setAdapter(new StudyAdapter(this, getSupportFragmentManager(), pager, tableName,
                 terms, definitions, stars, ids, tableIds, tableId));
     }
 
