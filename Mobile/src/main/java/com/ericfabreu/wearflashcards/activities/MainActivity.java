@@ -46,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Determine if the fab should open the set or the folder activity
-                final Class activityClass = mViewPager.getCurrentItem() == 0 ?
-                        ManageSetActivity.class : ManageFolderActivity.class;
-                Intent intent = new Intent(MainActivity.this, activityClass);
+                Intent intent = new Intent(MainActivity.this, ManageSetFolderActivity.class);
+                intent.putExtra(Constants.TAG_FOLDER, mViewPager.getCurrentItem() == 1);
                 intent.putExtra(Constants.TAG_EDITING_MODE, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             }

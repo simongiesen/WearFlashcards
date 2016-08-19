@@ -2,7 +2,7 @@
     <!-- Activity titles -->
     <string name="app_name">Wear Flashcards</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="title_activity_edit_set">Edit title</string>
+    <string name="title_activity_edit_title">Edit title</string>
     <string name="title_activity_edit_card">Edit card</string>
     <string name="title_activity_create_set">Create a new set</string>
     <string name="title_activity_create_card">Create a new card</string>

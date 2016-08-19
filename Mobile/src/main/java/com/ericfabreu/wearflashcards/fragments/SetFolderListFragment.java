@@ -23,8 +23,7 @@ import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.FolderOverviewActivity;
-import com.ericfabreu.wearflashcards.activities.ManageFolderActivity;
-import com.ericfabreu.wearflashcards.activities.ManageSetActivity;
+import com.ericfabreu.wearflashcards.activities.ManageSetFolderActivity;
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
@@ -164,7 +163,7 @@ public class SetFolderListFragment extends ListFragment
                         return true;
 
                     case R.id.item_edit:
-                        // Get title and send it to ManageSetActivity or ManageFolderActivity
+                        // Get title and send it to ManageSetFolderActivity
                         FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         final Uri uri = mMode == 1 ? FolderList.CONTENT_URI : SetList.CONTENT_URI;
@@ -178,8 +177,8 @@ public class SetFolderListFragment extends ListFragment
                         if (cursor != null && cursor.moveToFirst()) {
                             String title = cursor.getString(cursor
                                     .getColumnIndex(column[0]));
-                            Intent intent = new Intent(getActivity(), mMode == 1 ?
-                                    ManageFolderActivity.class : ManageSetActivity.class);
+                            Intent intent = new Intent(getActivity(), ManageSetFolderActivity.class);
+                            intent.putExtra(Constants.TAG_FOLDER, mMode == 1);
                             intent.putExtra(Constants.TAG_EDITING_MODE, true);
                             intent.putExtra(Constants.TAG_TITLE, title);
                             getActivity().startActivityForResult(intent,
