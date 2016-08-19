@@ -27,6 +27,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +62,13 @@ public class CardListFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Setup contextual action mode
+        // Setup contextual action mode and fab
         final ListView listView = getListView();
+        final FloatingActionButton fab = (FloatingActionButton) getActivity()
+                .findViewById(R.id.fab_set_overview);
+        if (fab != null) {
+            fab.attachToListView(listView);
+        }
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setDividerHeight(0);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {

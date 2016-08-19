@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +23,7 @@ import com.ericfabreu.wearflashcards.fragments.FolderListFragment;
 import com.ericfabreu.wearflashcards.fragments.SetListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.views.MainViewPager;
+import com.melnykov.fab.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
     private SharedPreferences settings;
@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             if (position == 0) {
                 SetListFragment setListFragment = new SetListFragment();
                 setListFragment.setViewPager(mViewPager);
+                setListFragment.setFabId(R.id.fab_main);
                 return setListFragment;
             } else {
                 FolderListFragment folderListFragment = new FolderListFragment();

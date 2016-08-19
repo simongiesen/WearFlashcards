@@ -28,6 +28,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.ericfabreu.wearflashcards.views.MainViewPager;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,11 @@ public class FolderListFragment extends ListFragment
 
         // Setup contextual action mode
         final ListView listView = getListView();
+        final FloatingActionButton fab = (FloatingActionButton) getActivity()
+                .findViewById(R.id.fab_main);
+        if (fab != null) {
+            fab.attachToListView(listView);
+        }
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setDividerHeight(0);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {

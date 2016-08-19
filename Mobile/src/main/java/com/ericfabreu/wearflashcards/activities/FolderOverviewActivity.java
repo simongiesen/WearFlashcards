@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -21,6 +20,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.SetListFragment;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
+import com.melnykov.fab.FloatingActionButton;
 
 public class FolderOverviewActivity extends AppCompatActivity {
     private String tableName, title;
@@ -188,6 +188,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
         final String fragTagSetList = "setListFragment";
         SetListFragment setListFragment = new SetListFragment();
         setListFragment.setFolderMode(tableName, tableId);
+        setListFragment.setFabId(R.id.fab_folder_overview);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.layout_folder_overview, setListFragment, fragTagSetList)
                 .commit();

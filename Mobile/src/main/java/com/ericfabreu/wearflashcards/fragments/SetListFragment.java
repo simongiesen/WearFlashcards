@@ -29,6 +29,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.ericfabreu.wearflashcards.views.MainViewPager;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class SetListFragment extends ListFragment
     private SimpleCursorAdapter mAdapter;
     private MainViewPager mViewPager;
     private FlashcardProvider mProvider;
+    private int mFabId;
     private boolean mFolder = false;
     private String mTable = null;
     private long mFolderId;
@@ -48,6 +50,10 @@ public class SetListFragment extends ListFragment
 
     public void setViewPager(MainViewPager viewPager) {
         mViewPager = viewPager;
+    }
+
+    public void setFabId(int fabId) {
+        mFabId = fabId;
     }
 
     public void setFolderMode(String table, long id) {
@@ -74,8 +80,12 @@ public class SetListFragment extends ListFragment
         setEmptyText(mFolder ? getString(R.string.message_empty_folder)
                 : getString(R.string.message_empty_database));
 
-        // Setup contextual action mode
+        // Setup contextual action mode and FAB
         final ListView listView = getListView();
+        final FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(mFabId);
+        if (fab != null) {
+            fab.attachToListView(listView);
+        }
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setDividerHeight(0);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
