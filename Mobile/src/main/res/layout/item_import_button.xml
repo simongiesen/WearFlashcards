@@ -15,6 +15,6 @@
         android:layout_marginEnd="@dimen/activity_horizontal_padding"
         android:layout_marginTop="@dimen/activity_vertical_padding"
         android:onClick="importSets"
-        android:text="@string/button_import"
-        android:textColor="@color/text_default" />
+        android:text="@string/button_set_import"
+        style="?android:attr/buttonBarButtonStyle" />
 </FrameLayout>

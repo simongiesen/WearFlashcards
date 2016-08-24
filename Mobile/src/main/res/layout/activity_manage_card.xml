@@ -47,22 +47,28 @@
                 android:theme="@style/AppTheme.Base" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/button_manage_done"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/layout_manage_definition"
-            android:layout_below="@+id/layout_manage_definition"
-            android:onClick="manageCard"
-            android:text="@string/button_done" />
+            android:layout_below="@id/layout_manage_definition"
+            android:layout_alignParentEnd="true"
+            style="?android:attr/buttonBarStyle">
 
-        <Button
-            android:id="@+id/button_manage_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_manage_definition"
-            android:layout_toStartOf="@+id/button_manage_done"
-            android:onClick="manageCard"
-            android:text="@string/button_next" />
+            <Button
+                android:id="@+id/button_manage_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="manageCard"
+                android:text="@string/button_next_card"
+                style="?android:attr/buttonBarButtonStyle" />
+
+            <Button
+                android:id="@+id/button_manage_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="manageCard"
+                android:text="@string/button_done"
+                style="?android:attr/buttonBarButtonStyle" />
+        </LinearLayout>
     </RelativeLayout>
 </ScrollView>

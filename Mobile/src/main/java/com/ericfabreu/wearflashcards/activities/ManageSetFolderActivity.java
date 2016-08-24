@@ -59,10 +59,15 @@ public class ManageSetFolderActivity extends AppCompatActivity {
             // Rename the create button to save
             ((Button) findViewById(R.id.button_manage_set_folder)).setText(getText(R.string.button_save));
         }
+
+        // Remove CSV button if it is in editing or folder mode
+        if (mEditing || mFolder) {
+            findViewById(R.id.button_import_csv).setVisibility(View.GONE);
+        }
     }
 
     /**
-     * Creates a new set or folder and returns to MainActivity
+     * Creates a new set or folder and returns to MainActivity.
      */
     public void manageSetFolder(View view) {
         // Get title and trim spaces from the start and end

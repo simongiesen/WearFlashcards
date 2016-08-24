@@ -32,9 +32,10 @@
             android:id="@+id/button_manage_set_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="manageSetFolder"
+            android:text="@string/button_create"
             android:layout_alignEnd="@+id/layout_manage_title"
             android:layout_below="@+id/layout_manage_title"
-            android:onClick="manageSetFolder"
-            android:text="@string/button_create" />
+            style="?android:attr/buttonBarButtonStyle" />
     </RelativeLayout>
 </ScrollView>
