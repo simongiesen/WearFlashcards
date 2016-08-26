@@ -104,7 +104,7 @@ public class SetOverviewActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Show CSV import button
         final MenuItem csvImport = menu.getItem(Constants.MENU_POS_CSV_IMPORT);
-        csvImport.setVisible(false);
+        csvImport.setVisible(true);
 
         // Load settings
         final MenuItem shuffle = menu.getItem(Constants.MENU_POS_SHUFFLE);
@@ -173,6 +173,7 @@ public class SetOverviewActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, CSVImportActivity.class);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
+                return true;
             }
             case R.id.item_settings: {
                 Intent intent = new Intent(this, SettingsActivity.class);

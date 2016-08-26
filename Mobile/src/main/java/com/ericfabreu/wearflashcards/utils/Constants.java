@@ -22,7 +22,6 @@ public class Constants {
     public final static String TAG_EDITING_MODE = "editing";
     public final static String TAG_FOLDER = "folder";
     public final static String TAG_FOLDER_ID = "folder_id";
-    public final static String TAG_FOLDER_MODE = "folder_mode";
 
     // Fragments and activities
     public final static int REQUEST_CODE_SETTINGS = 1;
@@ -33,6 +32,6 @@ public class Constants {
     // Menus and toolbars
     public final static int MENU_POS_SHUFFLE = 0;
     public final static int MENU_POS_DEFINITION = 1;
-    public final static int MENU_POS_CSV_IMPORT = 2;
+    public final static int MENU_POS_CSV_IMPORT = 3;
     public final static float TOOLBAR_ELEVATION = 10;
 }

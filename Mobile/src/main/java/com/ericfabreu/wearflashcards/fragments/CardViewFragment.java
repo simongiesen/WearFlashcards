@@ -16,8 +16,8 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderList;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
-import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
+import com.ericfabreu.wearflashcards.utils.SetInfo;
 import com.thinkincode.utils.views.AutoResizeTextView;
 
 /**
@@ -25,10 +25,16 @@ import com.thinkincode.utils.views.AutoResizeTextView;
  */
 public class CardViewFragment extends Fragment {
     private StudyAdapter mAdapter;
+    private SetInfo.CardInfo mCardInfo;
     private int mPosition;
 
     public CardViewFragment() {
         super();
+    }
+
+    public void setCardInfo(SetInfo.CardInfo cardInfo, int position) {
+        mCardInfo = cardInfo;
+        mPosition = position;
     }
 
     public void setPosition(int position) {
@@ -42,16 +48,6 @@ public class CardViewFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        // Get term and definition
-        final Bundle bundle = getArguments();
-        final String tableName = bundle.getString(Constants.TAG_TABLE_NAME);
-        final String term = bundle.getString(Constants.TAG_TERM);
-        final String definition = bundle.getString(Constants.TAG_DEFINITION);
-        final boolean star = bundle.getBoolean(Constants.TAG_STAR);
-        final boolean folderMode = bundle.getBoolean(Constants.TAG_FOLDER_MODE);
-        final long id = bundle.getLong(Constants.TAG_ID);
-        final long folderId = bundle.getLong(Constants.TAG_FOLDER_ID);
-
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.item_card_view, container, false);
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_view);
@@ -62,12 +58,13 @@ public class CardViewFragment extends Fragment {
                 (AutoResizeTextView) frame.findViewById(R.id.text_card_definition);
         definitionView.setMinTextSize(10f);
         final ImageView starView = (ImageView) frame.findViewById(R.id.image_star_card);
-        final int starDrawable = star ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
+        final int starDrawable = mCardInfo.getStar() ? R.drawable.ic_star_selected
+                : R.drawable.ic_star_unselected;
         starView.setImageDrawable(ContextCompat.getDrawable(getContext(), starDrawable));
 
         // Add term and definition
-        termView.setText(term);
-        definitionView.setText(definition);
+        termView.setText(mCardInfo.getTerm());
+        definitionView.setText(mCardInfo.getDefinition());
 
         // Add click listeners to flip visibility
         View.OnClickListener cardListener = new View.OnClickListener() {
@@ -90,20 +87,22 @@ public class CardViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FlashcardProvider handle = new FlashcardProvider(getContext());
-                final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, tableName);
-                PreferencesHelper.flipStar(getContext(), handle, uri, id, CardSet.STAR);
+                final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, mCardInfo.getTableName());
+                PreferencesHelper.flipStar(getContext(), handle, uri,
+                        mCardInfo.getCardId(), CardSet.STAR);
 
                 // Delete card if star is removed and starred only mode is on
-                if (tableName != null) {
+                if (mCardInfo.getTableName() != null) {
                     final boolean starredOnly;
-                    if (!folderMode) {
-                        final long tableId = Long.valueOf(tableName
-                                .substring(1, tableName.length() - 1));
+                    if (!mCardInfo.getFolderMode()) {
+                        final long tableId = Long.valueOf(mCardInfo.getTableName()
+                                .substring(1, mCardInfo.getTableName().length() - 1));
                         starredOnly = PreferencesHelper.getStar(getContext(), handle,
                                 SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
                     } else {
                         starredOnly = PreferencesHelper.getStar(getContext(), handle,
-                                FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
+                                FolderList.CONTENT_URI, mCardInfo.getTableId(),
+                                FolderList.STARRED_ONLY);
                     }
                     if (starredOnly) {
                         mAdapter.deleteItem(mPosition);
@@ -113,10 +112,10 @@ public class CardViewFragment extends Fragment {
 
                 // Switch star drawable
                 final boolean flag = PreferencesHelper.getStar(getContext(), handle,
-                        uri, id, CardSet.STAR);
+                        uri, mCardInfo.getCardId(), CardSet.STAR);
                 final int star = flag ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getContext(), star));
-                bundle.putBoolean(Constants.TAG_STAR, flag);
+                mCardInfo.flipStar();
                 onCreateView(inflater, container, savedInstanceState);
             }
         });

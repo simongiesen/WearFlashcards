@@ -17,16 +17,14 @@
 package com.ericfabreu.wearflashcards.adapters;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
-import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.SetInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,50 +34,27 @@ import java.util.List;
  */
 public class StudyAdapter extends FragmentStatePagerAdapter {
     private List<CardViewFragment> cards = new ArrayList<>();
-    private String mTableName;
-    private long mTableId;
-    private boolean mFolderMode;
     private Activity mActivity;
     private ViewPager mPager;
 
     public StudyAdapter(Activity activity, FragmentManager fragmentManager, ViewPager viewPager,
-                        String tableName, List<String> terms, List<String> definitions,
-                        List<Boolean> stars, List<Long> ids, List<Long> tableIds, long tableId) {
+                        SetInfo setInfo) {
         super(fragmentManager);
         mActivity = activity;
         mPager = viewPager;
-        mTableName = tableName;
-        mFolderMode = tableIds.size() > 0;
-        mTableId = tableId;
 
         // Create all cards
-        for (int i = 0, n = terms.size(); i < n; i++) {
-            cards.add(newCard(terms.get(i), definitions.get(i), stars.get(i), ids.get(i),
-                    tableIds.size() == 0 ? -1 : tableIds.get(i), i));
+        for (int i = 0, n = setInfo.size(); i < n; i++) {
+            cards.add(newCard(setInfo.getCardAt(i), i));
         }
     }
 
     /**
      * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private CardViewFragment newCard(String term, String definition, boolean star,
-                                     long id, long tableId, int position) {
-        Bundle bundle = new Bundle();
-        FlashcardProvider provider = new FlashcardProvider(mActivity.getApplicationContext());
-
-        // Use the tableId to get the table name if this was started inside a folder
-        bundle.putString(Constants.TAG_TABLE_NAME, tableId > 0 ?
-                provider.getTableName(tableId, false) : mTableName);
-        bundle.putString(Constants.TAG_FOLDER, mTableName);
-        bundle.putString(Constants.TAG_TERM, term);
-        bundle.putString(Constants.TAG_DEFINITION, definition);
-        bundle.putBoolean(Constants.TAG_STAR, star);
-        bundle.putBoolean(Constants.TAG_FOLDER_MODE, mFolderMode);
-        bundle.putLong(Constants.TAG_ID, id);
-        bundle.putLong(Constants.TAG_FOLDER_ID, mTableId);
+    private CardViewFragment newCard(SetInfo.CardInfo cardInfo, int position) {
         CardViewFragment card = new CardViewFragment();
-        card.setArguments(bundle);
-        card.setPosition(position);
+        card.setCardInfo(cardInfo, position);
         card.setAdapter(this);
         return card;
     }
