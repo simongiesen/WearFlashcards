@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
@@ -67,6 +69,7 @@ public class CSVImportActivity extends AppCompatActivity {
                 String line;
                 try {
                     FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
+                    int count = 0;
                     while ((line = bufferedReader.readLine()) != null) {
                         String[] columns = line.split(",");
                         // Skip invalid rows
@@ -82,8 +85,12 @@ public class CSVImportActivity extends AppCompatActivity {
                             cv.put(CardSet.TERM, columns[0].trim());
                             cv.put(CardSet.DEFINITION, columns[1].trim());
                             provider.insert(table, cv);
+                            count++;
                         }
                     }
+                    final String insertCount = getResources()
+                            .getQuantityString(R.plurals.message_csv_import, count, count);
+                    Toast.makeText(CSVImportActivity.this, insertCount, Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

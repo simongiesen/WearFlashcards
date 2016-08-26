@@ -26,6 +26,11 @@
     <string name="message_empty_folder">Tap on the red button to import a set</string>
     <string name="message_all_cards_hidden">All cards are hidden</string>
     <string name="message_import_empty">There are no sets left to import</string>
+    <plurals name="message_csv_import">
+        <item quantity="zero">No cards were imported</item>
+        <item quantity="one">Successfully imported %1$d card</item>
+        <item quantity="other">Successfully imported %1$d cards</item>
+    </plurals>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
