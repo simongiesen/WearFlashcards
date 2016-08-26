@@ -41,9 +41,11 @@
             android:parentActivityName=".activities.MainActivity" />
 
         <activity
-            android:name=".activities.ImportSetsActivity"
+            android:name=".activities.FolderImportActivity"
             android:label="@string/title_activity_import_sets"
             android:parentActivityName=".activities.FolderOverviewActivity" />
+
+        <activity android:name=".activities.CSVImportActivity" />
 
         <activity
             android:name=".activities.StudyActivity"

@@ -23,7 +23,7 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 
-public class ImportSetsActivity extends AppCompatActivity {
+public class FolderImportActivity extends AppCompatActivity {
     private String mTableName;
     private FlashcardProvider mProvider;
     private Cursor mCursor;

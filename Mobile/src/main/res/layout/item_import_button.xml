@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentEnd="true"
-    tools:context=".activities.ImportSetsActivity">
+    tools:context=".activities.FolderImportActivity">
 
     <Button
         android:id="@+id/button_import_sets"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -15,6 +16,5 @@
         android:layout_marginEnd="@dimen/activity_horizontal_padding"
         android:layout_marginTop="@dimen/activity_vertical_padding"
         android:onClick="importSets"
-        android:text="@string/button_set_import"
-        style="?android:attr/buttonBarButtonStyle" />
+        android:text="@string/button_set_import" />
 </FrameLayout>

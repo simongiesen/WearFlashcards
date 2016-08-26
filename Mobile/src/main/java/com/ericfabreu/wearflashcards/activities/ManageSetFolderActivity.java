@@ -1,5 +1,6 @@
 package com.ericfabreu.wearflashcards.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -57,7 +58,8 @@ public class ManageSetFolderActivity extends AppCompatActivity {
             text.setSelection(mTitle.length());
 
             // Rename the create button to save
-            ((Button) findViewById(R.id.button_manage_set_folder)).setText(getText(R.string.button_save));
+            ((Button) findViewById(R.id.button_manage_set_folder))
+                    .setText(getText(R.string.button_save));
         }
 
         // Remove CSV button if it is in editing or folder mode
@@ -87,10 +89,17 @@ public class ManageSetFolderActivity extends AppCompatActivity {
         }
 
         // Check if title is available
-        FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
-        if ((mEditing && !handle.renameMember(mTitle, newTitle, mFolder)) ||
-                (!mEditing && !handle.newTable(newTitle, mFolder))) {
+        FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
+        if ((mEditing && !provider.renameMember(mTitle, newTitle, mFolder)) ||
+                (!mEditing && !provider.newTable(newTitle, mFolder))) {
             text.setError(getString(R.string.error_title_taken));
+            return;
+        }
+
+        // Check if it should import a CSV file
+        if (view.getId() == R.id.button_import_csv) {
+            Intent intent = new Intent(this, CSVImportActivity.class);
+            intent.putExtra(Constants.TAG_TABLE_NAME, provider.getTableName(newTitle, false));
             return;
         }
 

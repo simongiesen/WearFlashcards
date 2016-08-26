@@ -51,7 +51,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Do not launch ImportSetsActivity if there are no sets to import
+                // Do not launch FolderImportActivity if there are no sets to import
                 FlashcardProvider handle = new FlashcardProvider(getApplicationContext());
                 if (handle.getRowCount(SetList.TABLE_NAME) == handle.getRowCount(tableName)) {
                     Toast toast = Toast.makeText(getApplicationContext(),
@@ -59,7 +59,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     Intent intent = new Intent(FolderOverviewActivity.this,
-                            ImportSetsActivity.class);
+                            FolderImportActivity.class);
                     intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
                     startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
                 }
