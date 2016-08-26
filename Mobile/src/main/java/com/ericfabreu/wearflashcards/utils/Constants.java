@@ -33,5 +33,6 @@ public class Constants {
     // Menus and toolbars
     public final static int MENU_POS_SHUFFLE = 0;
     public final static int MENU_POS_DEFINITION = 1;
+    public final static int MENU_POS_CSV_IMPORT = 2;
     public final static float TOOLBAR_ELEVATION = 10;
 }

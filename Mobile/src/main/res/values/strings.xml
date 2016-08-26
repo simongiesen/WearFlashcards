@@ -47,6 +47,7 @@
     <string name="button_reload_cards">Reload</string>
     <string name="button_set_import">Import</string>
     <string name="button_csv_import">Import CSV file</string>
+    <string name="button_csv_append">Add cards from CSV file</string>
 
     <!-- Image descriptions -->
     <string name="description_star">Star</string>
