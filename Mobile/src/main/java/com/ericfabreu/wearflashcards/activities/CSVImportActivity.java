@@ -2,10 +2,12 @@ package com.ericfabreu.wearflashcards.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -38,6 +40,7 @@ public class CSVImportActivity extends AppCompatActivity {
     private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
     private static final String LOG_TAG = "CSV import";
     private String mTable;
+    private Uri mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,96 +121,106 @@ public class CSVImportActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, final Intent resultData) {
         if (resultCode == Activity.RESULT_OK && resultData != null) {
             // Get file URI
-            final Uri uri;
             if (requestCode == CSV_REQUEST_CODE) {
-                uri = resultData.getData();
+                mUri = resultData.getData();
             } else if (requestCode == CSV_REQUEST_CODE_JB) {
-                uri = Uri.fromFile(new File(resultData
+                mUri = Uri.fromFile(new File(resultData
                         .getStringExtra(FilePickerActivity.RESULT_FILE_PATH)));
             } else {
-                uri = null;
+                mUri = null;
             }
-
-            // Load cards in a background thread
-            if (uri != null) {
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        super.run();
-                        readFile(uri);
-                    }
-                };
-                thread.start();
+            if (mUri != null) {
+                new ReadFile().execute();
             }
         }
-
-        // Return to the parent activity
-        finish();
     }
 
     /**
-     * Creates flashcards from a CSV file.
+     * Creates flashcards from a CSV file in a background thread.
      */
-    public void readFile(Uri uri) {
-        ParcelFileDescriptor parcelFileDescriptor = null;
-        try {
-            // Open the CSV file
-            parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
-            if (parcelFileDescriptor != null) {
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                FileReader fileReader = new FileReader(fileDescriptor);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
-                String line;
-                try {
-                    FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
-                    final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
-                    final String star = PreferencesHelper.getDefaultStar(getApplicationContext());
-                    int count = 0;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        String[] columns = line.split(",");
-                        // Skip invalid rows
-                        if (columns.length != 2 || (columns[0].trim().length() == 0
-                                || columns[1].trim().length() == 0)) {
-                            continue;
-                        }
+    private class ReadFile extends AsyncTask<Void, Void, Void> {
+        private final ProgressDialog mDialog = new ProgressDialog(CSVImportActivity.this);
 
-                        // Only import terms that are not already taken
-                        if (provider.termAvailable(columns[0].trim(), table)) {
-                            ContentValues cv = new ContentValues();
-                            cv.put(CardSet.TERM, columns[0].trim());
-                            cv.put(CardSet.DEFINITION, columns[1].trim());
-                            cv.put(CardSet.STAR, star);
-                            provider.insert(table, cv);
-                            count++;
+        @Override
+        protected void onPreExecute() {
+            // Display loading message while the file is being processed
+            mDialog.setMessage(getString(R.string.message_csv_loading));
+            mDialog.setIndeterminate(true);
+            mDialog.setCanceledOnTouchOutside(false);
+            mDialog.show();
+        }
+
+        protected Void doInBackground(Void... values) {
+            ParcelFileDescriptor parcelFileDescriptor = null;
+            try {
+                // Open the CSV file
+                parcelFileDescriptor = getContentResolver().openFileDescriptor(mUri, "r");
+                if (parcelFileDescriptor != null) {
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    FileReader fileReader = new FileReader(fileDescriptor);
+                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+                    String line;
+                    try {
+                        FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
+                        final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
+                        final String star = PreferencesHelper
+                                .getDefaultStar(getApplicationContext());
+                        int count = 0;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            String[] columns = line.split(",");
+                            // Skip invalid rows
+                            if (columns.length != 2 || (columns[0].trim().length() == 0
+                                    || columns[1].trim().length() == 0)) {
+                                continue;
+                            }
+
+                            // Only import terms that are not already taken
+                            if (provider.termAvailable(columns[0].trim(), table)) {
+                                ContentValues cv = new ContentValues();
+                                cv.put(CardSet.TERM, columns[0].trim());
+                                cv.put(CardSet.DEFINITION, columns[1].trim());
+                                cv.put(CardSet.STAR, star);
+                                provider.insert(table, cv);
+                                count++;
+                            }
                         }
+                        final String insertCount = count == 0
+                                ? getString(R.string.message_csv_import_zero)
+                                : getResources()
+                                .getQuantityString(R.plurals.message_csv_import, count, count);
+
+                        // Toasts cannot be created in a background thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(CSVImportActivity.this, insertCount,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    final String insertCount = count == 0
-                            ? getString(R.string.message_csv_import_zero)
-                            : getResources()
-                            .getQuantityString(R.plurals.message_csv_import, count, count);
-
-                    // Toasts cannot be created in a background thread
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(CSVImportActivity.this, insertCount,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                }
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Failed to load file.", e);
+            } finally {
+                try {
+                    if (parcelFileDescriptor != null) {
+                        parcelFileDescriptor.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e(LOG_TAG, "Error closing ParcelFile Descriptor");
                 }
             }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to load file.", e);
-        } finally {
-            try {
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(LOG_TAG, "Error closing ParcelFile Descriptor");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void value) {
+            if (mDialog.isShowing()) {
+                mDialog.dismiss();
+                finish();
             }
         }
     }
