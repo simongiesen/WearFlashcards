@@ -48,6 +48,9 @@ public class CardViewFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
+        // Ensure that its objects are not destroyed on rotation
+        setRetainInstance(true);
+
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.item_card_view, container, false);
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_view);
