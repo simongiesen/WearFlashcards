@@ -88,7 +88,9 @@ public class CSVImportActivity extends AppCompatActivity {
                             count++;
                         }
                     }
-                    final String insertCount = getResources()
+                    final String insertCount = count == 0
+                            ? getString(R.string.message_csv_import_zero)
+                            : getResources()
                             .getQuantityString(R.plurals.message_csv_import, count, count);
                     Toast.makeText(CSVImportActivity.this, insertCount, Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
