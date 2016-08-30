@@ -40,7 +40,7 @@ public class CSVImportActivity extends AppCompatActivity {
 
             Intent fileIntent;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                fileIntent = new Intent();
+                fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
             } else {
                 fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             }

@@ -26,7 +26,7 @@ public class ManageCardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_card);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
         // Get card info from CardListFragment

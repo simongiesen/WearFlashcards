@@ -85,7 +85,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // Ensure that the elevation is consistent with the other activities
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
         getFragmentManager().beginTransaction()

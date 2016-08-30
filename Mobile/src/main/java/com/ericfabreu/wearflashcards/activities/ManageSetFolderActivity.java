@@ -23,7 +23,7 @@ public class ManageSetFolderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_set_folder);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
         Bundle bundle = getIntent().getExtras();

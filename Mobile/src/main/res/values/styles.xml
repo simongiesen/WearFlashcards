@@ -10,6 +10,11 @@
         <item name="actionModeBackground">@color/color_primary</item>
     </style>
 
+    <!-- Remove toolbar shadow from MainActivity in pre-Lollipop devices -->
+    <style name="MainActivityTheme" parent="AppTheme">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <!-- EditText theme -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/color_edit</item>

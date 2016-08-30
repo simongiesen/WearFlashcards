@@ -30,7 +30,7 @@ public class StudyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_study_set);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
         mProvider = new FlashcardProvider(getApplicationContext());
 

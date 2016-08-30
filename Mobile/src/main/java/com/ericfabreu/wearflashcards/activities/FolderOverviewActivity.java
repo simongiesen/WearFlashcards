@@ -34,7 +34,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_folder_overview);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
         // Load settings

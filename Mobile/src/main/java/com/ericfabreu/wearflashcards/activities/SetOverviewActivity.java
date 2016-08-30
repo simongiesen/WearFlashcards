@@ -36,7 +36,7 @@ public class SetOverviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_overview);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
         // Load settings

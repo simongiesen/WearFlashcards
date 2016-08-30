@@ -36,7 +36,7 @@ public class FolderImportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_import_sets);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setElevation(Constants.TOOLBAR_ELEVATION);
+            actionBar.setElevation(Constants.TOOLBAR_ELEVATION);
         }
 
         Bundle bundle = getIntent().getExtras();
