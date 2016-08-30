@@ -20,6 +20,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
@@ -53,7 +54,7 @@ public class CSVImportActivity extends AppCompatActivity {
             if (savedInstanceState == null) {
                 loadFileBrowser();
             }
-            // mTable becomes null after the rotation
+            // mTable and mTableId become null after the rotation
             else {
                 mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
             }
@@ -64,7 +65,7 @@ public class CSVImportActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        // Save the table name before the activity is recreated
+        // Save the table name and id before the activity is recreated
         savedInstanceState.putString(Constants.TAG_TABLE_NAME, mTable);
     }
 
@@ -159,6 +160,8 @@ public class CSVImportActivity extends AppCompatActivity {
                 String line;
                 try {
                     FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
+                    final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
+                    final String star = PreferencesHelper.getDefaultStar(getApplicationContext());
                     int count = 0;
                     while ((line = bufferedReader.readLine()) != null) {
                         String[] columns = line.split(",");
@@ -169,11 +172,11 @@ public class CSVImportActivity extends AppCompatActivity {
                         }
 
                         // Only import terms that are not already taken
-                        Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
                         if (provider.termAvailable(columns[0].trim(), table)) {
                             ContentValues cv = new ContentValues();
                             cv.put(CardSet.TERM, columns[0].trim());
                             cv.put(CardSet.DEFINITION, columns[1].trim());
+                            cv.put(CardSet.STAR, star);
                             provider.insert(table, cv);
                             count++;
                         }
