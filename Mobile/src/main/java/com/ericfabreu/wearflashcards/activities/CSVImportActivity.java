@@ -3,6 +3,7 @@ package com.ericfabreu.wearflashcards.activities;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,17 +16,21 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * Imports a CSV file into a flashcard set.
  */
 public class CSVImportActivity extends AppCompatActivity {
-    private static final int CSV_REQUEST_CODE = 278;
+    private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
     private static final String LOG_TAG = "CSV import";
     private String mTable;
 
@@ -46,7 +51,21 @@ public class CSVImportActivity extends AppCompatActivity {
             }
             fileIntent.setType("text/comma-separated-values");
             fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            startActivityForResult(fileIntent, CSV_REQUEST_CODE);
+
+            // Use MaterialFilePicker if JellyBean device does not have a file manager
+            PackageManager packageManager = getPackageManager();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                    && fileIntent.resolveActivity(packageManager) == null) {
+                new MaterialFilePicker()
+                        .withActivity(this)
+                        .withRequestCode(CSV_REQUEST_CODE_JB)
+                        .withFilter(Pattern.compile(".*\\.csv$"))
+                        .withFilterDirectories(false)
+                        .withHiddenFiles(false)
+                        .start();
+            } else {
+                startActivityForResult(fileIntent, CSV_REQUEST_CODE);
+            }
         } else {
             // mTable becomes null after the rotation
             mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
@@ -63,9 +82,13 @@ public class CSVImportActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == CSV_REQUEST_CODE && resultCode == Activity.RESULT_OK
-                && resultData != null) {
-            readFile(resultData.getData());
+        if (resultCode == Activity.RESULT_OK && resultData != null) {
+            if (requestCode == CSV_REQUEST_CODE) {
+                readFile(resultData.getData());
+            } else if (requestCode == CSV_REQUEST_CODE_JB) {
+                readFile(Uri.fromFile(new File(resultData
+                        .getStringExtra(FilePickerActivity.RESULT_FILE_PATH))));
+            }
         }
 
         // Return to the parent activity
