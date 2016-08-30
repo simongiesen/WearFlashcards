@@ -1,5 +1,6 @@
 package com.ericfabreu.wearflashcards.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,37 +42,21 @@ public class CSVImportActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Ensure that a second intent is not called after rotating the device
-        if (savedInstanceState == null) {
-            Bundle bundle = getIntent().getExtras();
-            mTable = bundle.getString(Constants.TAG_TABLE_NAME);
-
-            Intent fileIntent;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            } else {
-                fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            }
-            fileIntent.setType("text/comma-separated-values");
-            fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
-
-            // Use MaterialFilePicker if JellyBean device does not have a file manager
-            PackageManager packageManager = getPackageManager();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-                    && fileIntent.resolveActivity(packageManager) == null) {
-                new MaterialFilePicker()
-                        .withActivity(this)
-                        .withRequestCode(CSV_REQUEST_CODE_JB)
-                        .withFilter(Pattern.compile(".*\\.csv$"))
-                        .withFilterDirectories(false)
-                        .withHiddenFiles(false)
-                        .start();
-            } else {
-                startActivityForResult(fileIntent, CSV_REQUEST_CODE);
-            }
+        // Check if the app needs to request permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    CSV_REQUEST_CODE);
         } else {
+            // Ensure that a second intent is not called after rotating the device
+            if (savedInstanceState == null) {
+                loadFileBrowser();
+            }
             // mTable becomes null after the rotation
-            mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
+            else {
+                mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
+            }
         }
     }
 
@@ -78,6 +66,51 @@ public class CSVImportActivity extends AppCompatActivity {
 
         // Save the table name before the activity is recreated
         savedInstanceState.putString(Constants.TAG_TABLE_NAME, mTable);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        if (requestCode == CSV_REQUEST_CODE) {
+            // Permission to read files was granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                loadFileBrowser();
+            } else {
+                finish();
+            }
+        }
+    }
+
+    /**
+     * Loads the file browser so that the user can pick a CSV file to import.
+     */
+    private void loadFileBrowser() {
+        Bundle bundle = getIntent().getExtras();
+        mTable = bundle.getString(Constants.TAG_TABLE_NAME);
+
+        Intent fileIntent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        }
+        fileIntent.setType("text/comma-separated-values");
+        fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Use MaterialFilePicker if JellyBean device does not have a file manager
+        PackageManager packageManager = getPackageManager();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                && fileIntent.resolveActivity(packageManager) == null) {
+            new MaterialFilePicker()
+                    .withActivity(this)
+                    .withRequestCode(CSV_REQUEST_CODE_JB)
+                    .withFilter(Pattern.compile(".*\\.csv$"))
+                    .withFilterDirectories(false)
+                    .withHiddenFiles(false)
+                    .start();
+        } else {
+            startActivityForResult(fileIntent, CSV_REQUEST_CODE);
+        }
     }
 
     @Override
