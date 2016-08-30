@@ -81,13 +81,29 @@ public class CSVImportActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent resultData) {
         if (resultCode == Activity.RESULT_OK && resultData != null) {
+            // Get file URI
+            final Uri uri;
             if (requestCode == CSV_REQUEST_CODE) {
-                readFile(resultData.getData());
+                uri = resultData.getData();
             } else if (requestCode == CSV_REQUEST_CODE_JB) {
-                readFile(Uri.fromFile(new File(resultData
-                        .getStringExtra(FilePickerActivity.RESULT_FILE_PATH))));
+                uri = Uri.fromFile(new File(resultData
+                        .getStringExtra(FilePickerActivity.RESULT_FILE_PATH)));
+            } else {
+                uri = null;
+            }
+
+            // Load cards in a background thread
+            if (uri != null) {
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        readFile(uri);
+                    }
+                };
+                thread.start();
             }
         }
 
@@ -133,7 +149,15 @@ public class CSVImportActivity extends AppCompatActivity {
                             ? getString(R.string.message_csv_import_zero)
                             : getResources()
                             .getQuantityString(R.plurals.message_csv_import, count, count);
-                    Toast.makeText(CSVImportActivity.this, insertCount, Toast.LENGTH_SHORT).show();
+
+                    // Toasts cannot be created in a background thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CSVImportActivity.this, insertCount,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

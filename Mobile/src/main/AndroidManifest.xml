@@ -46,7 +46,9 @@
             android:label="@string/title_activity_import_sets"
             android:parentActivityName=".activities.FolderOverviewActivity" />
 
-        <activity android:name=".activities.CSVImportActivity" />
+        <activity
+            android:name=".activities.CSVImportActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activities.StudyActivity"

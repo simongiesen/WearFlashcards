@@ -31,7 +31,7 @@
         <item quantity="one">Successfully imported %1$d new card</item>
         <item quantity="other">Successfully imported %1$d new cards</item>
     </plurals>
-    <string name="message_no_file_manager">File manager could not be found. Please install one from the Play Store and try again.</string>
+    <string name="message_csv_loading">Loading new cards. Please wait&#8230;</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
