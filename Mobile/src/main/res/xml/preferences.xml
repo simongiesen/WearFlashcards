@@ -23,6 +23,11 @@
             android:summaryOff="@string/pref_description_star_off"
             android:summaryOn="@string/pref_description_star_on"
             android:title="@string/pref_title_share_star" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="horizontalPager"
+            android:title="@string/pref_title_horizontal" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_header_creating">

@@ -116,6 +116,7 @@
     <string name="pref_title_flip">Definitions first</string>
     <string name="pref_title_share_star">Share starred only setting</string>
     <string name="pref_title_creating_star">Create starred cards</string>
+    <string name="pref_title_horizontal">Scroll horizontally in study mode</string>
     <string name="pref_description_shuffle">Study cards in random order</string>
     <string name="pref_description_flip">Show the back side of the cards first</string>
     <string name="pref_description_star_on">Use the same value for all items</string>

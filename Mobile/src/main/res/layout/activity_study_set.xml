@@ -4,7 +4,13 @@
     android:layout_height="match_parent">
 
     <com.ericfabreu.wearflashcards.views.VerticalViewPager
-        android:id="@+id/pager_study_set"
+        android:id="@+id/pager_study_vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_study_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </FrameLayout>

@@ -3,10 +3,12 @@ package com.ericfabreu.wearflashcards.activities;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
@@ -16,7 +18,6 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.ericfabreu.wearflashcards.utils.SetInfo;
-import com.ericfabreu.wearflashcards.views.VerticalViewPager;
 
 public class StudyActivity extends AppCompatActivity {
     private static final int MENU_POS_STAR = 1;
@@ -81,8 +82,14 @@ public class StudyActivity extends AppCompatActivity {
         if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
             setInfo.shuffleCards();
         }
-
-        final VerticalViewPager pager = (VerticalViewPager) findViewById(R.id.pager_study_set);
+        final ViewPager pager;
+        if (settings.getBoolean(Constants.PREF_KEY_HORIZONTAL_PAGER, false)) {
+            findViewById(R.id.pager_study_vertical).setVisibility(View.GONE);
+            pager = (ViewPager) findViewById(R.id.pager_study_horizontal);
+            pager.setVisibility(View.VISIBLE);
+        } else {
+            pager = (ViewPager) findViewById(R.id.pager_study_vertical);
+        }
         pager.setAdapter(new StudyAdapter(this, getSupportFragmentManager(), pager, setInfo));
     }
 

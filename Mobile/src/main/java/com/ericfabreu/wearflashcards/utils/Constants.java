@@ -11,6 +11,7 @@ public class Constants {
     public final static String PREF_KEY_CARD_ORDER = "cardOrder";
     public final static String PREF_KEY_CREATE_STARRED = "createCardStarred";
     public final static String PREF_KEY_SHARED_STAR = "sharedStar";
+    public final static String PREF_KEY_HORIZONTAL_PAGER = "horizontalPager";
 
     // Bundle tags
     public final static String TAG_TERM = "term";
