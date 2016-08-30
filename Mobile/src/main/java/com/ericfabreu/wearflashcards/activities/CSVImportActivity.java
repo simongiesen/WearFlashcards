@@ -32,18 +32,33 @@ public class CSVImportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getIntent().getExtras();
-        mTable = bundle.getString(Constants.TAG_TABLE_NAME);
 
-        Intent fileIntent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            fileIntent = new Intent();
+        // Ensure that a second intent is not called after rotating the device
+        if (savedInstanceState == null) {
+            Bundle bundle = getIntent().getExtras();
+            mTable = bundle.getString(Constants.TAG_TABLE_NAME);
+
+            Intent fileIntent;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                fileIntent = new Intent();
+            } else {
+                fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            }
+            fileIntent.setType("text/comma-separated-values");
+            fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(fileIntent, CSV_REQUEST_CODE);
         } else {
-            fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            // mTable becomes null after the rotation
+            mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
         }
-        fileIntent.setType("text/comma-separated-values");
-        fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(fileIntent, CSV_REQUEST_CODE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Save the table name before the activity is recreated
+        savedInstanceState.putString(Constants.TAG_TABLE_NAME, mTable);
     }
 
     @Override
@@ -52,6 +67,9 @@ public class CSVImportActivity extends AppCompatActivity {
                 && resultData != null) {
             readFile(resultData.getData());
         }
+
+        // Return to the parent activity
+        finish();
     }
 
     /**
@@ -109,8 +127,5 @@ public class CSVImportActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error closing ParcelFile Descriptor");
             }
         }
-
-        // Return to the parent activity
-        finish();
     }
 }

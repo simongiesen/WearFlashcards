@@ -100,10 +100,21 @@ public class ManageSetFolderActivity extends AppCompatActivity {
         if (view.getId() == R.id.button_import_csv) {
             Intent intent = new Intent(this, CSVImportActivity.class);
             intent.putExtra(Constants.TAG_TABLE_NAME, provider.getTableName(newTitle, false));
+            startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
             return;
         }
 
         // Return to the main screen
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Return to MainActivity after CSVImportActivity closes
+        if (requestCode == Constants.REQUEST_CODE_CREATE) {
+            this.finish();
+        }
     }
 }
