@@ -132,6 +132,8 @@ public class CSVImportActivity extends FragmentActivity {
             if (mUri != null) {
                 new ReadFile().execute();
             }
+        } else {
+            finish();
         }
     }
 
@@ -146,7 +148,7 @@ public class CSVImportActivity extends FragmentActivity {
             // Display loading message while the file is being processed
             mDialog.setMessage(getString(R.string.message_csv_loading));
             mDialog.setIndeterminate(true);
-            mDialog.setCanceledOnTouchOutside(false);
+            mDialog.setCancelable(false);
             mDialog.show();
         }
 

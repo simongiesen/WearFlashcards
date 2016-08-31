@@ -50,6 +50,7 @@
 
         <activity
             android:name=".activities.CSVImportActivity"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Transparent" />
 
         <activity
