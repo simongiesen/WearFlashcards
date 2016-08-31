@@ -13,8 +13,8 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 /**
  * Imports a CSV file into a flashcard set.
  */
-public class CSVImportActivity extends AppCompatActivity {
+public class CSVImportActivity extends FragmentActivity {
     private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
     private static final String LOG_TAG = "CSV import";
     private String mTable;
