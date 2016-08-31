@@ -90,7 +90,10 @@ public class CardViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FlashcardProvider handle = new FlashcardProvider(getContext());
-                final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, mCardInfo.getTableName());
+                final String table = mCardInfo.getFolderMode() ?
+                        handle.getTableName(mCardInfo.getTableId(), false) :
+                        mCardInfo.getTableName();
+                final Uri uri = Uri.withAppendedPath(CardSet.CONTENT_URI, table);
                 PreferencesHelper.flipStar(getContext(), handle, uri,
                         mCardInfo.getCardId(), CardSet.STAR);
 
