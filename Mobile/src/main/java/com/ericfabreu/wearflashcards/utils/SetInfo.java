@@ -154,6 +154,9 @@ public class SetInfo {
         return array;
     }
 
+    /**
+     * A simple container for cards.
+     */
     public class CardInfo {
         private String mTable, mTerm, mDefinition;
         private long mTableId, mCardId;

@@ -15,6 +15,7 @@ import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
+import com.ericfabreu.wearflashcards.utils.SetInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
@@ -28,7 +29,6 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
 public class StudyActivity extends Activity implements
         DataApi.DataListener,
@@ -103,8 +103,6 @@ public class StudyActivity extends Activity implements
                 ids = dataMap.getLongArray(Constants.TAG_ID);
                 if (!setMode) {
                     tableIds = dataMap.getLongArray(TAG_FOLDER_ID);
-                } else if (ids != null) {
-                    tableIds = new long[ids.length];
                 }
                 terms = dataMap.getStringArrayList(TAG_TERMS);
                 definitions = dataMap.getStringArrayList(TAG_DEFINITIONS);
@@ -156,76 +154,19 @@ public class StudyActivity extends Activity implements
                 return insets;
             }
         });
+        SetInfo setInfo = new SetInfo(title, starredOnly, terms, definitions, ids, tableIds, stars);
 
         // Apply settings and open cards
         SharedPreferences settings =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (settings.getBoolean(Constants.PREF_KEY_DEFINITION, false)) {
-            ArrayList<String> temp = terms;
-            terms = definitions;
-            definitions = temp;
+            setInfo.flipCards();
         }
         if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
-            shuffleCards();
+            setInfo.shuffleCards();
         }
         pager.setAdapter(new StudyAdapter(getFragmentManager(), this, pager, mGoogleApiClient,
-                starredOnly, title, terms, definitions, ids, tableIds, stars));
-    }
-
-    /**
-     * Shuffles the terms and definitions together.
-     */
-    private void shuffleCards() {
-        int size = terms.size();
-        int[] shuffleOrder = getShuffledArray(size);
-        ArrayList<String> newTerms = new ArrayList<>(), newDefinitions = new ArrayList<>();
-        long[] newIds = new long[size], newTableIds = new long[size];
-        ArrayList<Integer> newStars = new ArrayList<>();
-
-        // Use shuffled int array to ensure that the new terms and definitions match
-        for (int i = 0; i < size; i++) {
-            newTerms.add(i, terms.get(shuffleOrder[i]));
-            newDefinitions.add(i, definitions.get(shuffleOrder[i]));
-            newIds[i] = ids[shuffleOrder[i]];
-            if (!setMode) {
-                newTableIds[i] = tableIds[shuffleOrder[i]];
-            }
-            newStars.add(i, stars.get(shuffleOrder[i]));
-        }
-        terms = newTerms;
-        definitions = newDefinitions;
-        ids = newIds;
-        tableIds = newTableIds;
-        stars = newStars;
-    }
-
-    /**
-     * Creates an int array of size 'size' in increasing order and shuffles it.
-     */
-    private int[] getShuffledArray(int size) {
-        int[] array = new int[size];
-        for (int i = 0; i < size; i++) {
-            array[i] = i;
-        }
-        return shuffleArray(array);
-    }
-
-    /**
-     * Shuffles an int array.
-     * http://stackoverflow.com/a/18456998/3522216
-     */
-    private int[] shuffleArray(int[] array) {
-        int index;
-        Random random = new Random();
-        for (int i = array.length - 1; i > 0; i--) {
-            index = random.nextInt(i + 1);
-            if (index != i) {
-                array[index] ^= array[i];
-                array[i] ^= array[index];
-                array[index] ^= array[i];
-            }
-        }
-        return array;
+                setInfo));
     }
 
     /**

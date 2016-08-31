@@ -18,7 +18,6 @@ package com.ericfabreu.wearflashcards.adapters;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.os.Bundle;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.StudyActivity;
 import com.ericfabreu.wearflashcards.fragments.CardViewFragment;
-import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.SetInfo;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
@@ -43,39 +42,25 @@ public class StudyAdapter extends FragmentGridPagerAdapter {
     private GridViewPager mPager;
 
     public StudyAdapter(FragmentManager fragmentManager, StudyActivity activity,
-                        GridViewPager pager, GoogleApiClient googleApiClient, boolean starredOnly,
-                        String title, ArrayList<String> terms, ArrayList<String> definitions,
-                        long[] ids, long[] tableIds, ArrayList<Integer> stars) {
+                        GridViewPager pager, GoogleApiClient googleApiClient, SetInfo setInfo) {
         super(fragmentManager);
         mGoogleApiClient = googleApiClient;
         mActivity = activity;
         mPager = pager;
 
         // Create all cards
-        for (int i = 0, n = terms.size(); i < n; i++) {
-            cards.add(newCard(title, terms.get(i), definitions.get(i), tableIds[i], ids[i], i,
-                    starredOnly, stars.get(i) == 1));
+        for (int i = 0, n = setInfo.size(); i < n; i++) {
+            cards.add(newCard(setInfo.getCardAt(i), i));
         }
     }
 
     /**
      * Sends term and definition to CardViewFragment and creates a new card.
      */
-    private CardViewFragment newCard(String title, String term, String definition, long tableId,
-                                     long id, int position, boolean starredOnly, boolean star) {
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.TAG_TITLE, title);
-        bundle.putString(Constants.TAG_TERM, term);
-        bundle.putString(Constants.TAG_DEFINITION, definition);
-        bundle.putLong(Constants.TAG_ID, id);
-        bundle.putLong(Constants.TAG_TABLE_ID, tableId);
-        bundle.putBoolean(Constants.TAG_STARRED_ONLY, starredOnly);
-        bundle.putBoolean(Constants.TAG_STAR, star);
+    private CardViewFragment newCard(SetInfo.CardInfo cardInfo, int position) {
         CardViewFragment card = new CardViewFragment();
-        card.setArguments(bundle);
         card.setGoogleApiClient(mGoogleApiClient);
-        card.setPosition(position);
-        card.setAdapter(this);
+        card.setCardInfo(cardInfo, this, position);
         return card;
     }
 

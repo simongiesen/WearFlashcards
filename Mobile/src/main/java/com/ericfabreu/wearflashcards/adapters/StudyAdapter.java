@@ -54,8 +54,7 @@ public class StudyAdapter extends FragmentStatePagerAdapter {
      */
     private CardViewFragment newCard(SetInfo.CardInfo cardInfo, int position) {
         CardViewFragment card = new CardViewFragment();
-        card.setCardInfo(cardInfo, position);
-        card.setAdapter(this);
+        card.setCardInfo(cardInfo, this, position);
         return card;
     }
 

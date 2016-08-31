@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.adapters.StudyAdapter;
 import com.ericfabreu.wearflashcards.utils.Constants;
+import com.ericfabreu.wearflashcards.utils.SetInfo;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
@@ -28,32 +29,25 @@ public class CardViewFragment extends Fragment {
     private GoogleApiClient mGoogleApiClient;
     private int mPosition;
     private StudyAdapter mAdapter;
+    private SetInfo.CardInfo mCardInfo;
 
     public void setGoogleApiClient(GoogleApiClient googleApiClient) {
         mGoogleApiClient = googleApiClient;
+    }
+
+    public void setCardInfo(SetInfo.CardInfo cardInfo, StudyAdapter adapter, int position) {
+        mCardInfo = cardInfo;
+        mAdapter = adapter;
+        mPosition = position;
     }
 
     public void setPosition(int position) {
         mPosition = position;
     }
 
-    public void setAdapter(StudyAdapter adapter) {
-        mAdapter = adapter;
-    }
-
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        // Get term and definition
-        final Bundle bundle = getArguments();
-        final String title = bundle.getString(Constants.TAG_TITLE);
-        final String term = bundle.getString(Constants.TAG_TERM);
-        final String definition = bundle.getString(Constants.TAG_DEFINITION);
-        final long id = bundle.getLong(Constants.TAG_ID);
-        final long tableId = bundle.getLong(Constants.TAG_TABLE_ID);
-        final boolean star = bundle.getBoolean(Constants.TAG_STAR);
-        final boolean starredOnly = bundle.getBoolean(Constants.TAG_STARRED_ONLY);
-
         // Create card and get necessary views
         View card = inflater.inflate(R.layout.fragment_card_view, container, false);
         FrameLayout frame = (FrameLayout) card.findViewById(R.id.layout_card_frame);
@@ -64,13 +58,14 @@ public class CardViewFragment extends Fragment {
         termView.setMinTextSize(14f);
         definitionView.setMinTextSize(12f);
         final ImageView starView = (ImageView) frame.findViewById(R.id.image_star_card);
-        final int starDrawable = star ? R.drawable.ic_star_selected : R.drawable.ic_star_unselected;
+        final int starDrawable = mCardInfo.getStar() ? R.drawable.ic_star_selected
+                : R.drawable.ic_star_unselected;
         starView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),
                 starDrawable));
 
         // Add text and click listeners
-        termView.setText(term);
-        definitionView.setText(definition);
+        termView.setText(mCardInfo.getTerm());
+        definitionView.setText(mCardInfo.getDefinition());
         View.OnClickListener cardListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,20 +87,20 @@ public class CardViewFragment extends Fragment {
         starFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final boolean star = !bundle.getBoolean(Constants.TAG_STAR);
+                final boolean star = !mCardInfo.getStar();
                 final int starDrawable = star ? R.drawable.ic_star_selected
                         : R.drawable.ic_star_unselected;
                 starView.setImageDrawable(ContextCompat.getDrawable(getActivity()
                         .getApplicationContext(), starDrawable));
-                bundle.putBoolean(Constants.TAG_STAR, star);
-                if (tableId == 0) {
-                    flipStar(title, id);
+                mCardInfo.flipStar();
+                if (mCardInfo.getFolderMode()) {
+                    flipStar(mCardInfo.getTableId(), mCardInfo.getCardId());
                 } else {
-                    flipStar(tableId, id);
+                    flipStar(mCardInfo.getTitle(), mCardInfo.getCardId());
                 }
 
                 // Delete card if star is removed and starred only mode is on
-                if (!star && starredOnly) {
+                if (!star && mCardInfo.getStarredOnly()) {
                     mAdapter.deleteItem(mPosition);
                 }
             }
@@ -116,11 +111,11 @@ public class CardViewFragment extends Fragment {
     /**
      * Sends a data request to the phone in order to flip the star value in the database.
      */
-    private void flipStar(final String title, final long id) {
+    private void flipStar(final String tableName, final long id) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(Constants.REQUEST_PATH);
         final DataMap dataMap = putDataMapReq.getDataMap();
         dataMap.putInt(Constants.TAG_MODE, 4);
-        dataMap.putString(Constants.TAG_TITLE, title);
+        dataMap.putString(Constants.TAG_TITLE, tableName);
         dataMap.putLong(TAG_CARD_ID, id);
         dataMap.putLong(Constants.TAG_TIME, new Date().getTime());
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapReq.asPutDataRequest());

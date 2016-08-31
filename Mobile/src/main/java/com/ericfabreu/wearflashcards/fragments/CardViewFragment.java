@@ -32,17 +32,14 @@ public class CardViewFragment extends Fragment {
         super();
     }
 
-    public void setCardInfo(SetInfo.CardInfo cardInfo, int position) {
+    public void setCardInfo(SetInfo.CardInfo cardInfo, StudyAdapter adapter, int position) {
         mCardInfo = cardInfo;
+        mAdapter = adapter;
         mPosition = position;
     }
 
     public void setPosition(int position) {
         mPosition = position;
-    }
-
-    public void setAdapter(StudyAdapter adapter) {
-        mAdapter = adapter;
     }
 
     @Override
