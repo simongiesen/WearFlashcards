@@ -56,7 +56,8 @@ public class SetInfo {
         int[] shuffleOrder = getShuffledArray(size);
         List<String> newTerms = new ArrayList<>(), newDefinitions = new ArrayList<>();
         ArrayList<Integer> newStars = new ArrayList<>();
-        long[] newIds = new long[mIds.length], newTableIds = new long[mTableIds.length];
+        long[] newIds = new long[mIds.length],
+                newTableIds = mTableIds != null ? new long[mTableIds.length] : null;
 
         // Use shuffled int array to ensure that the new terms, definitions, and stars match
         for (int i = 0; i < size; i++) {
@@ -64,7 +65,9 @@ public class SetInfo {
             newDefinitions.add(i, mDefinitions.get(shuffleOrder[i]));
             newStars.add(i, mStars.get(shuffleOrder[i]));
             newIds[i] = mIds[shuffleOrder[i]];
-            newTableIds[i] = mTableIds[shuffleOrder[i]];
+            if (newTableIds != null) {
+                newTableIds[i] = mTableIds[shuffleOrder[i]];
+            }
         }
 
         mTerms = newTerms;
