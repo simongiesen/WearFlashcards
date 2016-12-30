@@ -102,9 +102,9 @@ public class SetOverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Show CSV import button
-        final MenuItem csvImport = menu.getItem(Constants.MENU_POS_CSV_IMPORT);
-        csvImport.setVisible(true);
+        // Show CSV import and export buttons
+        menu.getItem(Constants.MENU_POS_CSV_IMPORT).setVisible(true);
+        menu.getItem(Constants.MENU_POS_CSV_EXPORT).setVisible(true);
 
         // Load settings
         final MenuItem shuffle = menu.getItem(Constants.MENU_POS_SHUFFLE);
@@ -168,13 +168,24 @@ public class SetOverviewActivity extends AppCompatActivity {
                 startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
                 return true;
             }
-            // Launch CSVImportActivity
+            // Launch ManageCSVActivity
             case R.id.item_csv_import: {
-                Intent intent = new Intent(this, CSVImportActivity.class);
+                Intent intent = new Intent(this, ManageCSVActivity.class);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_EDITING_MODE, true);
+                intent.putExtra(Constants.TAG_FOLDER, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
                 return true;
             }
+            case R.id.item_csv_export: {
+                Intent intent = new Intent(this, ManageCSVActivity.class);
+                intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_EDITING_MODE, false);
+                intent.putExtra(Constants.TAG_FOLDER, false);
+                startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
+                return true;
+            }
+            // Launch settings
             case R.id.item_settings: {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, Constants.REQUEST_CODE_SETTINGS);

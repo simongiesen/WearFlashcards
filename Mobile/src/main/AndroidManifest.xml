@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ericfabreu.wearflashcards">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -49,7 +49,7 @@
             android:parentActivityName=".activities.FolderOverviewActivity" />
 
         <activity
-            android:name=".activities.CSVImportActivity"
+            android:name=".activities.ManageCSVActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Transparent" />
 

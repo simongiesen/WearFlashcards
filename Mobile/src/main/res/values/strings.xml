@@ -32,6 +32,7 @@
         <item quantity="other">Successfully imported %1$d new cards</item>
     </plurals>
     <string name="message_csv_loading">Importing new cards. Please wait&#8230;</string>
+    <string name="message_csv_unavailable">Storage is currently unavailable.</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
@@ -53,7 +54,8 @@
     <string name="button_reload_cards">Reload</string>
     <string name="button_set_import">Import</string>
     <string name="button_csv_import">Import CSV file</string>
-    <string name="button_csv_append">Add cards from CSV file</string>
+    <string name="button_csv_append">Add cards from CSV</string>
+    <string name="button_csv_export">Export as CSV</string>
 
     <!-- Image descriptions -->
     <string name="description_star">Star</string>

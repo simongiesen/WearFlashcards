@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.FolderOverviewActivity;
+import com.ericfabreu.wearflashcards.activities.ManageCSVActivity;
 import com.ericfabreu.wearflashcards.activities.ManageSetFolderActivity;
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
@@ -42,7 +43,6 @@ import java.util.List;
  */
 public class SetFolderListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-    private final static String TAG_MODE = "mode", TAG_FAB = "fab";
     private SimpleCursorAdapter mAdapter;
     private MainViewPager mViewPager;
     private FlashcardProvider mProvider;
@@ -118,7 +118,7 @@ public class SetFolderListFragment extends ListFragment
             @Override
             public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.item_delete:
+                    case R.id.item_delete: {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         final int titleId = mMode == 0 ? R.plurals.dialog_delete_set
                                 : (mMode == 1 ? R.plurals.dialog_delete_folder
@@ -158,26 +158,27 @@ public class SetFolderListFragment extends ListFragment
                                         dialog.cancel();
                                     }
                                 });
-                        AlertDialog alert = builder.create();
+                        final AlertDialog alert = builder.create();
                         alert.show();
                         return true;
+                    }
 
-                    case R.id.item_edit:
+                    case R.id.item_edit: {
                         // Get title and send it to ManageSetFolderActivity
-                        FlashcardProvider handle = new FlashcardProvider(getActivity()
+                        final FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         final Uri uri = mMode == 1 ? FolderList.CONTENT_URI : SetList.CONTENT_URI;
                         final String[] column = new String[]{mMode == 1 ? FolderList.FOLDER_TITLE
                                 : SetList.SET_TITLE};
-                        Cursor cursor = handle.query(uri,
+                        final Cursor cursor = handle.query(uri,
                                 column,
                                 "_id=?",
                                 new String[]{String.valueOf(selections.get(0))},
                                 null);
                         if (cursor != null && cursor.moveToFirst()) {
-                            String title = cursor.getString(cursor
-                                    .getColumnIndex(column[0]));
-                            Intent intent = new Intent(getActivity(), ManageSetFolderActivity.class);
+                            final String title = cursor.getString(cursor.getColumnIndex(column[0]));
+                            final Intent intent = new Intent(getActivity(),
+                                    ManageSetFolderActivity.class);
                             intent.putExtra(Constants.TAG_FOLDER, mMode == 1);
                             intent.putExtra(Constants.TAG_EDITING_MODE, true);
                             intent.putExtra(Constants.TAG_TITLE, title);
@@ -187,6 +188,20 @@ public class SetFolderListFragment extends ListFragment
                         }
                         mode.finish();
                         return true;
+                    }
+
+                    case R.id.item_export: {
+                        // Get folder or table name and send it to ManageCSVActivity
+                        final FlashcardProvider handle = new FlashcardProvider(getActivity()
+                                .getApplicationContext());
+                        final String table = handle.getTableName(selections.get(0), mMode == 1);
+                        final Intent intent = new Intent(getActivity(), ManageCSVActivity.class);
+                        intent.putExtra(Constants.TAG_TABLE_NAME, table);
+                        intent.putExtra(Constants.TAG_EDITING_MODE, false);
+                        intent.putExtra(Constants.TAG_FOLDER, true);
+                        startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
+                        return true;
+                    }
 
                     default:
                         return false;
@@ -195,7 +210,7 @@ public class SetFolderListFragment extends ListFragment
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                MenuInflater inflater = mode.getMenuInflater();
+                final MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual, menu);
 
                 // Hide action bar if MainActivity is the parent
@@ -239,8 +254,8 @@ public class SetFolderListFragment extends ListFragment
                 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                TextView titleView = (TextView) view.findViewById(R.id.text_set_folder_1);
-                TextView countView = (TextView) view.findViewById(R.id.text_set_folder_2);
+                final TextView titleView = (TextView) view.findViewById(R.id.text_set_folder_1);
+                final TextView countView = (TextView) view.findViewById(R.id.text_set_folder_2);
                 final String title = cursor.getString(cursor.getColumnIndex(
                         mMode == 1 ? FolderList.FOLDER_TITLE : SetList.SET_TITLE));
                 final String table = mProvider.getTableName(title, mMode == 1);
@@ -265,11 +280,12 @@ public class SetFolderListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         // Use title to find the table name and pass it to the next activity
-        TextView textView = (TextView) view.findViewById(R.id.text_set_folder_1);
-        String title = textView.getText().toString();
-        FlashcardProvider handle = new FlashcardProvider(getActivity().getApplicationContext());
-        String tableName = handle.getTableName(title, mMode == 1);
-        Intent intent = new Intent(getActivity(), mMode == 1 ?
+        final TextView textView = (TextView) view.findViewById(R.id.text_set_folder_1);
+        final String title = textView.getText().toString();
+        final FlashcardProvider handle = new FlashcardProvider(getActivity()
+                .getApplicationContext());
+        final String tableName = handle.getTableName(title, mMode == 1);
+        final Intent intent = new Intent(getActivity(), mMode == 1 ?
                 FolderOverviewActivity.class : SetOverviewActivity.class);
         intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
         intent.putExtra(Constants.TAG_TITLE, title);

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -36,30 +37,33 @@ import java.util.regex.Pattern;
 /**
  * Imports a CSV file into a flashcard set.
  */
-public class CSVImportActivity extends FragmentActivity {
+public class ManageCSVActivity extends FragmentActivity {
     private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
-    private static final String LOG_TAG = "CSV import";
+    private static final String LOG_TAG = "CSV manager";
     private String mTable;
     private Uri mUri;
+    private boolean mReadMode, mFolderMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Check if the app needs to request permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     CSV_REQUEST_CODE);
         } else {
             // Ensure that a second intent is not called after rotating the device
             if (savedInstanceState == null) {
                 loadFileBrowser();
             }
-            // mTable and mTableId become null after the rotation
+            // Non-static variables become null after the rotation
             else {
                 mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
+                mReadMode = savedInstanceState.getBoolean(Constants.TAG_EDITING_MODE);
+                mFolderMode = savedInstanceState.getBoolean(Constants.TAG_FOLDER);
             }
         }
     }
@@ -68,8 +72,10 @@ public class CSVImportActivity extends FragmentActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        // Save the table name and id before the activity is recreated
+        // Save non-static variables before the activity is recreated
         savedInstanceState.putString(Constants.TAG_TABLE_NAME, mTable);
+        savedInstanceState.putBoolean(Constants.TAG_EDITING_MODE, mReadMode);
+        savedInstanceState.putBoolean(Constants.TAG_FOLDER, mFolderMode);
     }
 
     @Override
@@ -86,17 +92,38 @@ public class CSVImportActivity extends FragmentActivity {
     }
 
     /**
+     * Checks if external storage is available for read and write.
+     */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+
+    /**
      * Loads the file browser so that the user can pick a CSV file to import.
      */
     private void loadFileBrowser() {
+        // Check that we can read/write files
+        if (!isExternalStorageWritable()) {
+            Toast.makeText(ManageCSVActivity.this, R.string.message_csv_unavailable,
+                    Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         Bundle bundle = getIntent().getExtras();
         mTable = bundle.getString(Constants.TAG_TABLE_NAME);
+        mReadMode = bundle.getBoolean(Constants.TAG_EDITING_MODE);
+        mFolderMode = bundle.getBoolean(Constants.TAG_FOLDER);
 
         Intent fileIntent;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        } else {
+        } else if (mReadMode) {
             fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        } else {
+            fileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         }
         fileIntent.setType("text/comma-separated-values");
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -130,7 +157,7 @@ public class CSVImportActivity extends FragmentActivity {
                 mUri = null;
             }
             if (mUri != null) {
-                new ReadFile().execute();
+                new ManageFile().execute(mReadMode);
             }
         } else {
             finish();
@@ -140,8 +167,8 @@ public class CSVImportActivity extends FragmentActivity {
     /**
      * Creates flashcards from a CSV file in a background thread.
      */
-    private class ReadFile extends AsyncTask<Void, Void, Void> {
-        private final ProgressDialog mDialog = new ProgressDialog(CSVImportActivity.this);
+    private class ManageFile extends AsyncTask<Boolean, Void, Void> {
+        private final ProgressDialog mDialog = new ProgressDialog(ManageCSVActivity.this);
 
         @Override
         protected void onPreExecute() {
@@ -152,7 +179,10 @@ public class CSVImportActivity extends FragmentActivity {
             mDialog.show();
         }
 
-        protected Void doInBackground(Void... values) {
+        /**
+         * Generates a set from a CSV file.
+         */
+        private ParcelFileDescriptor loadCSV() {
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {
                 // Open the CSV file
@@ -195,7 +225,7 @@ public class CSVImportActivity extends FragmentActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(CSVImportActivity.this, insertCount,
+                                Toast.makeText(ManageCSVActivity.this, insertCount,
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -205,6 +235,81 @@ public class CSVImportActivity extends FragmentActivity {
                 }
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Failed to load file.", e);
+            }
+            return parcelFileDescriptor;
+        }
+
+        /**
+         * Generates a CSV file from a set.
+         */
+        private ParcelFileDescriptor writeCSV() {
+            ParcelFileDescriptor parcelFileDescriptor = null;
+            try {
+                // Open the CSV file
+                parcelFileDescriptor = getContentResolver().openFileDescriptor(mUri, "w");
+                if (parcelFileDescriptor != null) {
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    FileReader fileReader = new FileReader(fileDescriptor);
+                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+                    String line;
+                    try {
+                        FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
+                        final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
+                        final String star = PreferencesHelper
+                                .getDefaultStar(getApplicationContext());
+                        int count = 0;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            String[] columns = line.split(",");
+                            // Skip invalid rows
+                            if (columns.length != 2 || (columns[0].trim().length() == 0
+                                    || columns[1].trim().length() == 0)) {
+                                continue;
+                            }
+
+                            // Only import terms that are not already taken
+                            if (provider.termAvailable(columns[0].trim(), table)) {
+                                ContentValues cv = new ContentValues();
+                                cv.put(CardSet.TERM, columns[0].trim());
+                                cv.put(CardSet.DEFINITION, columns[1].trim());
+                                cv.put(CardSet.STAR, star);
+                                provider.insert(table, cv);
+                                count++;
+                            }
+                        }
+                        final String insertCount = count == 0
+                                ? getString(R.string.message_csv_import_zero)
+                                : getResources()
+                                .getQuantityString(R.plurals.message_csv_import, count, count);
+
+                        // Toasts cannot be created in a background thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ManageCSVActivity.this, insertCount,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Failed to load file.", e);
+            }
+            return parcelFileDescriptor;
+        }
+
+        protected Void doInBackground(Boolean... readMode) {
+            ParcelFileDescriptor parcelFileDescriptor = null;
+
+            // Read CSV or export set depending on the mode
+            try {
+                parcelFileDescriptor = readMode[0] ? loadCSV() : writeCSV();
+            }
+
+            // Handle IO errors
+            catch (Exception e) {
+                Log.e(LOG_TAG, "Failed to " + (readMode[0] ? "load" : "write") + " file.", e);
             } finally {
                 try {
                     if (parcelFileDescriptor != null) {

@@ -143,8 +143,11 @@ public class CardListFragment extends ListFragment
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                MenuInflater inflater = mode.getMenuInflater();
+                final MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual, menu);
+
+                // Hide export button
+                mode.getMenu().findItem(R.id.item_export).setVisible(false);
                 return true;
             }
 
@@ -161,11 +164,7 @@ public class CardListFragment extends ListFragment
         });
 
         // Use the CardListAdapter to display the list of cards
-        mAdapter = new CardListAdapter(getActivity(),
-                this,
-                tableName,
-                null,
-                0);
+        mAdapter = new CardListAdapter(getActivity(), this, tableName, null, 0);
         setListAdapter(mAdapter);
 
         // Show text if database is empty

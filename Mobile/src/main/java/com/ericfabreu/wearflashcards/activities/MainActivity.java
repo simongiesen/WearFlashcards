@@ -133,13 +133,13 @@ public class MainActivity extends AppCompatActivity {
         private SparseArray<SetFolderListFragment> mFragments;
         private FragmentTransaction mCurTransaction;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
             mFragmentManager = fm;
             mFragments = new SparseArray<>();
         }
 
-        public void refreshFragments() {
+        private void refreshFragments() {
             for (int i = 0; i < mFragments.size(); i++) {
                 if (mFragments.get(i) != null) {
                     mFragments.get(i).refresh();
