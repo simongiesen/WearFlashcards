@@ -9,8 +9,6 @@ public class Constants {
     public final static String PREF_KEY_DEFINITION = "definitionFirst";
     public final static String PREF_KEY_SET_ORDER = "setOrder";
     public final static String PREF_KEY_CARD_ORDER = "cardOrder";
-    public final static String PREF_KEY_CREATE_STARRED = "createCardStarred";
-    public final static String PREF_KEY_SHARED_STAR = "sharedStar";
     public final static String PREF_KEY_HORIZONTAL_PAGER = "horizontalPager";
 
     // Bundle tags

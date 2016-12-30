@@ -12,7 +12,9 @@ import com.ericfabreu.wearflashcards.data.FlashcardProvider;
  * Group of functions that handle interactions with SharedPreferences.
  */
 public class PreferencesHelper {
-    private static String PREF_KEY_STARRED_ONLY = "starredOnly";
+    private final static String PREF_KEY_STARRED_ONLY = "starredOnly";
+    private final static String PREF_KEY_CREATE_STARRED = "createCardStarred";
+    private final static String PREF_KEY_SHARED_STAR = "sharedStar";
 
     /**
      * Returns the order in which the content in `column` should be displayed.
@@ -35,7 +37,7 @@ public class PreferencesHelper {
      */
     public static String getDefaultStar(Context context) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(Constants.PREF_KEY_CREATE_STARRED, false) ? "1" : "0";
+        return settings.getBoolean(PREF_KEY_CREATE_STARRED, false) ? "1" : "0";
     }
 
     /**
@@ -44,7 +46,7 @@ public class PreferencesHelper {
      */
     private static boolean getSharedStarSetting(Context context) {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(Constants.PREF_KEY_SHARED_STAR, false);
+        return settings.getBoolean(PREF_KEY_SHARED_STAR, false);
     }
 
     /**
