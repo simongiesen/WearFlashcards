@@ -100,6 +100,7 @@ public class ManageSetFolderActivity extends AppCompatActivity {
         if (view.getId() == R.id.button_import_csv) {
             Intent intent = new Intent(this, ManageCSVActivity.class);
             intent.putExtra(Constants.TAG_TABLE_NAME, provider.getTableName(newTitle, false));
+            intent.putExtra(Constants.TAG_TITLE, mTitle);
             intent.putExtra(Constants.TAG_READING_MODE, true);
             intent.putExtra(Constants.TAG_FOLDER, false);
             startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);

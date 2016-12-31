@@ -167,25 +167,13 @@ public class SetFolderListFragment extends ListFragment
                         // Get title and send it to ManageSetFolderActivity
                         final FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
-                        final Uri uri = mMode == 1 ? FolderList.CONTENT_URI : SetList.CONTENT_URI;
-                        final String[] column = new String[]{mMode == 1 ? FolderList.FOLDER_TITLE
-                                : SetList.SET_TITLE};
-                        final Cursor cursor = handle.query(uri,
-                                column,
-                                "_id=?",
-                                new String[]{String.valueOf(selections.get(0))},
-                                null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            final String title = cursor.getString(cursor.getColumnIndex(column[0]));
-                            final Intent intent = new Intent(getActivity(),
-                                    ManageSetFolderActivity.class);
-                            intent.putExtra(Constants.TAG_FOLDER, mMode == 1);
-                            intent.putExtra(Constants.TAG_EDITING_MODE, true);
-                            intent.putExtra(Constants.TAG_TITLE, title);
-                            getActivity().startActivityForResult(intent,
-                                    Constants.REQUEST_CODE_EDIT);
-                            cursor.close();
-                        }
+                        final String title = handle.getTitle(selections.get(0), mMode == 1);
+                        final Intent intent = new Intent(getActivity(),
+                                ManageSetFolderActivity.class);
+                        intent.putExtra(Constants.TAG_FOLDER, mMode == 1);
+                        intent.putExtra(Constants.TAG_EDITING_MODE, true);
+                        intent.putExtra(Constants.TAG_TITLE, title);
+                        getActivity().startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
                         mode.finish();
                         return true;
                     }
@@ -195,8 +183,10 @@ public class SetFolderListFragment extends ListFragment
                         final FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         final String table = handle.getTableName(selections.get(0), mMode == 1);
+                        final String title = handle.getTitle(selections.get(0), mMode == 1);
                         final Intent intent = new Intent(getActivity(), ManageCSVActivity.class);
                         intent.putExtra(Constants.TAG_TABLE_NAME, table);
+                        intent.putExtra(Constants.TAG_TITLE, title);
                         intent.putExtra(Constants.TAG_READING_MODE, false);
                         intent.putExtra(Constants.TAG_FOLDER, mMode == 1);
                         startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);

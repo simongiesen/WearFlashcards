@@ -172,6 +172,7 @@ public class SetOverviewActivity extends AppCompatActivity {
             case R.id.item_csv_import: {
                 Intent intent = new Intent(this, ManageCSVActivity.class);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_TITLE, title);
                 intent.putExtra(Constants.TAG_READING_MODE, true);
                 intent.putExtra(Constants.TAG_FOLDER, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
@@ -180,6 +181,7 @@ public class SetOverviewActivity extends AppCompatActivity {
             case R.id.item_csv_export: {
                 Intent intent = new Intent(this, ManageCSVActivity.class);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_TITLE, title);
                 intent.putExtra(Constants.TAG_READING_MODE, false);
                 intent.putExtra(Constants.TAG_FOLDER, false);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);

@@ -517,6 +517,25 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
+     * Returns the title of a given set or folder.
+     */
+    public String getTitle(long tableId, boolean folder) {
+        final Uri uri = folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI;
+        final String[] column = new String[]{folder ? FolderList.FOLDER_TITLE : SetList.SET_TITLE};
+        final Cursor cursor = query(uri,
+                column,
+                "_id=?",
+                new String[]{String.valueOf(tableId)},
+                null);
+        if (cursor != null && cursor.moveToFirst()) {
+            final String title = cursor.getString(cursor.getColumnIndex(column[0]));
+            cursor.close();
+            return title;
+        }
+        return null;
+    }
+
+    /**
      * Returns a table name given the table's id.
      */
     public String getTableName(long tableId, boolean folder) {

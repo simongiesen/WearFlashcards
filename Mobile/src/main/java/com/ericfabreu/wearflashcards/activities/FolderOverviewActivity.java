@@ -153,6 +153,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
             case R.id.item_csv_export: {
                 Intent intent = new Intent(this, ManageCSVActivity.class);
                 intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_TITLE, title);
                 intent.putExtra(Constants.TAG_READING_MODE, false);
                 intent.putExtra(Constants.TAG_FOLDER, true);
                 startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);

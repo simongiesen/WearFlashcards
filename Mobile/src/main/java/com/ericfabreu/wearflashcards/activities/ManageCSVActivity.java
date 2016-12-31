@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 public class ManageCSVActivity extends FragmentActivity {
     private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
     private static final String LOG_TAG = "CSV manager";
-    private String mTable;
+    private String mTable, mTitle;
     private Uri mUri;
     private boolean mReadMode, mFolderMode;
 
@@ -66,6 +66,7 @@ public class ManageCSVActivity extends FragmentActivity {
             // Non-static variables become null after the rotation
             else {
                 mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
+                mTitle = savedInstanceState.getString(Constants.TAG_TITLE);
                 mReadMode = savedInstanceState.getBoolean(Constants.TAG_READING_MODE);
                 mFolderMode = savedInstanceState.getBoolean(Constants.TAG_FOLDER);
             }
@@ -78,6 +79,7 @@ public class ManageCSVActivity extends FragmentActivity {
 
         // Save non-static variables before the activity is recreated
         savedInstanceState.putString(Constants.TAG_TABLE_NAME, mTable);
+        savedInstanceState.putString(Constants.TAG_TITLE, mTitle);
         savedInstanceState.putBoolean(Constants.TAG_READING_MODE, mReadMode);
         savedInstanceState.putBoolean(Constants.TAG_FOLDER, mFolderMode);
     }
@@ -99,7 +101,7 @@ public class ManageCSVActivity extends FragmentActivity {
      * Checks if external storage is available for read and write.
      */
     public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
+        final String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
@@ -116,12 +118,18 @@ public class ManageCSVActivity extends FragmentActivity {
             return;
         }
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         mTable = bundle.getString(Constants.TAG_TABLE_NAME);
+        mTitle = bundle.getString(Constants.TAG_TITLE);
         mReadMode = bundle.getBoolean(Constants.TAG_READING_MODE);
         mFolderMode = bundle.getBoolean(Constants.TAG_FOLDER);
 
-        Intent fileIntent;
+        // Remove non-alphanumeric characters from the title
+        if (mTitle != null) {
+            mTitle = mTitle.replaceAll("[^A-Za-z0-9 .-]", "");
+        }
+
+        final Intent fileIntent;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
         } else if (mReadMode) {
@@ -129,11 +137,12 @@ public class ManageCSVActivity extends FragmentActivity {
         } else {
             fileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         }
+        fileIntent.putExtra(Intent.EXTRA_TITLE, mTitle);
         fileIntent.setType("text/comma-separated-values");
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // Use MaterialFilePicker if JellyBean device does not have a file manager
-        PackageManager packageManager = getPackageManager();
+        final PackageManager packageManager = getPackageManager();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
                 && fileIntent.resolveActivity(packageManager) == null) {
             new MaterialFilePicker()
