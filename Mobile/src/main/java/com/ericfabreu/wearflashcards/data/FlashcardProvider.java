@@ -165,18 +165,25 @@ public class FlashcardProvider extends ContentProvider {
     }
 
     /**
-     * Queries the database for all set titles and ids.
-     * If {@param tableName} is provided, it returns all the sets that are not inside the folder.
+     * Queries the database for all sets in a given folder.
      */
-    public Cursor fetchAllSets(String tableName) {
-        String whereClause = null;
-        if (tableName != null) {
-            whereClause = SetList._ID + " NOT IN (SELECT " +
-                    FolderEntry.SET_ID + " FROM " + tableName + ")";
-        }
+    public Cursor fetchFolderSets(String tableName) {
+        return query(Uri.withAppendedPath(FolderEntry.CONTENT_URI, tableName),
+                new String[]{FolderEntry.SET_ID},
+                null,
+                null,
+                null);
+    }
+
+    /**
+     * Queries the database for all sets not inside a given folder.
+     */
+    public Cursor fetchComplementSets(String tableName) {
+        final String where = SetList._ID + " NOT IN (SELECT " +
+                FolderEntry.SET_ID + " FROM " + tableName + ")";
         return query(SetList.CONTENT_URI,
                 new String[]{SetList.SET_TITLE, SetList._ID},
-                whereClause,
+                where,
                 null,
                 PreferencesHelper.getOrder(context, SetList.SET_TITLE,
                         Constants.PREF_KEY_SET_ORDER));

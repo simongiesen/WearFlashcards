@@ -82,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
         shuffle.setChecked(settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false));
         termFirst.setChecked(settings.getBoolean(Constants.PREF_KEY_DEFINITION, false));
 
-        // Remove study button since it is unnecessary in MainActivity
+        // Remove study and export buttons since they are unnecessary in MainActivity
         menu.removeItem(R.id.item_study_set);
+        menu.removeItem(R.id.item_csv_export);
         return true;
     }
 

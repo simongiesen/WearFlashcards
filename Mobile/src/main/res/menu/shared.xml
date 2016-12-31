@@ -30,7 +30,7 @@
         android:id="@+id/item_csv_export"
         android:orderInCategory="99"
         android:title="@string/button_csv_export"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="never" />
 
     <item

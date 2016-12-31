@@ -149,6 +149,16 @@ public class FolderOverviewActivity extends AppCompatActivity {
                 startActivityForResult(intent, Constants.REQUEST_CODE_STUDY);
                 return true;
             }
+            // Launch ManageCSVActivity
+            case R.id.item_csv_export: {
+                Intent intent = new Intent(this, ManageCSVActivity.class);
+                intent.putExtra(Constants.TAG_TABLE_NAME, tableName);
+                intent.putExtra(Constants.TAG_READING_MODE, false);
+                intent.putExtra(Constants.TAG_FOLDER, true);
+                startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
+                return true;
+            }
+            // Launch SettingsActivity
             case R.id.item_settings: {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, Constants.REQUEST_CODE_SETTINGS);

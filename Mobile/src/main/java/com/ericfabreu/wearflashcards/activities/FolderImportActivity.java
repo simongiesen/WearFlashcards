@@ -42,7 +42,7 @@ public class FolderImportActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         mTableName = bundle.getString(Constants.TAG_TABLE_NAME);
         mProvider = new FlashcardProvider(getApplicationContext());
-        mCursor = mProvider.fetchAllSets(mTableName);
+        mCursor = mProvider.fetchComplementSets(mTableName);
         mImports = new boolean[mCursor.getCount()];
 
         // Create the import list and add the import button at the bottom
@@ -97,7 +97,7 @@ public class FolderImportActivity extends AppCompatActivity {
      * to link the textView's click listener to the correct box.
      */
     private class SetsAdapter extends CursorAdapter {
-        public SetsAdapter(Context context, Cursor cursor, int flags) {
+        private SetsAdapter(Context context, Cursor cursor, int flags) {
             super(context, cursor, flags);
         }
 

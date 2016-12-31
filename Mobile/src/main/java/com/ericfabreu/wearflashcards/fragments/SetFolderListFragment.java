@@ -107,7 +107,7 @@ public class SetFolderListFragment extends ListFragment
                     selections.remove(selections.indexOf(id));
                 }
 
-                // Show the edit button only if there is exactly one item selected
+                // Show the edit and export buttons only if there is exactly one item selected
                 if (selections.size() == 1) {
                     mode.getMenu().findItem(R.id.item_edit).setVisible(true);
                 } else {
@@ -197,8 +197,8 @@ public class SetFolderListFragment extends ListFragment
                         final String table = handle.getTableName(selections.get(0), mMode == 1);
                         final Intent intent = new Intent(getActivity(), ManageCSVActivity.class);
                         intent.putExtra(Constants.TAG_TABLE_NAME, table);
-                        intent.putExtra(Constants.TAG_EDITING_MODE, false);
-                        intent.putExtra(Constants.TAG_FOLDER, true);
+                        intent.putExtra(Constants.TAG_READING_MODE, false);
+                        intent.putExtra(Constants.TAG_FOLDER, mMode == 1);
                         startActivityForResult(intent, Constants.REQUEST_CODE_CREATE);
                         return true;
                     }

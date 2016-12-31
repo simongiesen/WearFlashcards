@@ -27,11 +27,17 @@
     <string name="message_all_cards_hidden">All cards are hidden</string>
     <string name="message_import_empty">There are no sets left to import</string>
     <string name="message_csv_import_zero">No new cards found</string>
+    <string name="message_csv_export_zero">No cards found</string>
     <plurals name="message_csv_import">
         <item quantity="one">Successfully imported %1$d new card</item>
         <item quantity="other">Successfully imported %1$d new cards</item>
     </plurals>
-    <string name="message_csv_loading">Importing new cards. Please wait&#8230;</string>
+    <plurals name="message_csv_export">
+        <item quantity="one">Successfully exported %1$d card</item>
+        <item quantity="other">Successfully exported %1$d cards</item>
+    </plurals>
+    <string name="message_csv_reading">Importing new cards. Please wait&#8230;</string>
+    <string name="message_csv_writing">Exporting cards. Please wait&#8230;</string>
     <string name="message_csv_unavailable">Storage is currently unavailable.</string>
 
     <!-- EditText hints -->

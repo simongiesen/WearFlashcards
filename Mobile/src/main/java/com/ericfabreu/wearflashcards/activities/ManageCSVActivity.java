@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,10 +29,13 @@ import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -62,7 +66,7 @@ public class ManageCSVActivity extends FragmentActivity {
             // Non-static variables become null after the rotation
             else {
                 mTable = savedInstanceState.getString(Constants.TAG_TABLE_NAME);
-                mReadMode = savedInstanceState.getBoolean(Constants.TAG_EDITING_MODE);
+                mReadMode = savedInstanceState.getBoolean(Constants.TAG_READING_MODE);
                 mFolderMode = savedInstanceState.getBoolean(Constants.TAG_FOLDER);
             }
         }
@@ -74,7 +78,7 @@ public class ManageCSVActivity extends FragmentActivity {
 
         // Save non-static variables before the activity is recreated
         savedInstanceState.putString(Constants.TAG_TABLE_NAME, mTable);
-        savedInstanceState.putBoolean(Constants.TAG_EDITING_MODE, mReadMode);
+        savedInstanceState.putBoolean(Constants.TAG_READING_MODE, mReadMode);
         savedInstanceState.putBoolean(Constants.TAG_FOLDER, mFolderMode);
     }
 
@@ -114,7 +118,7 @@ public class ManageCSVActivity extends FragmentActivity {
 
         Bundle bundle = getIntent().getExtras();
         mTable = bundle.getString(Constants.TAG_TABLE_NAME);
-        mReadMode = bundle.getBoolean(Constants.TAG_EDITING_MODE);
+        mReadMode = bundle.getBoolean(Constants.TAG_READING_MODE);
         mFolderMode = bundle.getBoolean(Constants.TAG_FOLDER);
 
         Intent fileIntent;
@@ -173,7 +177,7 @@ public class ManageCSVActivity extends FragmentActivity {
         @Override
         protected void onPreExecute() {
             // Display loading message while the file is being processed
-            mDialog.setMessage(getString(R.string.message_csv_loading));
+            mDialog.setMessage(getString(R.string.message_csv_reading));
             mDialog.setIndeterminate(true);
             mDialog.setCancelable(false);
             mDialog.show();
@@ -248,38 +252,50 @@ public class ManageCSVActivity extends FragmentActivity {
                 // Open the CSV file
                 parcelFileDescriptor = getContentResolver().openFileDescriptor(mUri, "w");
                 if (parcelFileDescriptor != null) {
-                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                    FileReader fileReader = new FileReader(fileDescriptor);
-                    BufferedReader bufferedReader = new BufferedReader(fileReader);
-                    String line;
+                    final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    final FileWriter fileWriter = new FileWriter(fileDescriptor);
+                    final BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                     try {
-                        FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
-                        final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
-                        final String star = PreferencesHelper
-                                .getDefaultStar(getApplicationContext());
+                        final FlashcardProvider handle =
+                                new FlashcardProvider(getApplicationContext());
+                        final MessageFormat form = new MessageFormat("{0},{1}");
                         int count = 0;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            String[] columns = line.split(",");
-                            // Skip invalid rows
-                            if (columns.length != 2 || (columns[0].trim().length() == 0
-                                    || columns[1].trim().length() == 0)) {
-                                continue;
-                            }
 
-                            // Only import terms that are not already taken
-                            if (provider.termAvailable(columns[0].trim(), table)) {
-                                ContentValues cv = new ContentValues();
-                                cv.put(CardSet.TERM, columns[0].trim());
-                                cv.put(CardSet.DEFINITION, columns[1].trim());
-                                cv.put(CardSet.STAR, star);
-                                provider.insert(table, cv);
+                        // Save folder to CSV
+                        if (mFolderMode) {
+                            final Cursor sets = handle.fetchFolderSets(mTable);
+                            while (sets.moveToNext()) {
+                                final String table = handle.getTableName(sets.getLong(0), false);
+                                final Cursor cards = handle.fetchAllCards(table, false);
+                                while (cards.moveToNext()) {
+                                    final Object[] line = {cards.getString(1), cards.getString(2)};
+                                    bufferedWriter.write(form.format(line));
+                                    bufferedWriter.newLine();
+                                    count++;
+                                }
+                                cards.close();
+                            }
+                            bufferedWriter.close();
+                            sets.close();
+                        }
+
+                        // Save set to CSV
+                        else {
+                            final Cursor cards = handle.fetchAllCards(mTable, false);
+                            while (cards.moveToNext()) {
+                                final Object[] line = {cards.getString(1), cards.getString(2)};
+                                bufferedWriter.write(form.format(line));
+                                bufferedWriter.newLine();
                                 count++;
                             }
+                            bufferedWriter.close();
+                            cards.close();
                         }
+
                         final String insertCount = count == 0
-                                ? getString(R.string.message_csv_import_zero)
+                                ? getString(R.string.message_csv_export_zero)
                                 : getResources()
-                                .getQuantityString(R.plurals.message_csv_import, count, count);
+                                .getQuantityString(R.plurals.message_csv_export, count, count);
 
                         // Toasts cannot be created in a background thread
                         runOnUiThread(new Runnable() {
