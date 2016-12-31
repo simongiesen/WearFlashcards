@@ -38,4 +38,13 @@
             android:summaryOn="@string/pref_description_creating_star_on"
             android:title="@string/pref_title_creating_star" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_backup">
+        <EditTextPreference
+            android:defaultValue=","
+            android:key="csvSeparator"
+            android:maxLength="1"
+            android:summary="@string/pref_description_separator"
+            android:title="@string/pref_title_separator" />
+    </PreferenceCategory>
 </PreferenceScreen>

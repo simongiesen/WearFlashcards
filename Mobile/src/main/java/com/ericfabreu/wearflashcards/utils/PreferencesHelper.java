@@ -15,6 +15,7 @@ public class PreferencesHelper {
     private final static String PREF_KEY_STARRED_ONLY = "starredOnly";
     private final static String PREF_KEY_CREATE_STARRED = "createCardStarred";
     private final static String PREF_KEY_SHARED_STAR = "sharedStar";
+    private final static String PREF_KEY_SEPARATOR = "csvSeparator";
 
     /**
      * Returns the order in which the content in `column` should be displayed.
@@ -30,6 +31,14 @@ public class PreferencesHelper {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Returns the default star value for new cards.
+     */
+    public static String getSeparator(Context context) {
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(PREF_KEY_SEPARATOR, ",");
     }
 
     /**

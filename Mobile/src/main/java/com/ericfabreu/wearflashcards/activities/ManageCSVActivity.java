@@ -192,18 +192,20 @@ public class ManageCSVActivity extends FragmentActivity {
                 // Open the CSV file
                 parcelFileDescriptor = getContentResolver().openFileDescriptor(mUri, "r");
                 if (parcelFileDescriptor != null) {
-                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                    FileReader fileReader = new FileReader(fileDescriptor);
-                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+                    final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    final FileReader fileReader = new FileReader(fileDescriptor);
+                    final BufferedReader bufferedReader = new BufferedReader(fileReader);
                     String line;
                     try {
-                        FlashcardProvider provider = new FlashcardProvider(getApplicationContext());
+                        final FlashcardProvider provider =
+                                new FlashcardProvider(getApplicationContext());
                         final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
                         final String star = PreferencesHelper
                                 .getDefaultStar(getApplicationContext());
+                        final String sep = PreferencesHelper.getSeparator(getApplicationContext());
                         int count = 0;
                         while ((line = bufferedReader.readLine()) != null) {
-                            String[] columns = line.split(",");
+                            String[] columns = line.split(sep);
                             // Skip invalid rows
                             if (columns.length != 2 || (columns[0].trim().length() == 0
                                     || columns[1].trim().length() == 0)) {
@@ -258,7 +260,8 @@ public class ManageCSVActivity extends FragmentActivity {
                     try {
                         final FlashcardProvider handle =
                                 new FlashcardProvider(getApplicationContext());
-                        final MessageFormat form = new MessageFormat("{0},{1}");
+                        final String sep = PreferencesHelper.getSeparator(getApplicationContext());
+                        final MessageFormat form = new MessageFormat("{0}" + sep + "{1}");
                         int count = 0;
 
                         // Save folder to CSV

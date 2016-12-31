@@ -108,6 +108,7 @@
     <string name="pref_header_sorting">Sorting</string>
     <string name="pref_header_studying">Studying</string>
     <string name="pref_header_creating">Creating</string>
+    <string name="pref_header_backup">Backup and restore</string>
     <string-array name="pref_sorting_choices">
         <item>Alphabetical (default)</item>
         <item>Reverse alphabetical</item>
@@ -125,10 +126,12 @@
     <string name="pref_title_share_star">Share starred only setting</string>
     <string name="pref_title_creating_star">Create starred cards</string>
     <string name="pref_title_horizontal">Scroll horizontally in study mode</string>
+    <string name="pref_title_separator">CSV separator</string>
     <string name="pref_description_shuffle">Study cards in random order</string>
     <string name="pref_description_flip">Show the back side of the cards first</string>
     <string name="pref_description_star_on">Use the same value for all items</string>
     <string name="pref_description_star_off">Use a separate value for each item</string>
     <string name="pref_description_creating_star_on">Automatically star new cards</string>
     <string name="pref_description_creating_star_off">Do not star new cards automatically</string>
+    <string name="pref_description_separator">Use a value other than a comma as the separator</string>
 </resources>
