@@ -40,6 +40,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -47,7 +50,7 @@ import java.util.regex.Pattern;
  */
 public class ManageFileActivity extends FragmentActivity {
     private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
-    private static final String LOG_TAG = "CSV manager";
+    private static final String LOG_TAG = "CSV manager", JB_DIR = "WFlashcards/";
     private String mTable, mTitle;
     private Uri mUri;
     private boolean mReadMode, mFolderMode, mDatabase;
@@ -153,17 +156,39 @@ public class ManageFileActivity extends FragmentActivity {
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         fileIntent.setDataAndType(Uri.parse(dir), mDatabase ? "*/*" : "text/comma-separated-values");
 
-        // Use MaterialFilePicker if JellyBean device does not have a file manager
-        final PackageManager packageManager = getPackageManager();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-                && fileIntent.resolveActivity(packageManager) == null) {
+        // Use MaterialFilePicker if running on a Jelly Bean device
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && mReadMode) {
             new MaterialFilePicker()
                     .withActivity(this)
                     .withRequestCode(CSV_REQUEST_CODE_JB)
-                    .withFilter(Pattern.compile(".*\\.csv$"))
+                    .withFilter(Pattern.compile(mDatabase ? ".*\\.*" : ".*\\.csv$"))
                     .withFilterDirectories(false)
                     .withHiddenFiles(false)
                     .start();
+        }
+        // Save to a folder inside /sdcard/Download if the user is running Jelly Bean
+        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && !mReadMode) {
+            if (mDatabase) {
+                final String date = new SimpleDateFormat("MM-dd-yyyy",
+                        Locale.getDefault()).format(new Date());
+                mUri = Uri.withAppendedPath(Uri.parse(dir), JB_DIR + date + ".backup");
+            } else {
+                mUri = Uri.withAppendedPath(Uri.parse(dir), JB_DIR + mTitle + ".csv");
+            }
+
+            // Create directory if it does not already exist
+            final File folder = new File(dir + "/" + JB_DIR);
+            if (folder.exists() || folder.mkdirs()) {
+                final File file = new File(mUri.getPath());
+                mUri = Uri.fromFile(file);
+                new ManageFile().execute(mReadMode);
+            }
+            // Failed to create needed directories
+            else {
+                Toast.makeText(ManageFileActivity.this, R.string.message_io_failed,
+                        Toast.LENGTH_SHORT).show();
+                finish();
+            }
         } else {
             startActivityForResult(fileIntent, CSV_REQUEST_CODE);
         }
@@ -324,11 +349,13 @@ public class ManageFileActivity extends FragmentActivity {
                             dbOut.close();
 
                             // Toasts cannot be created in a background thread
+                            final String jbDir = Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                                    ? getString(R.string.message_jb_directory) : "";
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(ManageFileActivity.this,
-                                            R.string.message_backup_successful,
+                                            getString(R.string.message_backup_successful, jbDir),
                                             Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -375,10 +402,13 @@ public class ManageFileActivity extends FragmentActivity {
                                 cards.close();
                             }
 
+                            final String jbDir = Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                                    ? getString(R.string.message_jb_directory) : "";
+                            final Object[] args = new Object[]{count, jbDir};
                             final String insertCount = count == 0
                                     ? getString(R.string.message_csv_export_zero)
                                     : getResources()
-                                    .getQuantityString(R.plurals.message_csv_export, count, count);
+                                    .getQuantityString(R.plurals.message_csv_export, count, args);
 
                             // Toasts cannot be created in a background thread
                             runOnUiThread(new Runnable() {

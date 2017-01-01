@@ -33,16 +33,18 @@
         <item quantity="other">Successfully imported %1$d new cards</item>
     </plurals>
     <plurals name="message_csv_export">
-        <item quantity="one">Successfully exported %1$d card</item>
-        <item quantity="other">Successfully exported %1$d cards</item>
+        <item quantity="one">Successfully exported %1$d card%2$s</item>
+        <item quantity="other">Successfully exported %1$d cards%2$s</item>
     </plurals>
     <string name="message_csv_reading">Importing new cards. Please wait&#8230;</string>
     <string name="message_csv_writing">Exporting cards. Please wait&#8230;</string>
     <string name="message_database_reading">Restoring flashcards. Please wait&#8230;</string>
     <string name="message_database_writing">Backing up flashcards. Please wait&#8230;</string>
     <string name="message_csv_unavailable">Storage is currently unavailable.</string>
-    <string name="message_backup_successful">Successfully backed up all flashcards</string>
+    <string name="message_backup_successful">Successfully backed up all flashcards%1$s</string>
     <string name="message_restore_successful">Successfully restored all flashcards</string>
+    <string name="message_io_failed">Failed to create file. Please try again later</string>
+    <string name="message_jb_directory">&#160;to Download/WFlashcards/</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
