@@ -119,7 +119,7 @@ public class SetFolderListFragment extends ListFragment
             public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.item_delete: {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         final int titleId = mMode == 0 ? R.plurals.dialog_delete_set
                                 : (mMode == 1 ? R.plurals.dialog_delete_folder
                                 : R.plurals.dialog_remove_set);

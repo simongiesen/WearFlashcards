@@ -218,52 +218,78 @@ public class ManageFileActivity extends FragmentActivity {
         private ParcelFileDescriptor loadFile() {
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {
-                // Open the CSV file
+                // Open the CSV or database file
                 parcelFileDescriptor = getContentResolver().openFileDescriptor(mUri, "r");
                 if (parcelFileDescriptor != null) {
                     final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                    final FileReader fileReader = new FileReader(fileDescriptor);
-                    final BufferedReader bufferedReader = new BufferedReader(fileReader);
-                    String line;
                     try {
-                        final FlashcardProvider provider =
-                                new FlashcardProvider(getApplicationContext());
-                        final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
-                        final String star = PreferencesHelper
-                                .getDefaultStar(getApplicationContext());
-                        final String sep = PreferencesHelper.getSeparator(getApplicationContext());
-                        int count = 0;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            String[] columns = line.split(sep);
-                            // Skip invalid rows
-                            if (columns.length != 2 || (columns[0].trim().length() == 0
-                                    || columns[1].trim().length() == 0)) {
-                                continue;
-                            }
+                        if (mDatabase) {
+                            // Open database file
+                            final String path = getApplicationContext()
+                                    .getDatabasePath(FlashcardDbHelper.DATABASE_NAME).getPath();
+                            final FileChannel dbIn = new FileInputStream(fileDescriptor).getChannel();
+                            final FileChannel dbOut = new FileOutputStream(new File(path)).getChannel();
 
-                            // Only import terms that are not already taken
-                            if (provider.termAvailable(columns[0].trim(), table)) {
-                                ContentValues cv = new ContentValues();
-                                cv.put(CardSet.TERM, columns[0].trim());
-                                cv.put(CardSet.DEFINITION, columns[1].trim());
-                                cv.put(CardSet.STAR, star);
-                                provider.insert(table, cv);
-                                count++;
-                            }
+                            // Replace current database with file
+                            dbOut.transferFrom(dbIn, 0, dbIn.size());
+                            dbIn.close();
+                            dbOut.close();
+
+                            // Toasts cannot be created in a background thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(ManageFileActivity.this,
+                                            R.string.message_restore_successful,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                        final String insertCount = count == 0
-                                ? getString(R.string.message_csv_import_zero)
-                                : getResources()
-                                .getQuantityString(R.plurals.message_csv_import, count, count);
 
-                        // Toasts cannot be created in a background thread
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(ManageFileActivity.this, insertCount,
-                                        Toast.LENGTH_SHORT).show();
+                        // Import set from CSV
+                        else {
+                            final FileReader fileReader = new FileReader(fileDescriptor);
+                            final BufferedReader bufferedReader = new BufferedReader(fileReader);
+                            String line;
+                            final FlashcardProvider provider =
+                                    new FlashcardProvider(getApplicationContext());
+                            final Uri table = Uri.withAppendedPath(CardSet.CONTENT_URI, mTable);
+                            final String star = PreferencesHelper
+                                    .getDefaultStar(getApplicationContext());
+                            final String sep = PreferencesHelper.getSeparator(getApplicationContext());
+                            int count = 0;
+                            while ((line = bufferedReader.readLine()) != null) {
+                                String[] columns = line.split(sep);
+                                // Skip invalid rows
+                                if (columns.length != 2 || (columns[0].trim().length() == 0
+                                        || columns[1].trim().length() == 0)) {
+                                    continue;
+                                }
+
+                                // Only import terms that are not already taken
+                                if (provider.termAvailable(columns[0].trim(), table)) {
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(CardSet.TERM, columns[0].trim());
+                                    cv.put(CardSet.DEFINITION, columns[1].trim());
+                                    cv.put(CardSet.STAR, star);
+                                    provider.insert(table, cv);
+                                    count++;
+                                }
                             }
-                        });
+                            final String insertCount = count == 0
+                                    ? getString(R.string.message_csv_import_zero)
+                                    : getResources()
+                                    .getQuantityString(R.plurals.message_csv_import, count, count);
+
+                            // Toasts cannot be created in a background thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(ManageFileActivity.this, insertCount,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -286,7 +312,7 @@ public class ManageFileActivity extends FragmentActivity {
                     final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                     try {
                         if (mDatabase) {
-                            // Open data base file
+                            // Open database file
                             final String path = getApplicationContext()
                                     .getDatabasePath(FlashcardDbHelper.DATABASE_NAME).getPath();
                             final FileChannel dbIn = new FileInputStream(new File(path)).getChannel();
@@ -301,11 +327,15 @@ public class ManageFileActivity extends FragmentActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(ManageFileActivity.this, R.string.message_backup_successful,
+                                    Toast.makeText(ManageFileActivity.this,
+                                            R.string.message_backup_successful,
                                             Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        } else {
+                        }
+
+                        // Save set or folder as CSV
+                        else {
                             final FlashcardProvider handle =
                                     new FlashcardProvider(getApplicationContext());
                             final String sep = PreferencesHelper.getSeparator(getApplicationContext());

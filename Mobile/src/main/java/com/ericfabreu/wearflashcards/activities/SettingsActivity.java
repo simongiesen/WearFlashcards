@@ -1,6 +1,7 @@
 package com.ericfabreu.wearflashcards.activities;
 
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
 import com.ericfabreu.wearflashcards.R;
@@ -151,8 +153,32 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
                             // Confirm that the user wants to replace the database
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle(R.string.dialog_restore_db_title);
+                            builder.setMessage(R.string.dialog_restore_db_message);
+                            builder.setCancelable(true);
 
                             // Restore database
+                            builder.setPositiveButton(R.string.button_db_restore,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            final Intent intent = new Intent(getActivity(),
+                                                    ManageFileActivity.class);
+                                            intent.putExtra(Constants.TAG_READING_MODE, true);
+                                            intent.putExtra(Constants.TAG_DATABASE, true);
+                                            startActivity(intent);
+                                        }
+                                    });
+
+                            // Cancel
+                            builder.setNegativeButton(R.string.button_cancel,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            final AlertDialog alert = builder.create();
+                            alert.show();
                             return true;
                         }
                     });

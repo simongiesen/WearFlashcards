@@ -42,6 +42,7 @@
     <string name="message_database_writing">Backing up flashcards. Please wait&#8230;</string>
     <string name="message_csv_unavailable">Storage is currently unavailable.</string>
     <string name="message_backup_successful">Successfully backed up all flashcards</string>
+    <string name="message_restore_successful">Successfully restored all flashcards</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
@@ -65,6 +66,7 @@
     <string name="button_csv_import">Import CSV file</string>
     <string name="button_csv_append">Add cards from CSV</string>
     <string name="button_csv_export">Export as CSV</string>
+    <string name="button_db_restore">Restore</string>
 
     <!-- Image descriptions -->
     <string name="description_star">Star</string>
@@ -106,6 +108,8 @@
         <item quantity="one">This will not delete it permanently</item>
         <item quantity="other">This will not delete them permanently</item>
     </plurals>
+    <string name="dialog_restore_db_title">Restore database</string>
+    <string name="dialog_restore_db_message">This operation will permanently delete any existing flashcards and cannot be undone</string>
 
     <!-- Preferences -->
     <string name="pref_header_sorting">Sorting</string>
@@ -131,7 +135,7 @@
     <string name="pref_title_horizontal">Scroll horizontally in study mode</string>
     <string name="pref_title_separator">CSV separator</string>
     <string name="pref_title_backup">Backup flashcards</string>
-    <string name="pref_title_restore">Import flashcards</string>
+    <string name="pref_title_restore">Restore flashcards</string>
     <string name="pref_description_shuffle">Study cards in random order</string>
     <string name="pref_description_flip">Show the back side of the cards first</string>
     <string name="pref_description_star_on">Use the same value for all items</string>
