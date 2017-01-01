@@ -70,7 +70,7 @@ public class FolderOverviewActivity extends AppCompatActivity {
 
         // Load flashcard sets
         if (savedInstanceState == null) {
-            startSetListFragment();
+            startSetListFragment(null);
         }
     }
 
@@ -195,8 +195,31 @@ public class FolderOverviewActivity extends AppCompatActivity {
     /**
      * Refreshes the SetFolderListFragment when the starred only setting changes.
      */
-    public void startSetListFragment() {
+    public void startSetListFragment(View view) {
         final String fragTagSetList = "setFolderListFragment";
+
+        // Check if the flag needs to be flipped
+        if (view != null) {
+            // Disable the switch's setOnCheckedChangeListener to prevent a double change
+            final Switch starredOnly = (Switch) findViewById(R.id.switch_folder_starred_only);
+            starredOnly.setOnCheckedChangeListener(null);
+
+            // Flip the switch
+            PreferencesHelper.flipStar(getApplicationContext(), mProvider, FolderList.CONTENT_URI,
+                    tableId, FolderList.STARRED_ONLY);
+            starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                    FolderList.CONTENT_URI, tableId, FolderList.STARRED_ONLY));
+
+            // Re-enable the setOnCheckedChangeListener
+            starredOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    startSetListFragment(starredOnly);
+                }
+            });
+            invalidateOptionsMenu();
+        }
+
         SetFolderListFragment setFolderListFragment = new SetFolderListFragment();
         setFolderListFragment.setMode(tableName, tableId, R.id.fab_folder_overview, 2);
         getSupportFragmentManager().beginTransaction()

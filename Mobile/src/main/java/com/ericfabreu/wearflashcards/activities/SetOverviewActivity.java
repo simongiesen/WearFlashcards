@@ -77,13 +77,11 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Load the starred only setting
         final Switch starredOnly = (Switch) findViewById(R.id.switch_starred_only);
-        if (folderTable == null) {
-            starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                    SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY));
-        } else {
-            starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                    FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY));
-        }
+        final Uri uri = folderTable == null ? SetList.CONTENT_URI : FolderList.CONTENT_URI;
+        final long id = folderTable == null ? tableId : folderId;
+        final String column = folderTable == null ? SetList.STARRED_ONLY : FolderList.STARRED_ONLY;
+        starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                uri, id, column));
 
         // Call the onClickListener if the user slides the switch or taps on it
         starredOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -231,13 +229,25 @@ public class SetOverviewActivity extends AppCompatActivity {
 
         // Check if the flag needs to be flipped
         if (view != null) {
-            if (folderTable == null) {
-                PreferencesHelper.flipStar(getApplicationContext(), mProvider,
-                        SetList.CONTENT_URI, tableId, SetList.STARRED_ONLY);
-            } else {
-                PreferencesHelper.flipStar(getApplicationContext(), mProvider,
-                        FolderList.CONTENT_URI, folderId, FolderList.STARRED_ONLY);
-            }
+            // Disable the switch's setOnCheckedChangeListener to prevent a double change
+            final Switch starredOnly = (Switch) findViewById(R.id.switch_starred_only);
+            starredOnly.setOnCheckedChangeListener(null);
+
+            // Flip the switch
+            final Uri uri = folderTable == null ? SetList.CONTENT_URI : FolderList.CONTENT_URI;
+            final long id = folderTable == null ? tableId : folderId;
+            final String column = folderTable == null ? SetList.STARRED_ONLY : FolderList.STARRED_ONLY;
+            PreferencesHelper.flipStar(getApplicationContext(), mProvider, uri, id, column);
+            starredOnly.setChecked(PreferencesHelper.getStar(getApplicationContext(), mProvider,
+                    uri, id, column));
+
+            // Re-enable the setOnCheckedChangeListener
+            starredOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    startCardListFragment(starredOnly);
+                }
+            });
             invalidateOptionsMenu();
         }
 
