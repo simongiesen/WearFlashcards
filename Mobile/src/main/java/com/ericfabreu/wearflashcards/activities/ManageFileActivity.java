@@ -145,13 +145,13 @@ public class ManageFileActivity extends FragmentActivity {
         } else {
             fileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         }
-        if (mDatabase) {
-            fileIntent.setType("*/*");
-        } else {
-            fileIntent.setType("text/comma-separated-values");
-        }
         fileIntent.putExtra(Intent.EXTRA_TITLE, mTitle);
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Open to the downloads folder by default
+        final String dir = Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        fileIntent.setDataAndType(Uri.parse(dir), mDatabase ? "*/*" : "text/comma-separated-values");
 
         // Use MaterialFilePicker if JellyBean device does not have a file manager
         final PackageManager packageManager = getPackageManager();
