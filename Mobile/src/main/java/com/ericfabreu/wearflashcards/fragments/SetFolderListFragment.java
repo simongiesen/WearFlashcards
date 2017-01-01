@@ -110,8 +110,10 @@ public class SetFolderListFragment extends ListFragment
                 // Show the edit and export buttons only if there is exactly one item selected
                 if (selections.size() == 1) {
                     mode.getMenu().findItem(R.id.item_edit).setVisible(true);
+                    mode.getMenu().findItem(R.id.item_export).setVisible(true);
                 } else {
                     mode.getMenu().findItem(R.id.item_edit).setVisible(false);
+                    mode.getMenu().findItem(R.id.item_export).setVisible(false);
                 }
             }
 
