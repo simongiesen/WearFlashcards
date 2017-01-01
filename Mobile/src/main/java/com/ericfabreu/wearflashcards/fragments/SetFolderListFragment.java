@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.activities.FolderOverviewActivity;
-import com.ericfabreu.wearflashcards.activities.ManageCSVActivity;
+import com.ericfabreu.wearflashcards.activities.ManageFileActivity;
 import com.ericfabreu.wearflashcards.activities.ManageSetFolderActivity;
 import com.ericfabreu.wearflashcards.activities.SetOverviewActivity;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.FolderEntry;
@@ -179,12 +179,12 @@ public class SetFolderListFragment extends ListFragment
                     }
 
                     case R.id.item_export: {
-                        // Get folder or table name and send it to ManageCSVActivity
+                        // Get folder or table name and send it to ManageFileActivity
                         final FlashcardProvider handle = new FlashcardProvider(getActivity()
                                 .getApplicationContext());
                         final String table = handle.getTableName(selections.get(0), mMode == 1);
                         final String title = handle.getTitle(selections.get(0), mMode == 1);
-                        final Intent intent = new Intent(getActivity(), ManageCSVActivity.class);
+                        final Intent intent = new Intent(getActivity(), ManageFileActivity.class);
                         intent.putExtra(Constants.TAG_TABLE_NAME, table);
                         intent.putExtra(Constants.TAG_TITLE, title);
                         intent.putExtra(Constants.TAG_READING_MODE, false);

@@ -38,7 +38,10 @@
     </plurals>
     <string name="message_csv_reading">Importing new cards. Please wait&#8230;</string>
     <string name="message_csv_writing">Exporting cards. Please wait&#8230;</string>
+    <string name="message_database_reading">Restoring flashcards. Please wait&#8230;</string>
+    <string name="message_database_writing">Backing up flashcards. Please wait&#8230;</string>
     <string name="message_csv_unavailable">Storage is currently unavailable.</string>
+    <string name="message_backup_successful">Successfully backed up all flashcards</string>
 
     <!-- EditText hints -->
     <string name="hint_set_title">Set title</string>
@@ -127,6 +130,8 @@
     <string name="pref_title_creating_star">Create starred cards</string>
     <string name="pref_title_horizontal">Scroll horizontally in study mode</string>
     <string name="pref_title_separator">CSV separator</string>
+    <string name="pref_title_backup">Backup flashcards</string>
+    <string name="pref_title_restore">Import flashcards</string>
     <string name="pref_description_shuffle">Study cards in random order</string>
     <string name="pref_description_flip">Show the back side of the cards first</string>
     <string name="pref_description_star_on">Use the same value for all items</string>

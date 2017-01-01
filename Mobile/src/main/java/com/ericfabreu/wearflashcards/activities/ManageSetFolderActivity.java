@@ -98,7 +98,7 @@ public class ManageSetFolderActivity extends AppCompatActivity {
 
         // Check if it should import a CSV file
         if (view.getId() == R.id.button_import_csv) {
-            Intent intent = new Intent(this, ManageCSVActivity.class);
+            Intent intent = new Intent(this, ManageFileActivity.class);
             intent.putExtra(Constants.TAG_TABLE_NAME, provider.getTableName(newTitle, false));
             intent.putExtra(Constants.TAG_TITLE, mTitle);
             intent.putExtra(Constants.TAG_READING_MODE, true);
@@ -115,7 +115,7 @@ public class ManageSetFolderActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Return to MainActivity after ManageCSVActivity closes
+        // Return to MainActivity after ManageFileActivity closes
         if (requestCode == Constants.REQUEST_CODE_CREATE) {
             this.finish();
         }

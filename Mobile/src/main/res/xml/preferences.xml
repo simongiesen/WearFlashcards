@@ -40,6 +40,14 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_header_backup">
+        <Preference
+            android:key="backup"
+            android:title="@string/pref_title_backup" />
+
+        <Preference
+            android:key="restore"
+            android:title="@string/pref_title_restore" />
+
         <EditTextPreference
             android:defaultValue=","
             android:key="csvSeparator"

@@ -1,6 +1,7 @@
 package com.ericfabreu.wearflashcards.activities;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -118,6 +119,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
+        private final static String PREF_KEY_BACKUP = "backup", PREF_KEY_RESTORE = "restore";
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -130,6 +132,30 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(Constants.PREF_KEY_SET_ORDER));
             bindPreferenceSummaryToValue(findPreference(Constants.PREF_KEY_CARD_ORDER));
+
+            // Set click listeners for backup/restore
+            findPreference(PREF_KEY_BACKUP)
+                    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            // Export database
+                            final Intent intent = new Intent(getActivity(), ManageFileActivity.class);
+                            intent.putExtra(Constants.TAG_READING_MODE, false);
+                            intent.putExtra(Constants.TAG_DATABASE, true);
+                            startActivity(intent);
+                            return true;
+                        }
+                    });
+            findPreference(PREF_KEY_RESTORE)
+                    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            // Confirm that the user wants to replace the database
+
+                            // Restore database
+                            return true;
+                        }
+                    });
         }
 
         @Override

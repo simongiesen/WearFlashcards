@@ -49,7 +49,7 @@
             android:parentActivityName=".activities.FolderOverviewActivity" />
 
         <activity
-            android:name=".activities.ManageCSVActivity"
+            android:name=".activities.ManageFileActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Transparent" />
 

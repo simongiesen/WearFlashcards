@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ericfabreu.wearflashcards.R;
 import com.ericfabreu.wearflashcards.data.FlashcardContract.CardSet;
+import com.ericfabreu.wearflashcards.data.FlashcardDbHelper;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
@@ -32,21 +33,24 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
- * Imports a CSV file into a flashcard set.
+ * Imports/exports a flashcard set or backs up/restores the database.
  */
-public class ManageCSVActivity extends FragmentActivity {
+public class ManageFileActivity extends FragmentActivity {
     private static final int CSV_REQUEST_CODE = 278, CSV_REQUEST_CODE_JB = 52;
     private static final String LOG_TAG = "CSV manager";
     private String mTable, mTitle;
     private Uri mUri;
-    private boolean mReadMode, mFolderMode;
+    private boolean mReadMode, mFolderMode, mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,7 @@ public class ManageCSVActivity extends FragmentActivity {
                 mTitle = savedInstanceState.getString(Constants.TAG_TITLE);
                 mReadMode = savedInstanceState.getBoolean(Constants.TAG_READING_MODE);
                 mFolderMode = savedInstanceState.getBoolean(Constants.TAG_FOLDER);
+                mDatabase = savedInstanceState.getBoolean(Constants.TAG_DATABASE);
             }
         }
     }
@@ -82,6 +87,7 @@ public class ManageCSVActivity extends FragmentActivity {
         savedInstanceState.putString(Constants.TAG_TITLE, mTitle);
         savedInstanceState.putBoolean(Constants.TAG_READING_MODE, mReadMode);
         savedInstanceState.putBoolean(Constants.TAG_FOLDER, mFolderMode);
+        savedInstanceState.putBoolean(Constants.TAG_DATABASE, mDatabase);
     }
 
     @Override
@@ -112,23 +118,25 @@ public class ManageCSVActivity extends FragmentActivity {
     private void loadFileBrowser() {
         // Check that we can read/write files
         if (!isExternalStorageWritable()) {
-            Toast.makeText(ManageCSVActivity.this, R.string.message_csv_unavailable,
+            Toast.makeText(ManageFileActivity.this, R.string.message_csv_unavailable,
                     Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         final Bundle bundle = getIntent().getExtras();
-        mTable = bundle.getString(Constants.TAG_TABLE_NAME);
-        mTitle = bundle.getString(Constants.TAG_TITLE);
-        mReadMode = bundle.getBoolean(Constants.TAG_READING_MODE);
-        mFolderMode = bundle.getBoolean(Constants.TAG_FOLDER);
+        mTable = bundle.getString(Constants.TAG_TABLE_NAME, null);
+        mTitle = bundle.getString(Constants.TAG_TITLE, null);
+        mReadMode = bundle.getBoolean(Constants.TAG_READING_MODE, false);
+        mFolderMode = bundle.getBoolean(Constants.TAG_FOLDER, false);
+        mDatabase = bundle.getBoolean(Constants.TAG_DATABASE, false);
 
         // Remove non-alphanumeric characters from the title
         if (mTitle != null) {
             mTitle = mTitle.replaceAll("[^A-Za-z0-9 .-]", "");
         }
 
+        // Setup file browser intent
         final Intent fileIntent;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -137,8 +145,12 @@ public class ManageCSVActivity extends FragmentActivity {
         } else {
             fileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         }
+        if (mDatabase) {
+            fileIntent.setType("*/*");
+        } else {
+            fileIntent.setType("text/comma-separated-values");
+        }
         fileIntent.putExtra(Intent.EXTRA_TITLE, mTitle);
-        fileIntent.setType("text/comma-separated-values");
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // Use MaterialFilePicker if JellyBean device does not have a file manager
@@ -181,21 +193,29 @@ public class ManageCSVActivity extends FragmentActivity {
      * Creates flashcards from a CSV file in a background thread.
      */
     private class ManageFile extends AsyncTask<Boolean, Void, Void> {
-        private final ProgressDialog mDialog = new ProgressDialog(ManageCSVActivity.this);
+        private final ProgressDialog mDialog = new ProgressDialog(ManageFileActivity.this);
 
         @Override
         protected void onPreExecute() {
             // Display loading message while the file is being processed
-            mDialog.setMessage(getString(R.string.message_csv_reading));
+            if (!mDatabase && mReadMode) {
+                mDialog.setMessage(getString(R.string.message_csv_reading));
+            } else if (!mDatabase) {
+                mDialog.setMessage(getString(R.string.message_csv_writing));
+            } else if (mReadMode) {
+                mDialog.setMessage(getString(R.string.message_database_reading));
+            } else {
+                mDialog.setMessage(getString(R.string.message_database_writing));
+            }
             mDialog.setIndeterminate(true);
             mDialog.setCancelable(false);
             mDialog.show();
         }
 
         /**
-         * Generates a set from a CSV file.
+         * Generates a set from a CSV file or restores a database if `mDatabase` is true.
          */
-        private ParcelFileDescriptor loadCSV() {
+        private ParcelFileDescriptor loadFile() {
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {
                 // Open the CSV file
@@ -240,7 +260,7 @@ public class ManageCSVActivity extends FragmentActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(ManageCSVActivity.this, insertCount,
+                                Toast.makeText(ManageFileActivity.this, insertCount,
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -255,68 +275,91 @@ public class ManageCSVActivity extends FragmentActivity {
         }
 
         /**
-         * Generates a CSV file from a set.
+         * Generates a CSV file from a set or backs up the database if `mDatabase` is true.
          */
-        private ParcelFileDescriptor writeCSV() {
+        private ParcelFileDescriptor writeFile() {
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {
-                // Open the CSV file
+                // Open the CSV or database file
                 parcelFileDescriptor = getContentResolver().openFileDescriptor(mUri, "w");
                 if (parcelFileDescriptor != null) {
                     final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                    final FileWriter fileWriter = new FileWriter(fileDescriptor);
-                    final BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                     try {
-                        final FlashcardProvider handle =
-                                new FlashcardProvider(getApplicationContext());
-                        final String sep = PreferencesHelper.getSeparator(getApplicationContext());
-                        final MessageFormat form = new MessageFormat("{0}" + sep + "{1}");
-                        int count = 0;
+                        if (mDatabase) {
+                            // Open data base file
+                            final String path = getApplicationContext()
+                                    .getDatabasePath(FlashcardDbHelper.DATABASE_NAME).getPath();
+                            final FileChannel dbIn = new FileInputStream(new File(path)).getChannel();
+                            final FileChannel dbOut = new FileOutputStream(fileDescriptor).getChannel();
 
-                        // Save folder to CSV
-                        if (mFolderMode) {
-                            final Cursor sets = handle.fetchFolderSets(mTable);
-                            while (sets.moveToNext()) {
-                                final String table = handle.getTableName(sets.getLong(0), false);
-                                final Cursor cards = handle.fetchAllCards(table, false);
+                            // Transfer database to the new file
+                            dbOut.transferFrom(dbIn, 0, dbIn.size());
+                            dbIn.close();
+                            dbOut.close();
+
+                            // Toasts cannot be created in a background thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(ManageFileActivity.this, R.string.message_backup_successful,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else {
+                            final FlashcardProvider handle =
+                                    new FlashcardProvider(getApplicationContext());
+                            final String sep = PreferencesHelper.getSeparator(getApplicationContext());
+                            final MessageFormat form = new MessageFormat("{0}" + sep + "{1}");
+                            final FileWriter fileWriter = new FileWriter(fileDescriptor);
+                            final BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                            int count = 0;
+
+                            // Save folder to CSV
+                            if (mFolderMode) {
+                                final Cursor sets = handle.fetchFolderSets(mTable);
+                                while (sets.moveToNext()) {
+                                    final String table = handle.getTableName(sets.getLong(0), false);
+                                    final Cursor cards = handle.fetchAllCards(table, false);
+                                    while (cards.moveToNext()) {
+                                        final Object[] line = {cards.getString(1), cards.getString(2)};
+                                        bufferedWriter.write(form.format(line));
+                                        bufferedWriter.newLine();
+                                        count++;
+                                    }
+                                    cards.close();
+                                }
+                                bufferedWriter.close();
+                                sets.close();
+                            }
+
+                            // Save set to CSV
+                            else {
+                                final Cursor cards = handle.fetchAllCards(mTable, false);
                                 while (cards.moveToNext()) {
                                     final Object[] line = {cards.getString(1), cards.getString(2)};
                                     bufferedWriter.write(form.format(line));
                                     bufferedWriter.newLine();
                                     count++;
                                 }
+                                bufferedWriter.close();
                                 cards.close();
                             }
-                            bufferedWriter.close();
-                            sets.close();
+
+                            final String insertCount = count == 0
+                                    ? getString(R.string.message_csv_export_zero)
+                                    : getResources()
+                                    .getQuantityString(R.plurals.message_csv_export, count, count);
+
+                            // Toasts cannot be created in a background thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(ManageFileActivity.this, insertCount,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
 
-                        // Save set to CSV
-                        else {
-                            final Cursor cards = handle.fetchAllCards(mTable, false);
-                            while (cards.moveToNext()) {
-                                final Object[] line = {cards.getString(1), cards.getString(2)};
-                                bufferedWriter.write(form.format(line));
-                                bufferedWriter.newLine();
-                                count++;
-                            }
-                            bufferedWriter.close();
-                            cards.close();
-                        }
-
-                        final String insertCount = count == 0
-                                ? getString(R.string.message_csv_export_zero)
-                                : getResources()
-                                .getQuantityString(R.plurals.message_csv_export, count, count);
-
-                        // Toasts cannot be created in a background thread
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(ManageCSVActivity.this, insertCount,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -332,7 +375,7 @@ public class ManageCSVActivity extends FragmentActivity {
 
             // Read CSV or export set depending on the mode
             try {
-                parcelFileDescriptor = readMode[0] ? loadCSV() : writeCSV();
+                parcelFileDescriptor = readMode[0] ? loadFile() : writeFile();
             }
 
             // Handle IO errors
