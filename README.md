@@ -10,7 +10,6 @@ Flashcards for Android Wear (available on the [Play Store](https://play.google.c
 * Android Studio
 
 ## Acknowledgements 
-* Launcher icon created with [Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html) / CC BY 3.0
 * In-app icons from Google's [material design guidelines](https://design.google.com/icons/) / CC BY 4.0
 * Vertical View Pager from [Brett's answer](http://stackoverflow.com/a/22797619/3522216) / CC BY-SA 3.0
 
