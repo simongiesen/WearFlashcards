@@ -253,11 +253,28 @@ public class SetFolderListFragment extends ListFragment
                 final String table = mProvider.getTableName(title, mMode == 1);
                 if (table != null) {
                     final long rowCount = mProvider.getRowCount(table);
-                    final int countId = mMode == 1 ? R.plurals.text_folder_set_count
-                            : R.plurals.text_set_card_count;
+                    String count;
+                    // Get set and card count for folders
+                    if (mMode == 1) {
+                        int setCount = 0;
+                        final Cursor sets = mProvider.fetchFolderSets(table);
+                        while (sets != null && sets.moveToNext()) {
+                            setCount += mProvider.getRowCount(mProvider.getTableName(
+                                    sets.getLong(sets.getColumnIndex(FolderEntry.SET_ID)), false));
+                        }
+                        final String cardCount = getResources().getQuantityString(
+                                R.plurals.text_set_card_count, setCount, setCount);
+                        final Object[] args = new Object[]{rowCount, cardCount};
+                        count = getResources().getQuantityString(R.plurals.text_folder_set_count,
+                                (int) rowCount, args);
+                    }
+                    // Get only card count for sets
+                    else {
+                        count = getResources().getQuantityString(R.plurals.text_set_card_count,
+                                (int) rowCount, rowCount);
+                    }
                     titleView.setText(title);
-                    countView.setText(getResources().getQuantityString(countId, (int) rowCount,
-                            rowCount));
+                    countView.setText(count);
                 }
             }
 

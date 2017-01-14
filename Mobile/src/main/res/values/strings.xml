@@ -15,8 +15,8 @@
         <item quantity="other">%1$d cards</item>
     </plurals>
     <plurals name="text_folder_set_count">
-        <item quantity="one">%1$d set</item>
-        <item quantity="other">%1$d sets</item>
+        <item quantity="one">%1$d set, %2$s</item>
+        <item quantity="other">%1$d sets, %2$s</item>
     </plurals>
 
     <!-- Messages -->
