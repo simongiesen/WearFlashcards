@@ -116,13 +116,16 @@ public class FolderOverviewActivity extends AppCompatActivity {
         // Hide the starred only bar and the option to export if the folder is empty
         if (mProvider.getRowCount(tableName) > 0) {
             findViewById(R.id.layout_folder_starred_only).setVisibility(View.VISIBLE);
-            menu.findItem(R.id.item_list_cards).setVisible(true);
+            // menu.findItem(R.id.item_list_cards).setVisible(true);
             menu.findItem(R.id.item_csv_export).setVisible(true);
         } else {
             findViewById(R.id.layout_folder_starred_only).setVisibility(View.GONE);
-            menu.findItem(R.id.item_list_cards).setVisible(false);
+            // menu.findItem(R.id.item_list_cards).setVisible(false);
             menu.findItem(R.id.item_csv_export).setVisible(false);
         }
+
+        // Disable the list button for this release
+        menu.findItem(R.id.item_list_cards).setVisible(false);
         return true;
     }
 
