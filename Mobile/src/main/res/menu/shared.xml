@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/item_study_set"
-        android:icon="@drawable/ic_menu_card"
+        android:icon="@drawable/ic_menu_study"
         android:title="@string/button_set_view"
         app:showAsAction="ifRoom" />
 

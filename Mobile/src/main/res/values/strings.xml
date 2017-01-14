@@ -60,7 +60,8 @@
     <string name="button_delete">Delete</string>
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
-    <string name="button_set_view">Show cards</string>
+    <string name="button_set_view">Study</string>
+    <string name="button_list_cards">View cards as a list</string>
     <string name="button_starred_only">Only show starred cards</string>
     <string name="button_starred_only_folder">Only study starred cards</string>
     <string name="button_reload_cards">Reload</string>
