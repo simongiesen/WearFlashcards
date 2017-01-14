@@ -11,31 +11,29 @@ import com.ericfabreu.wearflashcards.data.FlashcardContract.SetList;
 import com.ericfabreu.wearflashcards.data.FlashcardProvider;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
  * A simple class that stores all of the information in a set.
  */
 public class SetInfo {
-    private boolean mFolder;
     private String mTableName;
-    private List<String> mTerms = new ArrayList<>(), mDefinitions = new ArrayList<>();
-    private List<Boolean> mStars = new ArrayList<>();
-    private List<Long> mIds = new ArrayList<>(), mTableIds = new ArrayList<>();
+    private ArrayList<String> mTerms = new ArrayList<>(), mDefinitions = new ArrayList<>();
+    private ArrayList<Boolean> mStars = new ArrayList<>();
+    private ArrayList<Long> mIds = new ArrayList<>(), mTableIds = new ArrayList<>();
+    private ArrayList<Integer> mOrder = new ArrayList<>();
 
     public SetInfo(Context context, long tableId, boolean folder) {
-        FlashcardProvider provider = new FlashcardProvider(context);
-        mFolder = folder;
+        final FlashcardProvider provider = new FlashcardProvider(context);
 
         // Get information from the database
         mTableName = provider.getTableName(tableId, folder);
         final boolean starredOnly = PreferencesHelper.getStar(context, provider,
-                mFolder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
-                mFolder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
+                folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
+                folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
 
         // Check if it needs to load more than one set
-        if (mFolder) {
+        if (folder) {
             Cursor cursor = provider.query(Uri.withAppendedPath(FolderEntry.CONTENT_URI, mTableName),
                     new String[]{FolderEntry.SET_ID}, null, null, null);
             if (cursor != null) {
@@ -66,12 +64,18 @@ public class SetInfo {
                 cursor.close();
             }
         }
+
+        // Initialize the order array with the default indexes
+        for (int i = 0; i < mTerms.size(); i++) {
+            mOrder.add(i);
+        }
     }
 
     public CardInfo getCardAt(int index) {
-        return new CardInfo(mTableName, mTerms.get(index), mDefinitions.get(index),
-                mTableIds.size() == 0 ? -1 : mTableIds.get(index),
-                mIds.get(index), mStars.get(index), mTableIds.size() > 0);
+        return new CardInfo(mTableName, mTerms.get(mOrder.get(index)),
+                mDefinitions.get(mOrder.get(index)),
+                mTableIds.size() == 0 ? -1 : mTableIds.get(mOrder.get(index)),
+                mIds.get(mOrder.get(index)), mStars.get(mOrder.get(index)), mTableIds.size() > 0);
     }
 
     /**
@@ -92,7 +96,7 @@ public class SetInfo {
      * Flips the terms and definitions.
      */
     public void flipCards() {
-        List<String> temp = mTerms;
+        ArrayList<String> temp = mTerms;
         mTerms = mDefinitions;
         mDefinitions = temp;
     }
@@ -101,28 +105,29 @@ public class SetInfo {
      * Shuffles the terms, definitions, stars, and ids together if necessary.
      */
     public void shuffleCards() {
-        int size = mTerms.size();
+        int size = mOrder.size();
         int[] shuffleOrder = getShuffledArray(size);
-        List<String> newTerms = new ArrayList<>(), newDefinitions = new ArrayList<>();
-        List<Boolean> newStars = new ArrayList<>();
-        List<Long> newIds = new ArrayList<>(), newTableIds = new ArrayList<>();
+        ArrayList<Integer> newOrder = new ArrayList<>();
 
         // Use shuffled int array to ensure that the new terms, definitions, and stars match
         for (int i = 0; i < size; i++) {
-            newTerms.add(i, mTerms.get(shuffleOrder[i]));
-            newDefinitions.add(i, mDefinitions.get(shuffleOrder[i]));
-            newStars.add(i, mStars.get(shuffleOrder[i]));
-            newIds.add(i, mIds.get(shuffleOrder[i]));
-            if (mFolder) {
-                newTableIds.add(i, mTableIds.get(shuffleOrder[i]));
-            }
+            newOrder.add(i, mOrder.get(shuffleOrder[i]));
         }
+        mOrder = newOrder;
+    }
 
-        mTerms = newTerms;
-        mDefinitions = newDefinitions;
-        mStars = newStars;
-        mIds = newIds;
-        mTableIds = newTableIds;
+    /**
+     * Returns the current card order.
+     */
+    public ArrayList<Integer> getOrder() {
+        return mOrder;
+    }
+
+    /**
+     * Replaces the current card order.
+     */
+    public void setOrder(ArrayList<Integer> order) {
+        mOrder = order;
     }
 
     /**
@@ -162,8 +167,8 @@ public class SetInfo {
         private long mTableId, mCardId;
         private boolean mStar, mFolderMode;
 
-        public CardInfo(String table, String term, String definition, long tableId, long cardId,
-                        boolean star, boolean folderMode) {
+        private CardInfo(String table, String term, String definition, long tableId, long cardId,
+                         boolean star, boolean folderMode) {
             mTable = table;
             mTerm = term;
             mDefinition = definition;

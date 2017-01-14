@@ -19,11 +19,17 @@ import com.ericfabreu.wearflashcards.utils.Constants;
 import com.ericfabreu.wearflashcards.utils.PreferencesHelper;
 import com.ericfabreu.wearflashcards.utils.SetInfo;
 
+import java.util.ArrayList;
+
 public class StudyActivity extends AppCompatActivity {
     private static final int MENU_POS_STAR = 1;
-    private long tableId;
-    private boolean folder;
+    private static final String CARD_POSITION = "position", SHUFFLE_ORDER = "shuffle";
+    private ArrayList<Integer> mOrder;
+    private int mPosition;
+    private long mTableId;
+    private boolean mFolder;
     private FlashcardProvider mProvider;
+    private ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +43,18 @@ public class StudyActivity extends AppCompatActivity {
 
         // Get set or folder information from the parent activity
         Bundle bundle = getIntent().getExtras();
-        tableId = bundle.getLong(Constants.TAG_ID);
-        folder = bundle.getBoolean(Constants.TAG_FOLDER);
+        mTableId = bundle.getLong(Constants.TAG_ID);
+        mFolder = bundle.getBoolean(Constants.TAG_FOLDER);
         setTitle(bundle.getString(Constants.TAG_TITLE));
 
-        createCards();
+        // Restore list position
+        mPosition = savedInstanceState != null ? savedInstanceState.getInt(CARD_POSITION) : 0;
+        mOrder = savedInstanceState != null ?
+                savedInstanceState.getIntegerArrayList(SHUFFLE_ORDER) : null;
+
+        if (savedInstanceState != null) {
+            createCards();
+        }
     }
 
     @Override
@@ -53,8 +66,8 @@ public class StudyActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         final boolean starredOnly = PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
-                folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
+                mFolder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, mTableId,
+                mFolder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
         if (starredOnly) {
             MenuItem star = menu.getItem(MENU_POS_STAR);
             star.setIcon(R.drawable.ic_star_selected);
@@ -67,7 +80,7 @@ public class StudyActivity extends AppCompatActivity {
      */
     protected void createCards() {
         // Get information from the database
-        SetInfo setInfo = new SetInfo(getApplicationContext(), tableId, folder);
+        final SetInfo setInfo = new SetInfo(getApplicationContext(), mTableId, mFolder);
 
         // Return to the parent activity if all cards have been hidden
         if (setInfo.isEmpty()) {
@@ -82,15 +95,23 @@ public class StudyActivity extends AppCompatActivity {
         if (settings.getBoolean(Constants.PREF_KEY_SHUFFLE, false)) {
             setInfo.shuffleCards();
         }
-        final ViewPager pager;
         if (settings.getBoolean(Constants.PREF_KEY_HORIZONTAL_PAGER, false)) {
             findViewById(R.id.pager_study_vertical).setVisibility(View.GONE);
-            pager = (ViewPager) findViewById(R.id.pager_study_horizontal);
-            pager.setVisibility(View.VISIBLE);
+            mPager = (ViewPager) findViewById(R.id.pager_study_horizontal);
+            mPager.setVisibility(View.VISIBLE);
         } else {
-            pager = (ViewPager) findViewById(R.id.pager_study_vertical);
+            mPager = (ViewPager) findViewById(R.id.pager_study_vertical);
         }
-        pager.setAdapter(new StudyAdapter(this, getSupportFragmentManager(), pager, setInfo));
+
+        // Save or restore the shuffle order
+        if (mOrder == null) {
+            mOrder = setInfo.getOrder();
+        } else {
+            setInfo.setOrder(mOrder);
+        }
+
+        mPager.setAdapter(new StudyAdapter(this, getSupportFragmentManager(), mPager, setInfo));
+        mPager.setCurrentItem(mPosition);
     }
 
     @Override
@@ -107,13 +128,13 @@ public class StudyActivity extends AppCompatActivity {
             // Flip starred only flag and reload cards
             case R.id.item_starred_only: {
                 final boolean flag = PreferencesHelper.getStar(getApplicationContext(), mProvider,
-                        folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
-                        folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
+                        mFolder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, mTableId,
+                        mFolder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
                 final int icon = flag ? R.drawable.ic_star_unselected : R.drawable.ic_star_selected;
                 item.setIcon(icon);
                 PreferencesHelper.flipStar(getApplicationContext(), mProvider,
-                        folder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, tableId,
-                        folder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
+                        mFolder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, mTableId,
+                        mFolder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
                 createCards();
                 return true;
             }
@@ -121,5 +142,19 @@ public class StudyActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
             }
         }
+    }
+
+    // Save current position before the activity is recreated
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CARD_POSITION, mPager.getCurrentItem());
+        outState.putIntegerArrayList(SHUFFLE_ORDER, mOrder);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createCards();
     }
 }
