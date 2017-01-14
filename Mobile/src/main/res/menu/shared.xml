@@ -20,6 +20,13 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/item_list_cards"
+        android:orderInCategory="99"
+        android:title="@string/button_list_cards"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/item_csv_import"
         android:orderInCategory="99"
         android:title="@string/button_csv_append"

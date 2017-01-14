@@ -68,7 +68,7 @@
     <string name="button_set_import">Import</string>
     <string name="button_csv_import">Import CSV file</string>
     <string name="button_csv_append">Add cards from CSV</string>
-    <string name="button_csv_export">Export set as CSV</string>
+    <string name="button_csv_export">Export as CSV</string>
     <string name="button_db_restore">Restore</string>
 
     <!-- Image descriptions -->
