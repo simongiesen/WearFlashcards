@@ -33,7 +33,8 @@ import java.util.List;
  * Generates CardViews for SetView.
  */
 public class StudyAdapter extends FragmentStatePagerAdapter {
-    private List<CardViewFragment> cards = new ArrayList<>();
+    private List<CardViewFragment> mCards = new ArrayList<>();
+    private ArrayList<Integer> mOrder = new ArrayList<>();
     private Activity mActivity;
     private ViewPager mPager;
 
@@ -43,9 +44,16 @@ public class StudyAdapter extends FragmentStatePagerAdapter {
         mActivity = activity;
         mPager = viewPager;
 
+        // Keep order after rotation
+        if (mOrder.size() > 0) {
+            setInfo.setOrder(mOrder);
+        } else {
+            mOrder = setInfo.getOrder();
+        }
+
         // Create all cards
         for (int i = 0, n = setInfo.size(); i < n; i++) {
-            cards.add(newCard(setInfo.getCardAt(i), i));
+            mCards.add(newCard(setInfo.getCardAt(i), i));
         }
     }
 
@@ -60,12 +68,12 @@ public class StudyAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return cards.get(position);
+        return mCards.get(position);
     }
 
     @Override
     public int getCount() {
-        return cards.size();
+        return mCards.size();
     }
 
     @Override
@@ -75,16 +83,24 @@ public class StudyAdapter extends FragmentStatePagerAdapter {
 
     public void deleteItem(int position) {
         // Go back to the parent activity if this is the last starred card
-        if (cards.size() <= 1) {
+        if (mCards.size() <= 1) {
             mActivity.finish();
         }
 
-        cards.remove(position);
-
         // Update the position in the cards after the one being removed
-        for (int i = position; i < cards.size(); i++) {
-            cards.get(i).setPosition(i);
+        mCards.remove(position);
+        for (int i = position; i < mCards.size(); i++) {
+            mCards.get(i).setPosition(i);
         }
+
+        // Update the card order
+        final int index = mOrder.remove(position);
+        for (int i = 0; i < mOrder.size(); i++) {
+            if (mOrder.get(i) > index) {
+                mOrder.set(i, mOrder.get(i) - 1);
+            }
+        }
+
         notifyDataSetChanged();
         mPager.setCurrentItem(position);
     }

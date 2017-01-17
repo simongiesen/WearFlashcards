@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class StudyActivity extends AppCompatActivity {
     private static final int MENU_POS_STAR = 1;
     private static final String CARD_POSITION = "position", SHUFFLE_ORDER = "shuffle";
-    private ArrayList<Integer> mOrder;
+    private ArrayList<Integer> mOrder = null;
     private int mPosition;
     private long mTableId;
     private boolean mFolder;
@@ -52,9 +52,7 @@ public class StudyActivity extends AppCompatActivity {
         mOrder = savedInstanceState != null ?
                 savedInstanceState.getIntegerArrayList(SHUFFLE_ORDER) : null;
 
-        if (savedInstanceState != null) {
-            createCards();
-        }
+        createCards();
     }
 
     @Override
@@ -122,6 +120,7 @@ public class StudyActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.item_study_reload: {
+                mOrder = null;
                 createCards();
                 return true;
             }
@@ -135,6 +134,7 @@ public class StudyActivity extends AppCompatActivity {
                 PreferencesHelper.flipStar(getApplicationContext(), mProvider,
                         mFolder ? FolderList.CONTENT_URI : SetList.CONTENT_URI, mTableId,
                         mFolder ? FolderList.STARRED_ONLY : SetList.STARRED_ONLY);
+                mOrder = null;
                 createCards();
                 return true;
             }
