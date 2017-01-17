@@ -154,7 +154,7 @@ public class ManageFileActivity extends FragmentActivity {
         // Open to the downloads folder by default
         final String dir = Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-        fileIntent.setDataAndType(Uri.parse(dir), mDatabase ? "*/*" : "text/comma-separated-values");
+        fileIntent.setDataAndType(Uri.parse(dir), mDatabase ? "*/*" : "text/csv");
 
         // Use MaterialFilePicker if running on a Jelly Bean device
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && mReadMode) {
